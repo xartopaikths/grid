@@ -39,6 +39,9 @@ class GridPageX<D extends GridData<D>> extends GridPage<D> implements GridPageMB
     // actual number of data records
     volatile int count;
 
+    // 2pc transaction support, every to-put data must be placed there first
+    Stage staging;
+
     GridPageX(GridDataSet<D> parent, String id, int capacity) {
         super(parent, id);
 
@@ -290,6 +293,14 @@ class GridPageX<D extends GridData<D>> extends GridPage<D> implements GridPageMB
     protected void finalize() throws Throwable {
         UNSAFE.freeMemory(content);
         super.finalize();
+    }
+
+
+    /**
+     * The logging for puts, used in transaction control
+     */
+    class Stage {
+
     }
 
 }
