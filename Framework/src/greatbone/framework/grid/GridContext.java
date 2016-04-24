@@ -26,14 +26,14 @@ class GridContext implements AutoCloseable{
     // the header part of the call
     ByteBuffer call;
 
-    // input stream for call headers
-    InputStream istream;
-
     // the header part of the reply
     ByteBuffer reply;
 
-    // output stream for reply body
-    OutputStream ostream;
+    // body input for either call or reply
+    InputStream input;
+
+    // body output for either call or reply
+    OutputStream output;
 
     GridContext() {
     }
@@ -45,8 +45,8 @@ class GridContext implements AutoCloseable{
     }
 
     final InputStream getInputStream() {
-        if (istream == null) {
-            istream = new InputStream() {
+        if (input == null) {
+            input = new InputStream() {
                 final ConduitStreamSourceChannel chan = conn.getSourceChannel();
                 ByteBuffer buf;
 
@@ -56,11 +56,11 @@ class GridContext implements AutoCloseable{
                 }
             };
         }
-        return istream;
+        return input;
     }
 
     final OutputStream getOutputStream() {
-        if (ostream == null) {
+        if (output == null) {
             final OutputStream ostream = new OutputStream() {
                 final ConduitStreamSinkChannel chan = conn.getSinkChannel();
                 ByteBuffer buf;
@@ -71,15 +71,15 @@ class GridContext implements AutoCloseable{
                 }
             };
         }
-        return ostream;
+        return output;
     }
 
     public void close() throws IOException {
-        if (istream != null) {
-            istream.close();
+        if (input != null) {
+            input.close();
         }
-        if (ostream != null) {
-            ostream.close();
+        if (output != null) {
+            output.close();
         }
     }
 

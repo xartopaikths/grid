@@ -71,7 +71,7 @@ class GridPageRef<D extends GridData<D>> extends GridPage<D> {
             // key
 
             // serialize the critera object or lambda expression as call body
-            ObjectOutputStream out = new ObjectOutputStream(gc.ostream);
+            ObjectOutputStream out = new ObjectOutputStream(gc.output);
             out.writeObject(filter);
             out.close();
 

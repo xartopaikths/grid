@@ -9,15 +9,15 @@ class GridPut<D extends GridData<D>> extends ForkJoinTask<D> {
 
     final GridPage<D> page;
 
-    final Critera<D> filter;
+    // 0: prepare, 1: commit or rollback
+    int phase;
 
     // return data
     D result;
 
 
-    GridPut(GridPage<D> page, Critera<D> filter) {
+    GridPut(GridPage<D> page) {
         this.page = page;
-        this.filter = filter;
     }
 
     @Override
@@ -32,7 +32,7 @@ class GridPut<D extends GridData<D>> extends ForkJoinTask<D> {
 
     @Override
     protected boolean exec() {
-        result = page.search(filter);
+//        result = page.search(filter);
         return true;
     }
 
