@@ -13,8 +13,4 @@ public class ITEMS extends GridDataSet<Item> {
         super(grid, 12);
     }
 
-    protected Class<Item> getDataClass() {
-        return Item.class;
-    }
-
 }
