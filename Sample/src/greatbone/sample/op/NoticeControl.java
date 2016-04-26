@@ -20,8 +20,8 @@ public class NoticeControl extends WebControl implements Runnable {
     }
 
     @Override
-    public void Get(WebContext exch) {
-        Party party = (Party) exch.space();
+    public void Get(WebContext wc) {
+        Party party = (Party) wc.space();
 
     }
 

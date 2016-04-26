@@ -46,7 +46,7 @@ public class OpHost extends WebHost {
             // shop functions
             addSub("order", OrdersControl.class, null);
             addSub("user", PartyControl.class, null);
-            addSub("item", ItemControl.class, null);
+            addSub("stocks", StocksControl.class, null);
             addSub("notice", NoticeControl.class, null);
         }
 

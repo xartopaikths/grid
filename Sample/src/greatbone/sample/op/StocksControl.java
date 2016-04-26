@@ -8,9 +8,9 @@ import greatbone.framework.web.WebHost;
 /**
  * The menu management handler.
  */
-public class ItemControl extends WebControl {
+public class StocksControl extends WebControl {
 
-    public ItemControl(WebHost host, WebControl parent) {
+    public StocksControl(WebHost host, WebControl parent) {
         super(host, parent);
     }
 
