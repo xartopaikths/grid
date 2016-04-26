@@ -1,7 +1,7 @@
 package greatbone.sample.op;
 
 import greatbone.framework.web.*;
-import greatbone.sample.Org;
+import greatbone.sample.Party;
 
 import java.io.IOException;
 
@@ -44,17 +44,17 @@ public class OpHost extends WebHost {
 //            addSub("shop", OrgControl.class, null);
 
             // shop functions
-            addSub("order", OrderControl.class, null);
-            addSub("user", UserControl.class, null);
+            addSub("order", OrdersControl.class, null);
+            addSub("user", PartyControl.class, null);
             addSub("item", ItemControl.class, null);
             addSub("notice", NoticeControl.class, null);
         }
 
         @Override
         public WebControl locate(String key, WebContext wc) {
-            Org org = null;
-            if (org != null) {
-                wc.setSpace(org);
+            Party party = null;
+            if (party != null) {
+                wc.setSpace(party);
                 return this;
             }
             return null;

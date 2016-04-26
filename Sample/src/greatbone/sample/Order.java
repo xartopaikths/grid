@@ -10,7 +10,7 @@ public class Order extends GridData<Order> {
     //
     // COLUMNS
 
-    static final KEY ID = new KEY(12);
+    static final KEY ID = new KEY(12); // JXNC
 
     static final TIMESTAMP DATE = new TIMESTAMP();
 
@@ -18,7 +18,10 @@ public class Order extends GridData<Order> {
 
     static final INT OPS = new INT();
 
-    static final DETAIL[] DETAILS = {new DETAIL(), new DETAIL(), new DETAIL(), new DETAIL(), new DETAIL(), new DETAIL(), new DETAIL(), new DETAIL()};
+    static final DETAIL[] DETAILS = {
+            new DETAIL(), new DETAIL(), new DETAIL(), new DETAIL(), new DETAIL(), new DETAIL(), new DETAIL(), new DETAIL(),
+            new DETAIL(), new DETAIL(), new DETAIL(), new DETAIL(), new DETAIL(), new DETAIL(), new DETAIL(), new DETAIL(),
+    };
 
     static final DECIMAL TOTAL = new DECIMAL(2);
 
@@ -37,14 +40,6 @@ public class Order extends GridData<Order> {
 
     public void setName(String v) {
         NAME.putValue(this, v);
-    }
-
-    public String getItemId(int index) {
-        return DETAILS[index].ITEMID.getValue(this);
-    }
-
-    public void setItemId(int index, String v) {
-        DETAILS[index].ITEMID.putValue(this, v);
     }
 
     public short getQty(int index) {
@@ -80,13 +75,11 @@ public class Order extends GridData<Order> {
  */
 class DETAIL extends STRUCT {
 
-    final KEY ITEMID = new KEY(12);
-
-    final STRING ITEMNAME = new STRING(12);
-
-    final SHORT QTY = new SHORT();
+    final STRING NAME = new STRING(12);
 
     final DECIMAL PRICE = new DECIMAL(2);
+
+    final SHORT QTY = new SHORT();
 
 }
 

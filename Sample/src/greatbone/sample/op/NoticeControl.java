@@ -1,7 +1,7 @@
 package greatbone.sample.op;
 
 import greatbone.sample.Call;
-import greatbone.sample.Org;
+import greatbone.sample.Party;
 import greatbone.framework.web.WebControl;
 import greatbone.framework.web.WebContext;
 import greatbone.framework.web.WebHost;
@@ -21,7 +21,7 @@ public class NoticeControl extends WebControl implements Runnable {
 
     @Override
     public void Get(WebContext exch) {
-        Org org = (Org) exch.space();
+        Party party = (Party) exch.space();
 
     }
 
@@ -29,7 +29,7 @@ public class NoticeControl extends WebControl implements Runnable {
 
 //        String from = exch.getHeader("Dk-From");
 
-        Org org = (Org) exch.space();
+        Party party = (Party) exch.space();
 
         // parse msg
 

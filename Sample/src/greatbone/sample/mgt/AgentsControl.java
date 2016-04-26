@@ -1,22 +1,22 @@
 package greatbone.sample.mgt;
 
 import greatbone.framework.grid.GridUtility;
-import greatbone.sample.ORGS;
-import greatbone.sample.Org;
+import greatbone.sample.PARTIES;
+import greatbone.sample.Party;
 import greatbone.framework.web.WebContext;
 import greatbone.framework.web.WebControl;
 import greatbone.framework.web.WebHost;
 
 /**
  */
-public class AgentControl extends WebControl {
+public class AgentsControl extends WebControl {
 
-    final ORGS orgs;
+    final PARTIES parties;
 
-    public AgentControl(WebHost host, WebControl parent) {
+    public AgentsControl(WebHost host, WebControl parent) {
         super(host, parent);
 
-        this.orgs = GridUtility.getDataSet(ORGS.class);
+        this.parties = GridUtility.getDataSet(PARTIES.class);
     }
 
     public void Get(WebContext wc) {
@@ -27,7 +27,7 @@ public class AgentControl extends WebControl {
     }
 
     public void Get(String rsc, WebContext wc) throws Exception {
-        Org ret = orgs.getData(rsc);
+        Party ret = parties.getData(rsc);
         if (ret == null) {
             wc.sendNotFound();
         } else {
@@ -37,11 +37,11 @@ public class AgentControl extends WebControl {
     }
 
     public void Post(WebContext wc) {
-        Org agent = orgs.newData();
+        Party agent = parties.newData();
 
         wc.content(agent);
 
-        orgs.put(null, agent);
+        parties.put(null, agent);
     }
 
 }

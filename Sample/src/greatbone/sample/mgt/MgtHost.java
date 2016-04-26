@@ -11,12 +11,11 @@ import java.io.IOException;
  */
 public class MgtHost extends WebHost {
 
-    public MgtHost(WebUtility parent, String key) {
-        super(parent, key);
+    public MgtHost(WebUtility web, String key) {
+        super(web, key);
 
-        addSub("staffer", StafferControl.class, null);
-        addSub("agent", AgentControl.class, null);
-        addSub("user", UserControl.class, null);
+        addSub("users", UsersControl.class, null);
+        addSub("agents", AgentsControl.class, null);
         addSub("event", EventControl.class, null);
     }
 

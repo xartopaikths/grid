@@ -1,6 +1,6 @@
 package greatbone.sample.op;
 
-import greatbone.sample.Org;
+import greatbone.sample.Party;
 import greatbone.framework.web.WebControl;
 import greatbone.framework.web.WebContext;
 import greatbone.framework.web.WebHost;
@@ -8,17 +8,17 @@ import greatbone.framework.web.WebHost;
 /**
  * The order management handler.
  */
-public class UserControl extends WebControl {
+public class PartyControl extends WebControl {
 
 
-    public UserControl(WebHost service, WebControl parent) {
+    public PartyControl(WebHost service, WebControl parent) {
         super(service, parent);
 
     }
 
     @Override
     public void Get(WebContext exch) {
-        Org org = (Org)exch.space()  ;
+        Party party = (Party)exch.space()  ;
 
 
     }

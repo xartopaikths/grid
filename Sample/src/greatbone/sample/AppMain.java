@@ -1,10 +1,9 @@
 package greatbone.sample;
 
 import greatbone.framework.grid.GridUtility;
+import greatbone.framework.web.WebUtility;
 import greatbone.sample.mgt.MgtHost;
 import greatbone.sample.op.OpHost;
-import greatbone.sample.www.WwwHost;
-import greatbone.framework.web.WebUtility;
 
 import java.io.IOException;
 
@@ -16,11 +15,9 @@ public class AppMain {
 
         try {
             GridUtility.initialize(
-                    ITEMS.class,
                     EVENTS.class,
                     ORDERS.class,
-                    ORGS.class,
-                    STAFFERS.class,
+                    PARTIES.class,
                     USERS.class,
                     CLIPS.class
             );
@@ -33,8 +30,6 @@ public class AppMain {
             WebUtility.createHost("mgt", MgtHost.class, null)
                     .start();
             WebUtility.createHost("op", OpHost.class, null)
-                    .start();
-            WebUtility.createHost("www", WwwHost.class, null)
                     .start();
         } catch (IOException e) {
             e.printStackTrace();

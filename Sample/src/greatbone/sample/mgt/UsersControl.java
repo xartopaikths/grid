@@ -1,22 +1,22 @@
 package greatbone.sample.mgt;
 
 import greatbone.framework.db.DbContext;
-import greatbone.sample.User;
 import greatbone.framework.web.WebControl;
 import greatbone.framework.web.WebHost;
+import greatbone.sample.User;
 
 import java.sql.SQLException;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * To manage all shops in the platform.
+ * The management of platform users and agents
  */
-public class UserControl extends WebControl implements Runnable {
+public class UsersControl extends WebControl implements Runnable {
 
     final ConcurrentHashMap<Integer, User> cache = new ConcurrentHashMap<>();
 
-    public UserControl(WebHost service, WebControl parent) {
-        super(service, parent);
+    public UsersControl(WebHost host, WebControl parent) {
+        super(host, parent);
     }
 
     public User findGuest(int id) {

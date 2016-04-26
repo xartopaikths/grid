@@ -10,8 +10,8 @@ import greatbone.framework.web.WebHost;
  */
 public class ItemControl extends WebControl {
 
-    public ItemControl(WebHost root, WebControl parent) {
-        super(root, parent);
+    public ItemControl(WebHost host, WebControl parent) {
+        super(host, parent);
     }
 
     @Override

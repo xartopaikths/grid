@@ -39,7 +39,7 @@ public abstract class WebHost extends WebControl implements HttpHandler, WebHost
 
     static final Base64.Encoder ENC = Base64.getMimeEncoder();
 
-    final WebUtility parent;
+    final WebUtility web;
 
     final Element config;
 
@@ -53,9 +53,9 @@ public abstract class WebHost extends WebControl implements HttpHandler, WebHost
 
     boolean ssl;
 
-    protected WebHost(WebUtility parent, String key) {
+    protected WebHost(WebUtility web, String key) {
         super(null, null);
-        this.parent = parent;
+        this.web = web;
         this.key = key;
 
         // register as mbean
@@ -67,7 +67,7 @@ public abstract class WebHost extends WebControl implements HttpHandler, WebHost
         }
 
         // get address settings from configuration, can be null if no configuration for the host is found
-        this.config = Greatbone.getChildElementOf(parent.config, "host", key);
+        this.config = Greatbone.getChildElementOf(web.config, "host", key);
         this.hostname = (config != null) ? config.getAttribute("hostname") : null;
         this.port = (config != null) ? Integer.parseInt(config.getAttribute("port")) : 80;
         this.address = (hostname == null) ? null : new InetSocketAddress(hostname, port);
@@ -142,7 +142,7 @@ public abstract class WebHost extends WebControl implements HttpHandler, WebHost
         String base = path.substring(1);
         int dot = base.lastIndexOf('.');
         if (dot != -1) {
-            WebStatic sta = parent.getStatic(base);
+            WebStatic sta = web.getStatic(base);
             handleStatic(sta, exchange);
             exchange.endExchange();
             return;

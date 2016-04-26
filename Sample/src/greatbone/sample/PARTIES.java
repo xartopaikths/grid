@@ -6,9 +6,9 @@ import greatbone.framework.grid.GridUtility;
 /**
  * A replicated dataset that repsents any organizational unit, such as an agent, a shop, etc.
  */
-public class ORGS extends GridDataSet<Org> {
+public class PARTIES extends GridDataSet<Party> {
 
-    public ORGS(GridUtility grid) {
+    public PARTIES(GridUtility grid) {
         super(grid, 12);
     }
 
