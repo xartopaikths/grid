@@ -5,13 +5,13 @@ import greatbone.framework.web.Principal;
 import greatbone.framework.web.Space;
 
 /**
- * A shop or other type of organizational unit.
+ * A shop that takes order and issues delivery tasks.
  */
-public class Party extends GridData<Party> implements Principal, Space {
+public class Shop extends GridData<Shop> implements Principal, Space {
 
     // COLUMNS
 
-    static final KEY ID = new KEY(10);
+    static final KEY ID = new KEY(10); // JXNC00003F
 
     static final STRING NAME = new STRING(12);
 
@@ -51,11 +51,11 @@ public class Party extends GridData<Party> implements Principal, Space {
     }
 
     @Override
-    protected GridSchema<Party> schema() {
+    protected GridSchema<Shop> schema() {
         return SCHEMA;
     }
 
-    static final GridSchema<Party> SCHEMA = new GridSchema<>(Party.class);
+    static final GridSchema<Shop> SCHEMA = new GridSchema<>(Shop.class);
 
 }
 

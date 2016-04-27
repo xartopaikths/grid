@@ -1,7 +1,7 @@
 package greatbone.sample.op;
 
 import greatbone.framework.web.*;
-import greatbone.sample.Party;
+import greatbone.sample.Shop;
 
 import java.io.IOException;
 
@@ -52,9 +52,9 @@ public class OpHost extends WebHost {
 
         @Override
         public WebControl locate(String key, WebContext wc) {
-            Party party = null;
-            if (party != null) {
-                wc.setSpace(party);
+            Shop shop = null;
+            if (shop != null) {
+                wc.setSpace(shop);
                 return this;
             }
             return null;

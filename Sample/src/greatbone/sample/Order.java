@@ -10,7 +10,7 @@ public class Order extends GridData<Order> {
     //
     // COLUMNS
 
-    static final KEY ID = new KEY(12); // JXNC
+    static final KEY ID = new KEY(18); // JXNC2016040500007A
 
     static final TIMESTAMP DATE = new TIMESTAMP();
 

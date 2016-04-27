@@ -4,7 +4,7 @@ import greatbone.framework.grid.GridDataSet;
 import greatbone.framework.grid.GridUtility;
 
 /**
- * matches key to a particular data partition (shard)
+ *
  */
 public class ORDERS extends GridDataSet<Order> {
 
