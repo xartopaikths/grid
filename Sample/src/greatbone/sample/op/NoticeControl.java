@@ -1,6 +1,5 @@
 package greatbone.sample.op;
 
-import greatbone.sample.Call;
 import greatbone.sample.Shop;
 import greatbone.framework.web.WebControl;
 import greatbone.framework.web.WebContext;
@@ -12,8 +11,6 @@ import java.util.ArrayList;
  * The menu management handler.
  */
 public class NoticeControl extends WebControl implements Runnable {
-
-    ArrayList<Call> calls = new ArrayList<>(16);
 
     public NoticeControl(WebHost host, WebControl parent) {
         super(host, parent);

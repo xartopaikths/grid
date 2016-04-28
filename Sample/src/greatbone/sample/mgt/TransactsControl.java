@@ -1,8 +1,8 @@
 package greatbone.sample.mgt;
 
 import greatbone.framework.grid.GridUtility;
-import greatbone.sample.EVENTS;
-import greatbone.sample.Event;
+import greatbone.sample.TRANSACTS;
+import greatbone.sample.Transact;
 import greatbone.framework.web.WebContext;
 import greatbone.framework.web.WebControl;
 import greatbone.framework.web.WebHost;
@@ -10,14 +10,14 @@ import greatbone.framework.web.WebHost;
 /**
  * The menu management handler.
  */
-public class EventControl extends WebControl {
+public class TransactsControl extends WebControl {
 
-    final EVENTS events;
+    final TRANSACTS transacts;
 
-    public EventControl(WebHost host, WebControl parent) {
+    public TransactsControl(WebHost host, WebControl parent) {
         super(host, parent);
 
-         events= GridUtility.getDataSet(EVENTS.class);
+         transacts = GridUtility.getDataSet(TRANSACTS.class);
 
     }
 
@@ -38,7 +38,7 @@ public class EventControl extends WebControl {
 
         // create and insert
 
-        Event _new = new Event();
+        Transact _new = new Transact();
         if (true) {
 //            _new.load(exch);
         }  else {
@@ -48,7 +48,7 @@ public class EventControl extends WebControl {
 
         }
 
-        events.put(null,_new) ; // set autogen id during the put
+        transacts.put(null,_new) ; // set autogen id during the put
 
     }
 

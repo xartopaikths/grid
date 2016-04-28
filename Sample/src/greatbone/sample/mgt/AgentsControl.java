@@ -1,7 +1,7 @@
 package greatbone.sample.mgt;
 
 import greatbone.framework.grid.GridUtility;
-import greatbone.sample.PARTIES;
+import greatbone.sample.SHOPS;
 import greatbone.sample.Shop;
 import greatbone.framework.web.WebContext;
 import greatbone.framework.web.WebControl;
@@ -11,12 +11,12 @@ import greatbone.framework.web.WebHost;
  */
 public class AgentsControl extends WebControl {
 
-    final PARTIES parties;
+    final SHOPS SHOPS;
 
     public AgentsControl(WebHost host, WebControl parent) {
         super(host, parent);
 
-        this.parties = GridUtility.getDataSet(PARTIES.class);
+        this.SHOPS = GridUtility.getDataSet(SHOPS.class);
     }
 
     public void Get(WebContext wc) {
@@ -27,7 +27,7 @@ public class AgentsControl extends WebControl {
     }
 
     public void Get(String rsc, WebContext wc) throws Exception {
-        Shop ret = parties.getData(rsc);
+        Shop ret = SHOPS.getData(rsc);
         if (ret == null) {
             wc.sendNotFound();
         } else {
@@ -37,11 +37,11 @@ public class AgentsControl extends WebControl {
     }
 
     public void Post(WebContext wc) {
-        Shop agent = parties.newData();
+        Shop agent = SHOPS.newData();
 
         wc.content(agent);
 
-        parties.put(null, agent);
+        SHOPS.put(null, agent);
     }
 
 }

@@ -4,11 +4,11 @@ import greatbone.framework.grid.GridDataSet;
 import greatbone.framework.grid.GridUtility;
 
 /**
- *
+ * A shop, etc.
  */
-public class ORDERS extends GridDataSet<Order> {
+public class SHOPS extends GridDataSet<Shop> {
 
-    public ORDERS(GridUtility grid) {
+    public SHOPS(GridUtility grid) {
         super(grid, 12);
     }
 

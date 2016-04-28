@@ -4,7 +4,7 @@ import greatbone.framework.grid.*;
 
 /**
  */
-public class Event extends GridData<Event> {
+public class Transact extends GridData<Transact> {
 
     //
     // COLUMNS
@@ -47,10 +47,10 @@ public class Event extends GridData<Event> {
     // SCHEMA
 
     @Override
-    protected GridSchema<Event> schema() {
+    protected GridSchema<Transact> schema() {
         return SCHEMA;
     }
 
-    static final GridSchema<Event> SCHEMA = new GridSchema<>(Event.class);
+    static final GridSchema<Transact> SCHEMA = new GridSchema<>(Transact.class);
 
 }

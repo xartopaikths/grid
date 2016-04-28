@@ -7,17 +7,17 @@ import greatbone.framework.grid.GridUtility;
 /**
  */
 @CachePolicy
-public class EVENTS extends GridDataSet<Event> {
+public class TRANSACTS extends GridDataSet<Transact> {
 
-    public EVENTS(GridUtility grid) {
+    public TRANSACTS(GridUtility grid) {
         super(grid, 12);
     }
 
     protected void load(String arg) {
     }
 
-    protected Class<Event> getDataClass() {
-        return Event.class;
+    protected Class<Transact> getDataClass() {
+        return Transact.class;
     }
 
 }

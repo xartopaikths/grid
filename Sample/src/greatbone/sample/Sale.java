@@ -4,13 +4,18 @@ import greatbone.framework.Decimal;
 import greatbone.framework.grid.*;
 
 /**
+ * A sales order or transaction.
  */
-public class Order extends GridData<Order> {
+public class Sale extends GridData<Sale> {
 
     //
     // COLUMNS
 
     static final KEY ID = new KEY(18); // JXNC2016040500007A
+
+    static final KEY SHOPID = new KEY(18); // JXNC00003E
+
+    static final KEY GUESTID = new KEY(18); // JXNC13308060502
 
     static final TIMESTAMP DATE = new TIMESTAMP();
 
@@ -63,11 +68,11 @@ public class Order extends GridData<Order> {
     // SCHEMA
 
     @Override
-    protected GridSchema<Order> schema() {
+    protected GridSchema<Sale> schema() {
         return SCHEMA;
     }
 
-    static final GridSchema<Order> SCHEMA = new GridSchema<>(Order.class);
+    static final GridSchema<Sale> SCHEMA = new GridSchema<>(Sale.class);
 
 }
 

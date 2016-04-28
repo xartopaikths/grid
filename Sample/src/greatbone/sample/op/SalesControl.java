@@ -1,25 +1,23 @@
 package greatbone.sample.op;
 
 import greatbone.framework.grid.GridUtility;
-import greatbone.sample.Call;
-import greatbone.sample.ORDERS;
-import greatbone.sample.Shop;
 import greatbone.framework.web.WebContext;
 import greatbone.framework.web.WebControl;
 import greatbone.framework.web.WebHost;
+import greatbone.sample.SALES;
+import greatbone.sample.Shop;
 
 /**
  * The order management handler.
  */
-public class OrdersControl extends WebControl {
+public class SalesControl extends WebControl {
 
+    final SALES sales;
 
-    final ORDERS dset;
-
-    public OrdersControl(WebHost host, WebControl parent) {
+    public SalesControl(WebHost host, WebControl parent) {
         super(host, parent);
 
-        dset = GridUtility.getDataSet(ORDERS.class);
+        sales = GridUtility.getDataSet(SALES.class);
     }
 
     @Override
@@ -28,8 +26,6 @@ public class OrdersControl extends WebControl {
 
         int id = 213;
         String name = "asdfadf";
-
-        Call obj = new Call();
 
     }
 

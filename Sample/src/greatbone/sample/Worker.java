@@ -1,4 +1,4 @@
-package greatbone.sample.mgt;
+package greatbone.sample;
 
 import greatbone.framework.grid.GridData;
 import greatbone.framework.grid.GridSchema;
@@ -9,7 +9,7 @@ import greatbone.framework.web.Principal;
 /**
  * A directory principal, either a management staff, a user or a shop.
  */
-public class Staffer extends GridData<Staffer> implements Principal {
+public class Worker extends GridData<Worker> implements Principal {
 
     //
     // COLUMNS
@@ -55,10 +55,10 @@ public class Staffer extends GridData<Staffer> implements Principal {
     // SCHEMA
 
     @Override
-    protected GridSchema<Staffer> schema() {
+    protected GridSchema<Worker> schema() {
         return SCHEMA;
     }
 
-    static final GridSchema<Staffer> SCHEMA = new GridSchema<>(Staffer.class);
+    static final GridSchema<Worker> SCHEMA = new GridSchema<>(Worker.class);
 
 }

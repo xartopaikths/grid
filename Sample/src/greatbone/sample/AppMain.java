@@ -15,9 +15,9 @@ public class AppMain {
 
         try {
             GridUtility.initialize(
-                    EVENTS.class,
-                    ORDERS.class,
-                    PARTIES.class,
+                    TRANSACTS.class,
+                    SALES.class,
+                    SHOPS.class,
                     USERS.class,
                     CLIPS.class
             );

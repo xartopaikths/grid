@@ -5,9 +5,9 @@ import greatbone.framework.grid.GridUtility;
 
 /**
  */
-public class CALLS extends GridDataSet<Call> {
+public class DELIVERIES extends GridDataSet<Delivery> {
 
-    public CALLS(GridUtility grid) {
+    public DELIVERIES(GridUtility grid) {
         super(grid, 12);
     }
 

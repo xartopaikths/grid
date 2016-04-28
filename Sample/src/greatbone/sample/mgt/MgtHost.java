@@ -16,7 +16,7 @@ public class MgtHost extends WebHost {
 
         addSub("users", UsersControl.class, null);
         addSub("agents", AgentsControl.class, null);
-        addSub("event", EventControl.class, null);
+        addSub("event", TransactsControl.class, null);
     }
 
     @Override
