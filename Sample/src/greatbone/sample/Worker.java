@@ -14,7 +14,7 @@ public class Worker extends GridData<Worker> implements Principal {
     //
     // COLUMNS
 
-    static final KEY LOGIN = new KEY(12);
+    static final KEY ID = new KEY(12); // login id
 
     static final STRING CREDENTIAL = new STRING(12);
 
@@ -28,7 +28,7 @@ public class Worker extends GridData<Worker> implements Principal {
     }
 
     public int compareLogin(String v) {
-        return LOGIN.tryValue(this, v);
+        return ID.tryValue(this, v);
     }
 
     public int compareCredential(String v) {
