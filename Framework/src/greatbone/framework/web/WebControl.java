@@ -1,10 +1,12 @@
 package greatbone.framework.web;
 
+import greatbone.framework.util.Roll;
 import io.undertow.util.HttpString;
 import io.undertow.util.Methods;
-import greatbone.framework.util.Roll;
 
 import java.lang.reflect.Constructor;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 
 /**
  * A set of actions working on request/response eachanges to carry out management tasks on a collection of resources.
@@ -17,11 +19,13 @@ public abstract class WebControl {
     // the parent of this work instance, if any
     protected final WebControl parent;
 
+    final Roll<String, Action> actions = new Roll<>(32);
+
     // name as appeared in the uri
     String key;
 
     // access checker
-    Checker checker;
+    Check guarder;
 
     // the subordinate structures
     Sub subordinate;
@@ -33,6 +37,23 @@ public abstract class WebControl {
         this.host = (host != null) ? host : (WebHost) this;
         this.parent = parent;
 
+        // initialize web methods
+        for (Method m : getClass().getMethods()) {
+            int mod = m.getModifiers();
+            // public non-static void
+            if (Modifier.isPublic(mod) && !Modifier.isStatic(mod)) {
+                Class<?>[] pts = m.getParameterTypes();
+                // with the two parameters
+                if (pts.length == 1 && WebContext.class == pts[0]) {
+                    String key = m.getName().toLowerCase();
+                    if ("_".equals(key)) {
+                        key = "";
+                    }
+                    actions.put(key, new Action(this, m));
+                }
+            }
+        }
+
         // initialize the cycler thread if any
         if (this instanceof Runnable) {
             cycler = new Thread((Runnable) this);
@@ -40,12 +61,12 @@ public abstract class WebControl {
         }
     }
 
-    public <T extends WebControl> void addSub(String key, Class<T> controller, Checker checker) {
+    public <T extends WebControl> void addSub(String key, Class<T> controller, Check guarder) {
         try {
             Constructor<T> ctor = controller.getConstructor(WebHost.class, WebControl.class);
             T sub = ctor.newInstance(host, this);
             sub.key = key;
-            sub.checker = checker;
+            sub.guarder = guarder;
             if (this.subordinate == null) {
                 this.subordinate = new Children(8);
             }
@@ -74,10 +95,7 @@ public abstract class WebControl {
         if (slash == -1) { // without a slash then handle by this controller instance
             exch.control = this;
             HttpString method = exch.method();
-            if (method == Methods.GET) Get(exch);
-            else if (method == Methods.POST) Post(exch);
-            else if (method == Methods.PUT) Put(null, exch);
-            else if (method == Methods.DELETE) Delete(null, exch);
+            if (method == Methods.GET) _(exch);
         } else if (subordinate != null) { // resolve the sub structure
             WebControl controller = subordinate.locate(base.substring(0, slash), exch);
             if (controller != null) {
@@ -90,30 +108,7 @@ public abstract class WebControl {
         }
     }
 
-    public void Get(WebContext exch) throws Exception {
-    }
-
-    public void Get(String rsc, WebContext exch) throws Exception {
-    }
-
-    /**
-     * The POST verb is most-often utilized to **create** new resources. In particular, it's used to create subordinate resources. That is, subordinate to some other (e.g. parent) resource. In other words, when creating a new resource, POST to the parent and the service takes care of associating the new resource with the parent, assigning an ID (new resource URI), etc.
-     * <p/>
-     * On successful creation, return HTTP status 201, returning a Location header with a link to the newly-created resource with the 201 HTTP status.
-     *
-     * @param exch a request/response exchange
-     * @throws Exception
-     */
-    public void Post(WebContext exch) throws Exception {
-    }
-
-    public void Put(String rsc, WebContext exch) throws Exception {
-    }
-
-    public void Delete(String rsc, WebContext exch) throws Exception {
-    }
-
-    public void Patch(String rsc, WebContext exch) throws Exception {
+    public void _(WebContext exch) throws Exception {
     }
 
     /**

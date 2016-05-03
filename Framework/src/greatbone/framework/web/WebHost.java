@@ -74,11 +74,11 @@ public abstract class WebHost extends WebControl implements HttpHandler, WebHost
 
     }
 
-    public <T extends WebControl & Sub> void setHub(Class<T> clazz, Checker checker) {
+    public <T extends WebControl & Sub> void setHub(Class<T> clazz, Check guarder) {
         try {
             Constructor<T> ctor = clazz.getConstructor(WebHost.class, WebControl.class);
             T sub = ctor.newInstance(this, this);
-            sub.checker = checker;
+            sub.guarder = guarder;
             this.subordinate = sub;
         } catch (Exception e) {
             e.printStackTrace();
@@ -190,12 +190,12 @@ public abstract class WebHost extends WebControl implements HttpHandler, WebHost
         while (ret[p++] != (byte) ':') ;
         String username = new String(ret, 0, 0, p); // we use this direct string construction for speed
         String password = new String(ret, 0, p + 1, len - p);
-        Principal prin = acquire(username, password);
+        WebPrincipal prin = acquire(username, password);
 
         wc.principal = prin;
     }
 
-    protected Principal acquire(String username, String password) {
+    protected WebPrincipal acquire(String username, String password) {
         return null;
     }
 

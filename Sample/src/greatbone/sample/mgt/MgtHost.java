@@ -20,18 +20,8 @@ public class MgtHost extends WebHost {
     }
 
     @Override
-    public void Get(WebContext wc) throws IOException {
+    public void _(WebContext wc) throws IOException {
         wc.sendOK((x) -> x.$("OK, it's alomost done."));
-    }
-
-    @Override
-    public void Put(String rsc, WebContext exch) {
-
-    }
-
-    @Override
-    public void Delete(String rsc, WebContext exch) {
-
     }
 
 }

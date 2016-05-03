@@ -21,7 +21,7 @@ public class SalesControl extends WebControl {
     }
 
     @Override
-    public void Get(WebContext exch) {
+    public void _(WebContext exch) {
         Shop shop = (Shop) exch.space();
 
         int id = 213;

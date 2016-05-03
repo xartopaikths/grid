@@ -22,16 +22,9 @@ public class TransactsControl extends WebControl {
     }
 
     @Override
-    public void Get(WebContext exch) {
+    public void _(WebContext exch) {
 
 
-    }
-
-    @Override
-    public void Get(String rsc, WebContext exch) throws Exception {
-
-        int key = Integer.parseInt(rsc);
-//        events.partition(key);
     }
 
     public void Post(WebContext exch) {

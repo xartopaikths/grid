@@ -17,7 +17,7 @@ public class NoticeControl extends WebControl implements Runnable {
     }
 
     @Override
-    public void Get(WebContext wc) {
+    public void _(WebContext wc) {
         Shop shop = (Shop) wc.space();
 
     }

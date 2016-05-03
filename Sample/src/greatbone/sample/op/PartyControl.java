@@ -17,7 +17,7 @@ public class PartyControl extends WebControl {
     }
 
     @Override
-    public void Get(WebContext exch) {
+    public void _(WebContext exch) {
         Shop shop = (Shop) exch.space();
     }
 

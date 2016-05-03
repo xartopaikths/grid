@@ -1,13 +1,13 @@
 package greatbone.sample;
 
 import greatbone.framework.grid.*;
-import greatbone.framework.web.Principal;
-import greatbone.framework.web.Space;
+import greatbone.framework.web.WebPrincipal;
+import greatbone.framework.web.WebZone;
 
 /**
  * A shop that takes order and issues delivery tasks.
  */
-public class Shop extends GridData<Shop> implements Principal, Space {
+public class Shop extends GridData<Shop> implements WebPrincipal, WebZone {
 
     // COLUMNS
 
@@ -31,7 +31,7 @@ public class Shop extends GridData<Shop> implements Principal, Space {
     };
 
     @Override
-    public String spaceid() {
+    public String zoner() {
         return ID.getValue(this);
     }
 

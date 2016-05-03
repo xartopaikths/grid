@@ -19,7 +19,7 @@ public class AgentsControl extends WebControl {
         this.SHOPS = GridUtility.getDataSet(SHOPS.class);
     }
 
-    public void Get(WebContext wc) {
+    public void _(WebContext wc) {
         String st = wc.qstring("status");
         if (st.equals("")) {
 

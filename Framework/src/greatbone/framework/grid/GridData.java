@@ -14,6 +14,8 @@ import java.sql.ResultSet;
  * A data object is also used internally as a cursor that points to a backing native page store.
  * A data entry has a string key
  *
+ * may map to an underlying database table definition
+ *
  * @param <D> type of this object
  */
 public abstract class GridData<D extends GridData<D>> implements Printer {

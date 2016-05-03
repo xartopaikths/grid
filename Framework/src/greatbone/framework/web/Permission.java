@@ -2,10 +2,10 @@ package greatbone.framework.web;
 
 /**
  */
-public interface Grant {
+public interface Permission {
 
     String scope();
 
-    Object sdf();
+    Object spec();
 
 }

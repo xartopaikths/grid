@@ -2,7 +2,7 @@ package greatbone.framework.web;
 
 /**
  */
-public interface Principal {
+public interface WebPrincipal {
 
     String getName();
 

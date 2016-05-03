@@ -55,11 +55,11 @@ public class WebUtility implements WebMBean, Configurable {
         return statics.get(key);
     }
 
-    <T extends WebHost> T addHost(String key, Class<T> clazz, Checker checker) {
+    <T extends WebHost> T addHost(String key, Class<T> clazz, Check guarder) {
         try {
             Constructor<T> ctor = clazz.getConstructor(WebUtility.class, String.class);
             T host = ctor.newInstance(this, key);
-            host.checker = checker;
+            host.guarder = guarder;
             hosts.add(host);
             return host;
         } catch (Exception e) {
@@ -94,11 +94,11 @@ public class WebUtility implements WebMBean, Configurable {
         return config;
     }
 
-    public static <T extends WebHost> T createHost(String key, Class<T> clazz, Checker checker) {
+    public static <T extends WebHost> T createHost(String key, Class<T> clazz, Check guarder) {
         if (INST == null) {
             INST = new WebUtility();
         }
-        return INST.addHost(key, clazz, checker);
+        return INST.addHost(key, clazz, guarder);
     }
 
     public static final String

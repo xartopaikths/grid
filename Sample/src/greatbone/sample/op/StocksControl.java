@@ -1,6 +1,6 @@
 package greatbone.sample.op;
 
-import greatbone.framework.web.Space;
+import greatbone.framework.web.WebZone;
 import greatbone.framework.web.WebControl;
 import greatbone.framework.web.WebContext;
 import greatbone.framework.web.WebHost;
@@ -15,13 +15,13 @@ public class StocksControl extends WebControl {
     }
 
     @Override
-    public void Get(WebContext exch) {
-        Space shopid = exch.space();
+    public void _(WebContext exch) {
+        WebZone shopid = exch.space();
 
     }
 
     public void Post(WebContext exch) {
-        Space shopid = exch.space();
+        WebZone shopid = exch.space();
 
     }
 

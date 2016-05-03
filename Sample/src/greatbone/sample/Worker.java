@@ -4,12 +4,12 @@ import greatbone.framework.grid.GridData;
 import greatbone.framework.grid.GridSchema;
 import greatbone.framework.grid.KEY;
 import greatbone.framework.grid.STRING;
-import greatbone.framework.web.Principal;
+import greatbone.framework.web.WebPrincipal;
 
 /**
  * A directory principal, either a management staff, a user or a shop.
  */
-public class Worker extends GridData<Worker> implements Principal {
+public class Worker extends GridData<Worker> implements WebPrincipal {
 
     //
     // COLUMNS
