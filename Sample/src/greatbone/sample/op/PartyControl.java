@@ -3,7 +3,7 @@ package greatbone.sample.op;
 import greatbone.framework.web.WebContext;
 import greatbone.framework.web.WebControl;
 import greatbone.framework.web.WebHost;
-import greatbone.sample.Shop;
+import greatbone.sample.Party;
 
 /**
  * The order management handler.
@@ -18,7 +18,7 @@ public class PartyControl extends WebControl {
 
     @Override
     public void _(WebContext exch) {
-        Shop shop = (Shop) exch.space();
+        Party party = (Party) exch.space();
     }
 
 }

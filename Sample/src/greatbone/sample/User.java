@@ -7,14 +7,14 @@ import greatbone.framework.grid.STRING;
 import greatbone.framework.web.WebPrincipal;
 
 /**
- * A directory principal, either a management staff, a user or a shop.
+ * An administrative mamaber of the platform that can be either a management staff or an agent.
  */
 public class User extends GridData<User> implements WebPrincipal {
 
     //
     // COLUMNS
 
-    static final KEY LOGIN = new KEY(12);
+    static final KEY ID = new KEY(12);
 
     static final STRING CREDENTIAL = new STRING(12);
 
@@ -28,7 +28,7 @@ public class User extends GridData<User> implements WebPrincipal {
     }
 
     public int compareLogin(String v) {
-        return LOGIN.tryValue(this, v);
+        return ID.tryValue(this, v);
     }
 
     public int compareCredential(String v) {

@@ -1,7 +1,7 @@
 package greatbone.sample.op;
 
 import greatbone.framework.web.*;
-import greatbone.sample.Shop;
+import greatbone.sample.Party;
 
 import java.io.IOException;
 
@@ -13,7 +13,7 @@ public class OpHost extends WebHost {
     public OpHost(WebUtility web, String key) {
         super(web, key);
 
-        setHub(OrgControl.class, null);
+        setHub(ShopControl.class, null);
     }
 
     @Override
@@ -21,20 +21,19 @@ public class OpHost extends WebHost {
         wc.sendOK((x) -> x.$("OK, it's alomost done."));
     }
 
-
     /**
      * A hub that covers orgs.
      */
-    public static class OrgControl extends WebControl implements Sub {
+    public static class ShopControl extends WebControl implements Sub {
 
-        public OrgControl(WebHost host, WebControl parent) {
+        public ShopControl(WebHost host, WebControl parent) {
             super(host, parent);
 
             // agent functions
 //            addSub("shop", OrgControl.class, null);
 
             // shop functions
-            addSub("order", SalesControl.class, null);
+            addSub("sales", SalesControl.class, null);
             addSub("user", PartyControl.class, null);
             addSub("stocks", StocksControl.class, null);
             addSub("notice", NoticeControl.class, null);
@@ -42,9 +41,9 @@ public class OpHost extends WebHost {
 
         @Override
         public WebControl locate(String key, WebContext wc) {
-            Shop shop = null;
-            if (shop != null) {
-                wc.setSpace(shop);
+            Party party = null;
+            if (party != null) {
+                wc.setSpace(party);
                 return this;
             }
             return null;

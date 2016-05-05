@@ -1,11 +1,9 @@
 package greatbone.sample.op;
 
-import greatbone.sample.Shop;
+import greatbone.sample.Party;
 import greatbone.framework.web.WebControl;
 import greatbone.framework.web.WebContext;
 import greatbone.framework.web.WebHost;
-
-import java.util.ArrayList;
 
 /**
  * The menu management handler.
@@ -18,7 +16,7 @@ public class NoticeControl extends WebControl implements Runnable {
 
     @Override
     public void _(WebContext wc) {
-        Shop shop = (Shop) wc.space();
+        Party party = (Party) wc.space();
 
     }
 
@@ -26,7 +24,7 @@ public class NoticeControl extends WebControl implements Runnable {
 
 //        String from = exch.getHeader("Dk-From");
 
-        Shop shop = (Shop) exch.space();
+        Party party = (Party) exch.space();
 
         // parse msg
 

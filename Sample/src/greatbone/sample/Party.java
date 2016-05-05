@@ -5,9 +5,9 @@ import greatbone.framework.web.WebPrincipal;
 import greatbone.framework.web.WebZone;
 
 /**
- * A shop that takes order and issues delivery tasks.
+ * A shop that takes orders and issues delivery tasks.
  */
-public class Shop extends GridData<Shop> implements WebPrincipal, WebZone {
+public class Party extends GridData<Party> implements WebPrincipal, WebZone {
 
     // COLUMNS
 
@@ -51,11 +51,11 @@ public class Shop extends GridData<Shop> implements WebPrincipal, WebZone {
     }
 
     @Override
-    protected GridSchema<Shop> schema() {
+    protected GridSchema<Party> schema() {
         return SCHEMA;
     }
 
-    static final GridSchema<Shop> SCHEMA = new GridSchema<>(Shop.class);
+    static final GridSchema<Party> SCHEMA = new GridSchema<>(Party.class);
 
 }
 

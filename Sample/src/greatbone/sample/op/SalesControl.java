@@ -5,7 +5,7 @@ import greatbone.framework.web.WebContext;
 import greatbone.framework.web.WebControl;
 import greatbone.framework.web.WebHost;
 import greatbone.sample.SALES;
-import greatbone.sample.Shop;
+import greatbone.sample.Party;
 
 /**
  * The order management handler.
@@ -22,7 +22,7 @@ public class SalesControl extends WebControl {
 
     @Override
     public void _(WebContext exch) {
-        Shop shop = (Shop) exch.space();
+        Party party = (Party) exch.space();
 
         int id = 213;
         String name = "asdfadf";
