@@ -1,18 +1,49 @@
 <greatbone>
+
     <web>
-        <host key="www" hostname="10.0.0.201" port="8080"/>
-        <host key="mgt" hostname="10.0.0.201" port="8081"/>
-        <host key="op" hostname="10.0.0.201" port="8082"/>
+        <vhost name="www" ip="10.0.0.201" port="8080"/>
+        <vhost name="mgt" ip="10.0.0.201" port="8081"/>
+        <vhost name="op" ip="10.0.0.201" port="8082"/>
     </web>
+
     <grid interfaces="10.0.0.201-210" bind="10.0.0.201">
-        <dataset key="staffers" pagecap="64"/>
-        <dataset key="ingredients" pagecap="512"/>
-        <dataset key="users" source="dir"/>
-        <dataset key="orgs" local="jx, bj, sh" source="dir"/>
-        <dataset key="items" local="jx, bj, sh" filter="date > (current_date() - 3)"/>
-        <dataset key="orders" local="jx, bj, sh" filter="date > (current_date() - 3)"/>
-        <dataset key="journals" local="jx, bj, sh" pagecap="1024"/>
-        <fileset key="clips" local="jx, bj, sh"/>
+
+        <dataset name="users" source="dir"/>
+
+        <dataset name="shops" source="dir" load="date > (current_date() - 3)">
+            <page id="jxnc" capacity="4096"/>
+            <page id="jxgz" capacity="1024"/>
+            <page id="jxfz" capacity="1024"/>
+        </dataset>
+
+        <dataset name="clients" filter="date > (current_date() - 3)">
+            <page id="jxnc" capacity="4096"/>
+            <page id="jxgz" capacity="1024"/>
+            <page id="jxfz" capacity="1024"/>
+        </dataset>
+
+        <dataset name="items" filter="date > (current_date() - 3)">
+            <page id="jxnc" capacity="4096"/>
+            <page id="jxgz" capacity="1024"/>
+            <page id="jxfz" capacity="1024"/>
+        </dataset>
+
+        <dataset name="orders" filter="date > (current_date() - 3)">
+            <page id="jxnc" capacity="4096"/>
+            <page id="jxgz" capacity="1024"/>
+            <page id="jxfz" capacity="1024"/>
+        </dataset>
+
+        <dataset name="journals" capacity="1024">
+
+        </dataset>
+
+        <fileset name="clips">
+            <folder id="jxnc" capacity="4096"/>
+            <folder id="jxgz" capacity="1024"/>
+            <folder id="jxfz" capacity="1024"/>
+        </fileset>
+
     </grid>
     <db>
         <source user="postgres" password="postgres" database="postgres"/>

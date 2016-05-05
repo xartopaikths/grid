@@ -27,9 +27,6 @@ import java.util.List;
  */
 public abstract class GridDataSet<D extends GridData<D>> extends GridSet implements GridDataSetMBean {
 
-    // custom paging logic
-    GridPager pager;
-
     // the data schema
     final GridSchema<D> schema;
 
