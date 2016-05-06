@@ -2,10 +2,12 @@ package greatbone.sample;
 
 import greatbone.framework.grid.GridDataSet;
 import greatbone.framework.grid.GridUtility;
+import greatbone.framework.grid.Table;
 
 /**
  * A dataset of sales orders.
  */
+@Table
 public class ORDERS extends GridDataSet<Order> {
 
     public ORDERS(GridUtility grid) {

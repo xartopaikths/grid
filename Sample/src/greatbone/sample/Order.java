@@ -11,21 +11,15 @@ public class Order extends GridData<Order> {
     //
     // COLUMNS
 
-    static final KEY ID = new KEY(18); // JXNC2016040500007A
-
-    static final KEY SHOPID = new KEY(18); // JXNC00003E
-
-    static final KEY GUESTID = new KEY(18); // JXNC13308060502
+    static final KEY ID = new KEY(12); // jxnc0000007a
 
     static final TIMESTAMP DATE = new TIMESTAMP();
 
+    static final KEY SHOPID = new KEY(8); // jxnc003e
+
+    static final KEY BUYERID = new KEY(11); // 13300090009
+
     static final STRING NAME = new STRING(12);
-
-    static final DECIMAL ASK = new DECIMAL(2); // ask price from seller
-
-    static final DECIMAL BID = new DECIMAL(2); // bid price from deliverer
-
-    static final INT OPS = new INT();
 
     static final DETAIL[] DETAILS = {
             new DETAIL(), new DETAIL(), new DETAIL(), new DETAIL(), new DETAIL(), new DETAIL(), new DETAIL(), new DETAIL(),
@@ -33,6 +27,10 @@ public class Order extends GridData<Order> {
     };
 
     static final DECIMAL TOTAL = new DECIMAL(2);
+
+    // delivery
+
+    static final KEY DELIVERYID = new KEY(11); // 13300090009
 
 
     public String getId() {

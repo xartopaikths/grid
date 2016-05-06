@@ -2,37 +2,39 @@ package greatbone.sample;
 
 import greatbone.framework.grid.*;
 import greatbone.framework.web.WebPrincipal;
-import greatbone.framework.web.WebZone;
+import greatbone.framework.web.WebSpace;
 
 /**
  * A shop that takes orders and issues delivery tasks.
  */
-public class Client extends GridData<Client> implements WebPrincipal, WebZone {
+public class Client extends GridData<Client> implements WebPrincipal, WebSpace {
 
     // COLUMNS
 
-    static final KEY ID = new KEY(10); // JXNC00003F
-
-    static final STRING NAME = new STRING(12);
+    static final KEY LOGIN = new KEY(10); // JXNC00003F
 
     static final STRING CREDENTIAL = new STRING(12);
 
-    static final STRING ADDRESS = new STRING(12);
+    static final STRING NAME = new STRING(10);
 
-    static final DECIMAL X = new DECIMAL(2);
+    static final KEY NUM = new KEY(10);
 
-    static final DECIMAL Y = new DECIMAL(2);
+    static final STRING ADDRESS = new STRING(16);
 
-    static final KEYSET ORDERS = new KEYSET(2,12);
+    static final DECIMAL X = new DECIMAL(2); // present X position
+
+    static final DECIMAL Y = new DECIMAL(2); // present Y position
+
+    static final KEYSET ORDERS = new KEYSET(10, 20);
 
     @Override
-    public String zoner() {
-        return ID.getValue(this);
+    public String space() {
+        return LOGIN.getValue(this);
     }
 
     @Override
     public String getName() {
-        return ID.getValue(this);
+        return LOGIN.getValue(this);
     }
 
     @Override

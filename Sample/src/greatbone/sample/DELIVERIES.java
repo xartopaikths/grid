@@ -3,15 +3,14 @@ package greatbone.sample;
 import greatbone.framework.grid.Copy;
 import greatbone.framework.grid.GridDataSet;
 import greatbone.framework.grid.GridUtility;
-import greatbone.framework.grid.Table;
 
 /**
+ * A transient dataset that keep tracts of delivery tasks.
  */
-@Table
 @Copy
-public class TRANSACTS extends GridDataSet<Transact> {
+public class DELIVERIES extends GridDataSet<Delivery> {
 
-    public TRANSACTS(GridUtility grid) {
+    public DELIVERIES(GridUtility grid) {
         super(grid, 12);
     }
 

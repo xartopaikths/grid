@@ -19,6 +19,7 @@ public class AppMain {
                     SHOPS.class,
                     CLIENTS.class,
                     ORDERS.class,
+                    DELIVERIES.class,
                     TRANSACTS.class,
                     CLIPS.class
             );

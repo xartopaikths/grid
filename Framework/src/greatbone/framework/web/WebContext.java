@@ -62,7 +62,7 @@ public class WebContext implements Out<WebContext>, AutoCloseable {
     // response headers
     final HeaderMap responseh;
 
-    WebZone space;
+    WebSpace space;
 
     WebControl control;
 
@@ -85,11 +85,11 @@ public class WebContext implements Out<WebContext>, AutoCloseable {
         return exchange.getRequestMethod();
     }
 
-    public WebZone space() {
+    public WebSpace space() {
         return space;
     }
 
-    public void setSpace(WebZone space) {
+    public void setSpace(WebSpace space) {
         this.space = space;
     }
 

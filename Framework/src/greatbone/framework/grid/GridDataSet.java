@@ -31,7 +31,7 @@ public abstract class GridDataSet<D extends GridData<D>> extends GridSet impleme
     final GridSchema<D> schema;
 
     // annotated cache policy, can be null
-    final CachePolicy cachepol;
+    final Copy cachepol;
 
     // primary data pages, both origins and references
     final GridPages<D> primary;
@@ -54,7 +54,7 @@ public abstract class GridDataSet<D extends GridData<D>> extends GridSet impleme
         }
 
         // prepare page table
-        this.cachepol = getClass().getAnnotation(CachePolicy.class);
+        this.cachepol = getClass().getAnnotation(Copy.class);
 
         this.primary = new GridPages<>(inipages);
         this.copy = new GridPages<>(inipages);
