@@ -12,7 +12,7 @@ public class Delivery extends GridData<Delivery> {
 
     static final KEY ID = new KEY(18); // jxnc00020001
 
-    static final KEY SHOPID = new KEY(18); // JXNC00003E
+    static final KEY SHOPID = new KEY(18); // jxnc00003e
 
     static final SHORT STATUS = new SHORT();
 

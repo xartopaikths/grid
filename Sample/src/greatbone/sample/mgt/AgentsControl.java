@@ -11,12 +11,12 @@ import greatbone.framework.web.WebHost;
  */
 public class AgentsControl extends WebControl {
 
-    final SHOPS SHOPS;
+    final SHOPS shops;
 
     public AgentsControl(WebHost host, WebControl parent) {
         super(host, parent);
 
-        this.SHOPS = GridUtility.getDataSet(SHOPS.class);
+        this.shops = GridUtility.getDataSet(SHOPS.class);
     }
 
     public void index(WebContext wc) {
@@ -27,7 +27,7 @@ public class AgentsControl extends WebControl {
     }
 
     public void Get(String rsc, WebContext wc) throws Exception {
-        Shop ret = SHOPS.getData(rsc);
+        Shop ret = shops.getData(rsc);
         if (ret == null) {
             wc.sendNotFound();
         } else {
@@ -37,11 +37,11 @@ public class AgentsControl extends WebControl {
     }
 
     public void Post(WebContext wc) {
-        Shop agent = SHOPS.newData();
+        Shop agent = shops.newData();
 
         wc.content(agent);
 
-        SHOPS.put(null, agent);
+        shops.put(null, agent);
     }
 
 }
