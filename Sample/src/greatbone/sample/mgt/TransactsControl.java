@@ -22,7 +22,7 @@ public class TransactsControl extends WebControl {
     }
 
     @Override
-    public void _(WebContext exch) {
+    public void index(WebContext exch) {
 
 
     }

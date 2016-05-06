@@ -15,10 +15,11 @@ public class AppMain {
 
         try {
             GridUtility.initialize(
-                    TRANSACTS.class,
-                    SALES.class,
-                    SHOPS.class,
                     USERS.class,
+                    SHOPS.class,
+                    CLIENTS.class,
+                    ORDERS.class,
+                    TRANSACTS.class,
                     CLIPS.class
             );
         } catch (IOException e) {

@@ -4,10 +4,11 @@ import greatbone.framework.grid.GridDataSet;
 import greatbone.framework.grid.GridUtility;
 
 /**
+ * A dataset of sales orders.
  */
-public class DELIVERIES extends GridDataSet<Delivery> {
+public class ORDERS extends GridDataSet<Order> {
 
-    public DELIVERIES(GridUtility grid) {
+    public ORDERS(GridUtility grid) {
         super(grid, 12);
     }
 

@@ -4,9 +4,9 @@ import greatbone.framework.Decimal;
 import greatbone.framework.grid.*;
 
 /**
- * A sales order or transaction.
+ * A sales order that records the state durong purchasing, devliery and payment.
  */
-public class Sale extends GridData<Sale> {
+public class Order extends GridData<Order> {
 
     //
     // COLUMNS
@@ -20,6 +20,10 @@ public class Sale extends GridData<Sale> {
     static final TIMESTAMP DATE = new TIMESTAMP();
 
     static final STRING NAME = new STRING(12);
+
+    static final DECIMAL ASK = new DECIMAL(2); // ask price from seller
+
+    static final DECIMAL BID = new DECIMAL(2); // bid price from deliverer
 
     static final INT OPS = new INT();
 
@@ -68,11 +72,11 @@ public class Sale extends GridData<Sale> {
     // SCHEMA
 
     @Override
-    protected GridSchema<Sale> schema() {
+    protected GridSchema<Order> schema() {
         return SCHEMA;
     }
 
-    static final GridSchema<Sale> SCHEMA = new GridSchema<>(Sale.class);
+    static final GridSchema<Order> SCHEMA = new GridSchema<>(Order.class);
 
 }
 

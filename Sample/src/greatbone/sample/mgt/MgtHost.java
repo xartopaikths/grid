@@ -20,7 +20,7 @@ public class MgtHost extends WebHost {
     }
 
     @Override
-    public void _(WebContext wc) throws IOException {
+    public void index(WebContext wc) throws IOException {
         wc.sendOK((x) -> x.$("OK, it's alomost done."));
     }
 

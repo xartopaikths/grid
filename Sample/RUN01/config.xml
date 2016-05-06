@@ -1,41 +1,47 @@
 <greatbone>
 
     <web>
-        <vhost name="www" ip="10.0.0.201" port="8080"/>
-        <vhost name="mgt" ip="10.0.0.201" port="8081"/>
-        <vhost name="op" ip="10.0.0.201" port="8082"/>
+        <host name="www" ip="10.0.0.201" port="8080"/>
+        <host name="mgt" ip="10.0.0.201" port="8081"/>
+        <host name="op" ip="10.0.0.201" port="8082"/>
     </web>
 
     <grid interfaces="10.0.0.201-210" bind="10.0.0.201">
 
         <dataset name="users" source="dir"/>
 
-        <dataset name="shops" source="dir" load="date > (current_date() - 3)">
-            <page id="jxnc" capacity="4096"/>
-            <page id="jxgz" capacity="1024"/>
-            <page id="jxfz" capacity="1024"/>
+        <dataset name="shops" load="date > (current_date() - 3)">
+            <page id="jxnc" cap="4096"/>
+            <page id="jxgz" cap="1024"/>
+            <page id="jxfz" cap="1024"/>
         </dataset>
 
-        <dataset name="clients" filter="date > (current_date() - 3)">
-            <page id="jxnc" capacity="4096"/>
-            <page id="jxgz" capacity="1024"/>
-            <page id="jxfz" capacity="1024"/>
+        <dataset name="clients">
+            <page id="jxnc" cap="16384"/>
+            <page id="jxgz" cap="4096"/>
+            <page id="jxfz" cap="4096"/>
         </dataset>
 
-        <dataset name="items" filter="date > (current_date() - 3)">
-            <page id="jxnc" capacity="4096"/>
-            <page id="jxgz" capacity="1024"/>
-            <page id="jxfz" capacity="1024"/>
+        <dataset name="deliveries" load="date > (current_date() - 3)">
+            <page id="jxnc" cap="4096"/>
+            <page id="jxgz" cap="1024"/>
+            <page id="jxfz" cap="1024"/>
         </dataset>
 
-        <dataset name="orders" filter="date > (current_date() - 3)">
-            <page id="jxnc" capacity="4096"/>
-            <page id="jxgz" capacity="1024"/>
-            <page id="jxfz" capacity="1024"/>
+        <dataset name="orders" load="date > (current_date() - 3)">
+            <page id="jxnc" cap="4096"/>
+            <page id="jxgz" cap="1024"/>
+            <page id="jxfz" cap="1024"/>
         </dataset>
 
         <dataset name="journals" capacity="1024">
 
+        </dataset>
+
+        <dataset name="transacts">
+            <page id="jxnc" cap="4096"/>
+            <page id="jxgz" cap="1024"/>
+            <page id="jxfz" cap="1024"/>
         </dataset>
 
         <fileset name="clips">

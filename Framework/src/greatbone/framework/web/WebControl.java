@@ -46,7 +46,7 @@ public abstract class WebControl {
                 // with the two parameters
                 if (pts.length == 1 && WebContext.class == pts[0]) {
                     String key = m.getName().toLowerCase();
-                    if ("_".equals(key)) {
+                    if ("$".equals(key)) {
                         key = "";
                     }
                     actions.put(key, new Action(this, m));
@@ -95,7 +95,7 @@ public abstract class WebControl {
         if (slash == -1) { // without a slash then handle by this controller instance
             exch.control = this;
             HttpString method = exch.method();
-            if (method == Methods.GET) _(exch);
+            if (method == Methods.GET) index(exch);
         } else if (subordinate != null) { // resolve the sub structure
             WebControl controller = subordinate.locate(base.substring(0, slash), exch);
             if (controller != null) {
@@ -108,7 +108,7 @@ public abstract class WebControl {
         }
     }
 
-    public void _(WebContext exch) throws Exception {
+    public void index(WebContext exch) throws Exception {
     }
 
     /**

@@ -1,6 +1,6 @@
 package greatbone.sample.op;
 
-import greatbone.sample.Party;
+import greatbone.sample.Shop;
 import greatbone.framework.web.WebControl;
 import greatbone.framework.web.WebContext;
 import greatbone.framework.web.WebHost;
@@ -15,8 +15,8 @@ public class NoticeControl extends WebControl implements Runnable {
     }
 
     @Override
-    public void _(WebContext wc) {
-        Party party = (Party) wc.space();
+    public void index(WebContext wc) {
+        Shop shop = (Shop) wc.space();
 
     }
 
@@ -24,7 +24,7 @@ public class NoticeControl extends WebControl implements Runnable {
 
 //        String from = exch.getHeader("Dk-From");
 
-        Party party = (Party) exch.space();
+        Shop shop = (Shop) exch.space();
 
         // parse msg
 

@@ -6,7 +6,7 @@ import greatbone.framework.grid.GridUtility;
 /**
  * All shop participants of the business operation.
  */
-public class SHOPS extends GridDataSet<Party> {
+public class SHOPS extends GridDataSet<Shop> {
 
     public SHOPS(GridUtility grid) {
         super(grid, 12);

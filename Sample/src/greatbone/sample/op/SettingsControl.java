@@ -1,21 +1,21 @@
 package greatbone.sample.op;
 
 import greatbone.framework.web.WebZone;
-import greatbone.framework.web.WebContext;
 import greatbone.framework.web.WebControl;
+import greatbone.framework.web.WebContext;
 import greatbone.framework.web.WebHost;
 
 /**
  * The menu management handler.
  */
-public class ShopControl extends WebControl {
+public class SettingsControl extends WebControl {
 
-    public ShopControl(WebHost root, WebControl parent) {
-        super(root, parent);
+    public SettingsControl(WebHost host, WebControl parent) {
+        super(host, parent);
     }
 
     @Override
-    public void _(WebContext exch) {
+    public void index(WebContext exch) {
         WebZone shopid = exch.space();
 
     }
