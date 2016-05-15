@@ -140,7 +140,7 @@ public abstract class GridDataSet<D extends GridData<D>> extends GridSet impleme
         return sb.toString();
     }
 
-    public String createtable() {
+    public String CREATE() {
         return schema.getCreateTableCommand(key);
     }
 

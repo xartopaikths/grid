@@ -158,15 +158,15 @@ public class GridUtility implements GridMBean, Configurable {
         if (GRID == null) {
             GRID = new GridUtility(setcs);
         }
-        GRID.print();
+        GRID.DDL();
         // start the grid service
         GRID.start();
-
     }
 
-    public void print() {
+    public void DDL() {
         for (int i = 0; i < datasets.count(); i++) {
-            System.out.println(datasets.get(i).createtable());
+            GridDataSet dset = datasets.get(i);
+            System.out.println(dset.CREATE());
         }
     }
 
