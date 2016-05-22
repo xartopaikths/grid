@@ -9,7 +9,6 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 public abstract class GridPage<D extends GridData<D>> {
 
-
     // TODO marks of insertion timestamp for records
 
     // the parent dataset

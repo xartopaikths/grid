@@ -2,6 +2,7 @@ package greatbone.framework.grid;
 
 import greatbone.framework.db.DbContext;
 import greatbone.framework.util.Roll;
+import greatbone.framework.util.SpinWait;
 
 import javax.management.MBeanServer;
 import javax.management.ObjectName;
@@ -33,11 +34,17 @@ public abstract class GridDataSet<D extends GridData<D>> extends GridSet impleme
     // annotated cache policy, can be null
     final Copy cachepol;
 
+    final SpinWait sync = new SpinWait();
+
+    // all element pages
+    GridPage<D>[] elements;
+
+    // actual number of elements
+    int size;
+
+
     // primary data pages, both origins and references
     final GridPages<D> primary;
-
-    // the backup copy of the preceding node's origin data pages
-    final GridPages<D> copy;
 
     @SuppressWarnings("unchecked")
     protected GridDataSet(GridUtility grid, int inipages) {
@@ -57,7 +64,6 @@ public abstract class GridDataSet<D extends GridData<D>> extends GridSet impleme
         this.cachepol = getClass().getAnnotation(Copy.class);
 
         this.primary = new GridPages<>(inipages);
-        this.copy = new GridPages<>(inipages);
 
     }
 
