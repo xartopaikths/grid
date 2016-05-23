@@ -104,7 +104,7 @@ public class GridUtility implements GridMBean, Configurable {
                 Class<? extends GridDataSet> c = setclass.asSubclass(GridDataSet.class);
                 Constructor<? extends GridDataSet> ctor = c.getConstructor(GridUtility.class);
                 GridDataSet set = ctor.newInstance(this);
-                datasets.put(set.key, set);
+                datasets.put(set.name, set);
             } catch (NoSuchMethodException | InvocationTargetException | InstantiationException | IllegalAccessException e) {
                 e.printStackTrace();
             }
@@ -113,7 +113,7 @@ public class GridUtility implements GridMBean, Configurable {
                 Class<? extends GridFileSet> c = setclass.asSubclass(GridFileSet.class);
                 Constructor<? extends GridFileSet> ctor = c.getConstructor(GridUtility.class);
                 GridFileSet set = ctor.newInstance(this);
-                filesets.put(set.key, set);
+                filesets.put(set.name, set);
             } catch (NoSuchMethodException | InvocationTargetException | InstantiationException | IllegalAccessException e) {
                 e.printStackTrace();
             }

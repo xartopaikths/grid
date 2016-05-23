@@ -24,6 +24,7 @@ public class GridSchema<D extends GridData<D>> {
 
     // definitions of regular columns
     final Roll<String, GridColumn> columns = new Roll<>(64);
+
     final KEY keycol; // definition of the key column
 
     // total bytes of a data record, including those reserved

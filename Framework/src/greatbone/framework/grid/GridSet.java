@@ -9,14 +9,15 @@ import java.util.List;
 import java.util.StringTokenizer;
 
 /**
- * A dataset or fileset.
+ * An abstract dataset or fileset.
  */
 public abstract class GridSet implements Configurable {
 
-    // the container grid instance
+    // the containing grid instance
     final GridUtility grid;
 
-    final String key;
+    // the identifying name
+    final String name;
 
     // configurative xml element, can be null when no store on this VM for a registered set
     final Element config;
@@ -29,7 +30,7 @@ public abstract class GridSet implements Configurable {
 
         // derive the key
         Class c = getClass();
-        this.key = c.getSimpleName().toLowerCase(); // from class name
+        this.name = c.getSimpleName().toLowerCase(); // from class name
 
         // derive the config tag
         Class p = c;
@@ -40,7 +41,7 @@ public abstract class GridSet implements Configurable {
                 tag = n.substring(4);
             }
         }
-        this.config = Greatbone.getChildElementOf(grid.config, tag, key);
+        this.config = Greatbone.getChildElementOf(grid.config, tag, name);
 
         // parse the local attribute
         List<String> lst = null;

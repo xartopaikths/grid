@@ -48,7 +48,7 @@ public abstract class GridDataSet<D extends GridData<D>> extends GridSet impleme
         // register mbean
         try {
             MBeanServer mbs = ManagementFactory.getPlatformMBeanServer();
-            ObjectName objname = new ObjectName("grid.dataset:type=DataSet,name=" + key);
+            ObjectName objname = new ObjectName("grid.dataset:type=DataSet,name=" + name);
             mbs.registerMBean(this, objname);
         } catch (Exception e) {
         }
@@ -93,7 +93,7 @@ public abstract class GridDataSet<D extends GridData<D>> extends GridSet impleme
     }
 
     public String key() {
-        return key;
+        return name;
     }
 
     @Override
@@ -124,7 +124,7 @@ public abstract class GridDataSet<D extends GridData<D>> extends GridSet impleme
             sb.append(col.key);
         }
         sb.append(" FROM ");
-        sb.append(key);
+        sb.append(name);
         sb.append(" WHERE ");
         sb.append(condition);
         return sb.toString();
@@ -132,7 +132,7 @@ public abstract class GridDataSet<D extends GridData<D>> extends GridSet impleme
 
     String update() {
         Roll<String, GridColumn> cols = schema.columns;
-        StringBuilder sb = new StringBuilder("UPDATE ").append(key).append(" SET ");
+        StringBuilder sb = new StringBuilder("UPDATE ").append(name).append(" SET ");
         for (int i = 0; i < cols.count(); i++) {
             GridColumn col = cols.get(i);
             sb.append(col.key).append("=?");
@@ -141,14 +141,14 @@ public abstract class GridDataSet<D extends GridData<D>> extends GridSet impleme
     }
 
     public String CREATE() {
-        return schema.getCreateTableCommand(key);
+        return schema.getCreateTableCommand(name);
     }
 
     protected void load() {
 
         // compose sql statement
         StringBuilder sql = new StringBuilder(schema.select);
-        sql.append(" FROM ").append(key);
+        sql.append(" FROM ").append(name);
 
         String likes;
         if (localspec != null) {
