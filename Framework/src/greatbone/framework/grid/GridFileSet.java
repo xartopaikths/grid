@@ -22,7 +22,7 @@ public abstract class GridFileSet extends GridSet {
 
     }
 
-    public String key() {
+    public String name() {
         return name;
     }
 
