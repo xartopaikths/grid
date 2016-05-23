@@ -3,9 +3,9 @@ package greatbone.framework.grid;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
- * An abstract data page, conceptually containing data entries belonged.
+ * An abstract data page that  contains data entries.
  *
- * @param <D> type of data object
+ * @param <D> data class
  */
 public abstract class GridPage<D extends GridData<D>> {
 
@@ -14,7 +14,7 @@ public abstract class GridPage<D extends GridData<D>> {
     // the parent dataset
     final GridDataSet<D> parent;
 
-    // the page id
+    // the page id, can be null
     final String id;
 
     // for the key-generating algorithm

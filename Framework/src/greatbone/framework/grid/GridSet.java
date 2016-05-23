@@ -16,20 +16,21 @@ public abstract class GridSet implements Configurable {
     // the container grid instance
     final GridUtility grid;
 
-    final String key;
+    // the identifying name of this grid set
+    final String name;
 
     // configurative xml element, can be null when no store on this VM for a registered set
     final Element config;
 
-    // spec for local data, null when no local attribute is found, empty when the local atrribute is empty
-    final List<String> localspec;
+    // spec for the parts attribute, null when no local attribute is found, empty when the local atrribute is empty
+    final List<String> parts;
 
     GridSet(GridUtility grid) {
         this.grid = grid;
 
         // derive the key
         Class c = getClass();
-        this.key = c.getSimpleName().toLowerCase(); // from class name
+        this.name = c.getSimpleName().toLowerCase(); // from class name
 
         // derive the config tag
         Class p = c;
@@ -40,7 +41,7 @@ public abstract class GridSet implements Configurable {
                 tag = n.substring(4);
             }
         }
-        this.config = Greatbone.getChildElementOf(grid.config, tag, key);
+        this.config = Greatbone.getChildElementOf(grid.config, tag, name);
 
         // parse the local attribute
         List<String> lst = null;
@@ -55,7 +56,7 @@ public abstract class GridSet implements Configurable {
                 }
             }
         }
-        this.localspec = lst;
+        this.parts = lst;
     }
 
     abstract void flush();

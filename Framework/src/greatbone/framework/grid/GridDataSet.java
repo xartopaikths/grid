@@ -31,23 +31,19 @@ public abstract class GridDataSet<D extends GridData<D>> extends GridSet impleme
     // the data schema
     final GridSchema<D> schema;
 
-    // annotated cache policy, can be null
-    final Copy cachepol;
+    // annotated storage policy, can be null
+    final Storage storage;
 
     final SpinWait sync = new SpinWait();
 
-    // all element pages
+    // all element pages, both origins and references
     GridPage<D>[] elements;
 
     // actual number of elements
-    int size;
-
-
-    // primary data pages, both origins and references
-    final GridPages<D> primary;
+    int count;
 
     @SuppressWarnings("unchecked")
-    protected GridDataSet(GridUtility grid, int inipages) {
+    protected GridDataSet(GridUtility grid, int cap) {
         super(grid);
 
         Class<D> datc = (Class<D>) typearg(0); // resolve the data class by type parameter
@@ -55,16 +51,15 @@ public abstract class GridDataSet<D extends GridData<D>> extends GridSet impleme
         // register mbean
         try {
             MBeanServer mbs = ManagementFactory.getPlatformMBeanServer();
-            ObjectName objname = new ObjectName("grid.dataset:type=DataSet,name=" + key);
+            ObjectName objname = new ObjectName("grid.dataset:type=DataSet,name=" + name);
             mbs.registerMBean(this, objname);
         } catch (Exception e) {
         }
 
         // prepare page table
-        this.cachepol = getClass().getAnnotation(Copy.class);
+        this.storage = getClass().getAnnotation(Storage.class);
 
-        this.primary = new GridPages<>(inipages);
-
+        this.elements = new GridPage[cap];
     }
 
     // resolve a type argument along the inheritance hierarchy
@@ -99,7 +94,7 @@ public abstract class GridDataSet<D extends GridData<D>> extends GridSet impleme
     }
 
     public String key() {
-        return key;
+        return name;
     }
 
     @Override
@@ -114,13 +109,40 @@ public abstract class GridDataSet<D extends GridData<D>> extends GridSet impleme
     //
     // PAGE OPERATIONS
 
-    public GridPage<D> getPage(String pageid) {
-        return primary.get(pageid);
+    public GridPage<D> getPage(String pageId) {
+        sync.enterRead();
+        try {
+            for (int i = 0; i < count; i++) {
+                GridPage<D> page = elements[i];
+                if ((pageId == null)) { // equals
+                    if (page.id == null) {
+                        return page;
+                    }
+                } else if (pageId.equals(page.id)) {
+                    return page;
+                }
+            }
+            return null;
+        } finally {
+            sync.exitRead();
+        }
     }
 
-    public GridPage<D> locatePage(String datakey) {
-        return primary.locate(datakey);
-    }
+    public GridPage<D> locatePage(String recordKey) {
+        if (recordKey != null) {
+            sync.enterRead();
+            try {
+                for (int i = 0; i < count; i++) {
+                    GridPage<D> page = elements[i];
+                    if (recordKey.startsWith(page.id)) { // starts with
+                        return page;
+                    }
+                }
+            } finally {
+                sync.exitRead();
+            }
+        }
+        return null;    }
 
     String select(String condition) {
         Roll<String, GridColumn> cols = schema.columns;
@@ -130,7 +152,7 @@ public abstract class GridDataSet<D extends GridData<D>> extends GridSet impleme
             sb.append(col.key);
         }
         sb.append(" FROM ");
-        sb.append(key);
+        sb.append(name);
         sb.append(" WHERE ");
         sb.append(condition);
         return sb.toString();
@@ -138,7 +160,7 @@ public abstract class GridDataSet<D extends GridData<D>> extends GridSet impleme
 
     String update() {
         Roll<String, GridColumn> cols = schema.columns;
-        StringBuilder sb = new StringBuilder("UPDATE ").append(key).append(" SET ");
+        StringBuilder sb = new StringBuilder("UPDATE ").append(name).append(" SET ");
         for (int i = 0; i < cols.count(); i++) {
             GridColumn col = cols.get(i);
             sb.append(col.key).append("=?");
@@ -147,21 +169,21 @@ public abstract class GridDataSet<D extends GridData<D>> extends GridSet impleme
     }
 
     public String CREATE() {
-        return schema.getCreateTableCommand(key);
+        return schema.getCreateTableCommand(name);
     }
 
     protected void load() {
 
         // compose sql statement
         StringBuilder sql = new StringBuilder(schema.select);
-        sql.append(" FROM ").append(key);
+        sql.append(" FROM ").append(name);
 
         String likes;
-        if (localspec != null) {
-            for (int i = 0; i < localspec.size(); i++) {
-                String con = localspec.get(i);
+        if (parts != null) {
+            for (int i = 0; i < parts.size(); i++) {
+                String con = parts.get(i);
                 sql.append(schema.keycol.key).append(" LIKE ").append(con);
-                if (i != localspec.size() - 1) {
+                if (i != parts.size() - 1) {
                     sql.append(" OR ");
                 }
             }
@@ -280,6 +302,23 @@ public abstract class GridDataSet<D extends GridData<D>> extends GridSet impleme
         page.put(key, dat);
         return dat;
     }
+
+    @SuppressWarnings("unchecked")
+    void add(GridPage<D> v) {
+        sync.enterWrite();
+        try {
+            int len = elements.length;
+            if (count == len) {
+                GridPage<D>[] new_ = new GridPage[len * 2];
+                System.arraycopy(elements, 0, new_, 0, len);
+                elements = new_;
+            }
+            elements[count++] = v;
+        } finally {
+            sync.exitWrite();
+        }
+    }
+
 
     public void forEach(Critera<D> condition) {
 
