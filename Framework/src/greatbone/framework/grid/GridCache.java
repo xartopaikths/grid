@@ -24,7 +24,7 @@ public abstract class GridCache<S extends GridShard> implements GridCacheMBean, 
     final Element config;
 
     // spec for local data, null when no local attribute is found, empty when the local atrribute is empty
-    final List<String> localspec;
+    final List<String> shardsSpec;
 
     //
     // partitions
@@ -38,32 +38,22 @@ public abstract class GridCache<S extends GridShard> implements GridCacheMBean, 
         // derive name from the class name
         Class c = getClass();
         this.name = c.getSimpleName().toLowerCase(); // from class name
+        this.config = Greatbone.getXmlSubElement(grid.config, "cache", name);
 
-        // derive the config tag
-        Class p = c;
-        String tag = null;
-        while ((c = c.getSuperclass()) != GridCache.class) {
-            String n = c.getSimpleName().toLowerCase();
-            if (n.startsWith("grid") && n.endsWith("set") && n.length() > 8) {
-                tag = n.substring(4);
-            }
-        }
-        this.config = Greatbone.getChildElementOf(grid.config, tag, name);
-
-        // parse the local attribute
+        // parse the shards attribute
         List<String> lst = null;
         if (config != null) {
-            String attlocal = config.getAttribute("local");
-            if (!attlocal.isEmpty()) {
-                lst = new ArrayList<>(16);
-                StringTokenizer st = new StringTokenizer(attlocal, ",");
+            String att = config.getAttribute("shards");
+            if (!att.isEmpty()) {
+                lst = new ArrayList<>(32);
+                StringTokenizer st = new StringTokenizer(att, ",");
                 while (st.hasMoreTokens()) {
                     String tok = st.nextToken().trim();
                     if (!tok.isEmpty()) lst.add(tok);
                 }
             }
         }
-        this.localspec = lst;
+        this.shardsSpec = lst;
     }
 
     public abstract void flush();

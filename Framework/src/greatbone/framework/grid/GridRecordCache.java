@@ -156,11 +156,11 @@ public abstract class GridRecordCache<R extends GridRecord<R>> extends GridCache
         sql.append(" FROM ").append(name);
 
         String likes;
-        if (localspec != null) {
-            for (int i = 0; i < localspec.size(); i++) {
-                String con = localspec.get(i);
+        if (shardsSpec != null) {
+            for (int i = 0; i < shardsSpec.size(); i++) {
+                String con = shardsSpec.get(i);
                 sql.append(schema.keycol.key).append(" LIKE ").append(con);
-                if (i != localspec.size() - 1) {
+                if (i != shardsSpec.size() - 1) {
                     sql.append(" OR ");
                 }
             }

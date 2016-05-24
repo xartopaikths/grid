@@ -91,12 +91,12 @@ public class Greatbone {
         return null;
     }
 
-    public static Element getChildElementOf(Element parent, String tag, String keyattr) {
+    public static Element getXmlSubElement(Element parent, String tag, String keyattr) {
         Element el = null;
         NodeList lst = parent.getElementsByTagName(tag);
         for (int i = 0; i < lst.getLength(); i++) {
             Element e = (Element) lst.item(i);
-            if (keyattr.equals(e.getAttribute("key"))) el = e;
+            if (keyattr.equals(e.getAttribute("name"))) el = e;
         }
         return el;
     }
