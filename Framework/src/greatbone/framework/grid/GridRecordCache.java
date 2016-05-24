@@ -25,25 +25,25 @@ import java.util.List;
  * <p/>
  * setup during environment initialization
  */
-public abstract class GridDataSet<D extends GridData<D>> extends GridSet implements GridDataSetMBean {
+public abstract class GridRecordCache<R extends GridRecord<R>> extends GridCache<GridPage<R>> implements GridCacheMBean {
 
-    // the data schema
-    final GridSchema<D> schema;
+    // the record schema
+    final GridSchema<R> schema;
 
     // annotated cache policy, can be null
     final Copy cachepol;
 
     // primary data pages, both origins and references
-    final GridPages<D> primary;
+    final GridPages<R> primary;
 
     // the backup copy of the preceding node's origin data pages
-    final GridPages<D> copy;
+    final GridPages<R> copy;
 
     @SuppressWarnings("unchecked")
-    protected GridDataSet(GridUtility grid, int inipages) {
+    protected GridRecordCache(GridUtility grid, int inipages) {
         super(grid);
 
-        Class<D> datc = (Class<D>) typearg(0); // resolve the data class by type parameter
+        Class<R> datc = (Class<R>) typearg(0); // resolve the data class by type parameter
         this.schema = grid.schema(datc);
         // register mbean
         try {
@@ -65,7 +65,7 @@ public abstract class GridDataSet<D extends GridData<D>> extends GridSet impleme
     final Class typearg(int ordinal) {
         // gather along the inheritence hierarchy
         Deque<Class> que = new LinkedList<Class>();
-        for (Class c = getClass(); c != GridDataSet.class; c = c.getSuperclass()) {
+        for (Class c = getClass(); c != GridRecordCache.class; c = c.getSuperclass()) {
             que.addFirst(c);
         }
         for (Class c : que) {
@@ -101,18 +101,23 @@ public abstract class GridDataSet<D extends GridData<D>> extends GridSet impleme
 
     }
 
-    public D newData() {
+    @Override
+    public void reload() {
+
+    }
+
+    public R newData() {
         return schema.instantiate();
     }
 
     //
     // PAGE OPERATIONS
 
-    public GridPage<D> getPage(String pageid) {
+    public GridPage<R> getPage(String pageid) {
         return primary.get(pageid);
     }
 
-    public GridPage<D> locatePage(String datakey) {
+    public GridPage<R> locatePage(String datakey) {
         return primary.locate(datakey);
     }
 
@@ -183,7 +188,7 @@ public abstract class GridDataSet<D extends GridData<D>> extends GridSet impleme
 
     void loadwith(ResultSet rs) throws SQLException {
         // create a data object with one record buffer
-        D dat = schema.instantiate();
+        R dat = schema.instantiate();
 
         while (rs.next()) {
             // input data from result set
@@ -200,9 +205,9 @@ public abstract class GridDataSet<D extends GridData<D>> extends GridSet impleme
      * @param key the data entry to find
      * @return a data object containing a single entry, or null
      */
-    public D getData(String key) {
+    public R getData(String key) {
         // locate the page
-        GridPage<D> page = locatePage(key);
+        GridPage<R> page = locatePage(key);
         if (page != null) {
             return page.get(key);
         }
@@ -215,11 +220,11 @@ public abstract class GridDataSet<D extends GridData<D>> extends GridSet impleme
      * @param keys data entries to find
      * @return an merged data object, or null
      */
-    public D getData(String... keys) {
-        List<GridGet<D>> tasks = null;
+    public R getData(String... keys) {
+        List<GridGet<R>> tasks = null;
         for (int i = 0; i < keys.length; i++) {
             String key = keys[i];
-            GridPage<D> page = locatePage(key);
+            GridPage<R> page = locatePage(key);
             if (page != null) {
                 if (tasks == null) tasks = new ArrayList<>(keys.length); // lazy creation of task list
                 tasks.add(new GridGet<>(page, key));
@@ -229,9 +234,9 @@ public abstract class GridDataSet<D extends GridData<D>> extends GridSet impleme
             try {
                 GridGet.invokeAll(tasks);
                 // harvest the results
-                D merge = null;
+                R merge = null;
                 for (int i = 0; i < tasks.size(); i++) {
-                    D res = tasks.get(i).result;
+                    R res = tasks.get(i).result;
                     if (res != null) {
                         if (merge == null) {
                             merge = res;
@@ -247,26 +252,26 @@ public abstract class GridDataSet<D extends GridData<D>> extends GridSet impleme
         return null;
     }
 
-    public D getData(Critera<D> d) {
+    public R getData(Critera<R> d) {
         return null;
     }
 
     // no autogen of key
-    public void put(D dat) {
+    public void put(R dat) {
         String key = dat.getKey();
-        GridPage<D> page = locatePage(key);
+        GridPage<R> page = locatePage(key);
         if (page != null) {
             page.put(null, dat);
         }
     }
 
     // a subclass may treat key differently, it can be full key, partial key, or null
-    public D put(String key, D dat) {
+    public R put(String key, R dat) {
         if (key == null) {
 
         }
         // find the target page
-        GridPage<D> page = locatePage(key);
+        GridPage<R> page = locatePage(key);
         if (page == null) {
             page = new GridPageX<>(this, null, 1024);
             primary.add(page);
@@ -275,7 +280,7 @@ public abstract class GridDataSet<D extends GridData<D>> extends GridSet impleme
         return dat;
     }
 
-    public void forEach(Critera<D> condition) {
+    public void forEach(Critera<R> condition) {
 
     }
 

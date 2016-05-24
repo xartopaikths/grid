@@ -18,26 +18,26 @@ public class BOOLEAN extends GridColumn<Boolean> {
         return "BOOLEAN";
     }
 
-    public int tryValue(GridData dat, boolean v) {
+    public int tryValue(GridRecord dat, boolean v) {
         return -1;
     }
 
-    public boolean getValue(GridData dat) {
+    public boolean getValue(GridRecord dat) {
         return false;
     }
 
-    public void putValue(GridData dat, boolean v) {
+    public void putValue(GridRecord dat, boolean v) {
 //        dat.putShort(offset, v);
     }
 
 
     @Override
-    void load(GridData dat, ResultSet rs) throws SQLException {
+    void load(GridRecord dat, ResultSet rs) throws SQLException {
         putValue(dat, rs.getBoolean(ordinal));
     }
 
     @Override
-    void param(GridData dat, PreparedStatement pstmt) throws SQLException {
+    void param(GridRecord dat, PreparedStatement pstmt) throws SQLException {
         pstmt.setBoolean(ordinal, getValue(dat));
     }
 

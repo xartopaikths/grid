@@ -5,15 +5,14 @@ import java.util.concurrent.atomic.AtomicInteger;
 /**
  * An abstract data page, conceptually containing data entries belonged.
  *
- * @param <D> type of data object
+ * @param <R> type of record
  */
-public abstract class GridPage<D extends GridData<D>> {
-
+public abstract class GridPage<R extends GridRecord<R>> extends GridPartition {
 
     // TODO marks of insertion timestamp for records
 
     // the parent dataset
-    final GridDataSet<D> parent;
+    final GridRecordCache<R> parent;
 
     // the page id
     final String id;
@@ -21,7 +20,7 @@ public abstract class GridPage<D extends GridData<D>> {
     // for the key-generating algorithm
     final AtomicInteger serial;
 
-    GridPage(final GridDataSet<D> parent, String id) {
+    GridPage(final GridRecordCache<R> parent, String id) {
         this.parent = parent;
         this.id = id;
         this.serial = new AtomicInteger(0);
@@ -31,11 +30,11 @@ public abstract class GridPage<D extends GridData<D>> {
         return id;
     }
 
-    public abstract D get(String key);
+    public abstract R get(String key);
 
-    public abstract D put(String key, D data);
+    public abstract R put(String key, R data);
 
-    public abstract D search(Critera<D> filter);
+    public abstract R search(Critera<R> filter);
 
     /**
      * create a key aocrdding to the rule specific to this partion

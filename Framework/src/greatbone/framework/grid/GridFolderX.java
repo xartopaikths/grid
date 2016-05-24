@@ -6,7 +6,7 @@ import java.nio.file.Paths;
 /**
  * evictable file  cache
  */
-class GridFolderX extends GridFolder implements GridFolderMBean {
+class GridFolderX extends GridFolder implements GridPartitionMBean {
 
     String name;
 
@@ -14,6 +14,18 @@ class GridFolderX extends GridFolder implements GridFolderMBean {
         super(capacity);
     }
 
+    @Override
+    public void flush() {
+
+    }
+
+    @Override
+    public void reload() {
+    }
+
+    @Override
+    public void clear() {
+    }
 
     public GridFile get(String key) throws IOException {
         GridFile info = cache.get(key);

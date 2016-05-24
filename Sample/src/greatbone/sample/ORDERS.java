@@ -1,7 +1,7 @@
 package greatbone.sample;
 
 import greatbone.framework.grid.Copy;
-import greatbone.framework.grid.GridDataSet;
+import greatbone.framework.grid.GridRecordCache;
 import greatbone.framework.grid.GridUtility;
 import greatbone.framework.grid.Table;
 
@@ -10,7 +10,7 @@ import greatbone.framework.grid.Table;
  */
 @Table
 @Copy
-public class ORDERS extends GridDataSet<Order> {
+public class ORDERS extends GridRecordCache<Order> {
 
     public ORDERS(GridUtility grid) {
         super(grid, 12);

@@ -7,9 +7,9 @@ import java.lang.management.ManagementFactory;
 /**
  * cache of underlying local file system files. off-heap memory allocation
  */
-public abstract class GridFileSet extends GridSet {
+public abstract class GridFileCache extends GridCache<GridFolder> {
 
-    public GridFileSet(GridUtility grid, int folders) {
+    public GridFileCache(GridUtility grid, int cap) {
         super(grid);
 
         // register mbean
@@ -31,5 +31,13 @@ public abstract class GridFileSet extends GridSet {
 
     }
 
+    @Override
+    public void reload() {
+
+    }
+
+    @Override
+    public void clear() {
+    }
 
 }

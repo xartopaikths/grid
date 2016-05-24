@@ -17,6 +17,7 @@ import javax.management.remote.JMXConnectorServer;
 import javax.management.remote.JMXConnectorServerFactory;
 import javax.management.remote.JMXServiceURL;
 import java.io.FileInputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.management.ManagementFactory;
 import java.rmi.registry.LocateRegistry;
@@ -36,8 +37,7 @@ public class Greatbone {
 
     static final String CONFIGXML = "config.xml";
 
-    static Document configdoc;
-
+    // the root element of the config xml document
     public static Element config;
 
     static {
@@ -62,11 +62,10 @@ public class Greatbone {
 
         // load config xml
         try {
-            FileInputStream file = new FileInputStream(CONFIGXML);
+            FileInputStream fis = new FileInputStream(CONFIGXML);
             DOMParser parser = new DOMParser();
-            parser.parse(new InputSource(file));
-            configdoc = parser.getDocument();
-            config = configdoc.getDocumentElement();
+            parser.parse(new InputSource(fis));
+            config = parser.getDocument().getDocumentElement();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -102,10 +101,17 @@ public class Greatbone {
         return el;
     }
 
-    public static String getStringForXml() {
-        DOMImplementationLS dom = (DOMImplementationLS) configdoc.getImplementation();
+    public static void saveConfigXml() {
+        Document doc = config.getOwnerDocument();
+        DOMImplementationLS dom = (DOMImplementationLS) doc.getImplementation();
         LSSerializer lsSerializer = dom.createLSSerializer();
-        return lsSerializer.writeToString(configdoc);
+        try {
+            FileWriter fos = new FileWriter(CONFIGXML);
+            String xml = lsSerializer.writeToString(doc);
+            fos.write(xml);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
 }

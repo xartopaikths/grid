@@ -17,7 +17,7 @@ import java.util.ArrayList;
 public class WebUtility implements WebMBean, Configurable {
 
     // singleton instance
-    static WebUtility INST;
+    static WebUtility WEB;
 
     final Element config;
 
@@ -95,10 +95,10 @@ public class WebUtility implements WebMBean, Configurable {
     }
 
     public static <T extends WebHost> T createHost(String key, Class<T> clazz, Check guarder) {
-        if (INST == null) {
-            INST = new WebUtility();
+        if (WEB == null) {
+            WEB = new WebUtility();
         }
-        return INST.addHost(key, clazz, guarder);
+        return WEB.addHost(key, clazz, guarder);
     }
 
     public static final String

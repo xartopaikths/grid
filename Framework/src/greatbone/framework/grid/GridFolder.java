@@ -7,7 +7,7 @@ import java.util.concurrent.ConcurrentHashMap;
 /**
  * evictable file  cache
  */
-class GridFolder {
+class GridFolder extends GridPartition {
 
     String name;
 

@@ -1,6 +1,6 @@
 package greatbone.sample;
 
-import greatbone.framework.grid.GridDataSet;
+import greatbone.framework.grid.GridRecordCache;
 import greatbone.framework.grid.GridUtility;
 import greatbone.framework.grid.Table;
 
@@ -9,7 +9,7 @@ import greatbone.framework.grid.Table;
  */
 
 @Table
-public class CLIENTS extends GridDataSet<Shop> {
+public class CLIENTS extends GridRecordCache<Shop> {
 
     public CLIENTS(GridUtility grid) {
         super(grid, 12);

@@ -8,7 +8,7 @@ import java.io.ObjectOutputStream;
 /**
  * A proxy that points to its remote origin page.
  */
-class GridPageRef<D extends GridData<D>> extends GridPage<D> {
+class GridPageRef<D extends GridRecord<D>> extends GridPage<D> {
 
     // client endpoint to the origin peer
     GridClient origincli;
@@ -21,7 +21,7 @@ class GridPageRef<D extends GridData<D>> extends GridPage<D> {
 
     int backupstatus;
 
-    GridPageRef(GridDataSet<D> parent, String id, GridClient origincli) {
+    GridPageRef(GridRecordCache<D> parent, String id, GridClient origincli) {
         super(parent, id);
 
         this.origincli = origincli;
