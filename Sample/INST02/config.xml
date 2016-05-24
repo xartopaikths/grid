@@ -1,0 +1,22 @@
+<greatbone>
+    <web>
+        <host name="op" bind="10.0.0.202:8080"/>
+        <host name="mgt" bind="10.0.0.202:8081"/>
+    </web>
+    <grid bind="10.0.0.202" cluster="10.0.0.201-202">
+        <cache name="users">
+            <part id="jx" cap="4096"/>
+        </cache>
+        <cache name="shops" parts="jx" load="date > (current_date() - 3)"/>
+        <cache name="individuals" parts="jx"/>
+        <cache name="demands" parts="jxnc, jxgz" load="date > (current_date() - 3)"/>
+        <cache name="orders" parts="jx" load="date > (current_date() - 3)"/>
+        <cache name="journals" parts="jx" capacity="1024"/>
+        <cache name="transacts" parts="jx"/>
+        <cache name="clips" parts="jx"/>
+    </grid>
+    <db>
+        <source user="postgres" password="postgres" database="postgres"/>
+        <source key="dir" url="jdbc:postgresql://localhost" user="postgres" password="postgres" database="postgres"/>
+    </db>
+</greatbone>
