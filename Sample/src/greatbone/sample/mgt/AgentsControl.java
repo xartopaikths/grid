@@ -16,7 +16,7 @@ public class AgentsControl extends WebControl {
     public AgentsControl(WebHost host, WebControl parent) {
         super(host, parent);
 
-        this.shops = GridUtility.getDataSet(SHOPS.class);
+        this.shops = GridUtility.getCache(SHOPS.class);
     }
 
     public void index(WebContext wc) {

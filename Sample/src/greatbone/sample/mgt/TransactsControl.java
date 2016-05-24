@@ -17,7 +17,7 @@ public class TransactsControl extends WebControl {
     public TransactsControl(WebHost host, WebControl parent) {
         super(host, parent);
 
-         transacts = GridUtility.getDataSet(TRANSACTS.class);
+         transacts = GridUtility.getCache(TRANSACTS.class);
 
     }
 

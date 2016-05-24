@@ -5,7 +5,7 @@ import java.util.concurrent.ForkJoinTask;
 /**
  * A query task that works on a particular page
  */
-class GridSearch<D extends GridData<D>> extends ForkJoinTask<D> {
+class GridSearch<D extends GridRecord<D>> extends ForkJoinTask<D> {
 
     final GridPage<D> page;
 

@@ -30,31 +30,31 @@ public class KEYSET extends GridColumn<String[]> {
         return count * chars;
     }
 
-    String getValueAsString(GridData dat) {
+    String getValueAsString(GridRecord dat) {
         return null;
     }
 
-    public String[] getValue(GridData dat) {
+    public String[] getValue(GridRecord dat) {
         return null;
     }
 
-    public int tryValue(GridData dat, String[] v) {
+    public int tryValue(GridRecord dat, String[] v) {
         return -1;
     }
 
-    public void putValue(GridData dat, String[] v) {
+    public void putValue(GridRecord dat, String[] v) {
     }
 
-    void putValueAsString(GridData dat, String v) {
+    void putValueAsString(GridRecord dat, String v) {
     }
 
     @Override
-    void load(GridData dat, ResultSet rs) throws SQLException {
+    void load(GridRecord dat, ResultSet rs) throws SQLException {
         putValueAsString(dat, rs.getString(ordinal));
     }
 
     @Override
-    void param(GridData dat, PreparedStatement pstmt) throws SQLException {
+    void param(GridRecord dat, PreparedStatement pstmt) throws SQLException {
         pstmt.setString(ordinal, getValueAsString(dat));
     }
 

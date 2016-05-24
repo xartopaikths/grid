@@ -7,8 +7,8 @@ import greatbone.framework.web.WebSpace;
 /**
  * A shop that takes orders and issues delivery tasks.
  */
-@Storage
-public class Shop extends GridData<Shop> implements WebPrincipal, WebSpace {
+@Table
+public class Shop extends GridRecord<Shop> implements WebPrincipal, WebSpace {
 
     // COLUMNS
 

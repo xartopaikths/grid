@@ -10,19 +10,18 @@ import java.nio.ByteBuffer;
 import java.sql.ResultSet;
 
 /**
- * An abstract data object. that can contain one or more data records.
- * A data object is also used internally as a cursor that points to a backing native page store.
- * A data entry has a string key
- *
+ * An abstract data record. that can contain one or more data records.
+ * A data recordt is also used internally as a cursor that points to a backing native page store.
+ * <p/>
  * may map to an underlying database table definition
  *
- * @param <D> type of this object
+ * @param <R> type of this object
  */
-public abstract class GridData<D extends GridData<D>> implements Printer {
+public abstract class GridRecord<R extends GridRecord<R>> implements Printer {
 
     // the associated data page
     // it is the backing store if native page and the buffer field is null
-    GridPage<D> page;
+    GridPage<R> page;
 
     // contents of data records
     byte[] buffer;
@@ -38,7 +37,7 @@ public abstract class GridData<D extends GridData<D>> implements Printer {
         this.buffer = new byte[schema().size * capacity];
     }
 
-    void init(GridPageX<D> page) {
+    void init(GridPageX<R> page) {
         this.page = page;
     }
 
@@ -52,7 +51,7 @@ public abstract class GridData<D extends GridData<D>> implements Printer {
 
     }
 
-    public void add(D dat) {
+    public void add(R dat) {
 
     }
 
@@ -74,7 +73,7 @@ public abstract class GridData<D extends GridData<D>> implements Printer {
             int p = schema().size * index + off;
             return (short) ((buffer[p++] << 8) + buffer[p]);
         } else {
-            return ((GridPageX<D>) page).getShort(index, off);
+            return ((GridPageX<R>) page).getShort(index, off);
         }
     }
 
@@ -93,7 +92,7 @@ public abstract class GridData<D extends GridData<D>> implements Printer {
             int p = schema().size * index + off;
             return buffer[p++] + (buffer[p++] << 8) + (buffer[p++] << 16) + (buffer[p] << 24);
         } else {
-            return ((GridPageX<D>) page).getInt(index, off);
+            return ((GridPageX<R>) page).getInt(index, off);
         }
     }
 
@@ -114,7 +113,7 @@ public abstract class GridData<D extends GridData<D>> implements Printer {
     String getString(int off, int len) {
         int siz = schema().size;
         if (page != null) {
-            return ((GridPageX<D>) page).getString(index, off);
+            return ((GridPageX<R>) page).getString(index, off);
         } else {
             StringBuilder sb = null;
             int p = siz * index + off;
@@ -161,7 +160,7 @@ public abstract class GridData<D extends GridData<D>> implements Printer {
             }
             return (sb == null) ? null : sb.toString();
         } else {
-            return ((GridPageX<D>) page).getString(index, off);
+            return ((GridPageX<R>) page).getString(index, off);
         }
     }
 
@@ -208,6 +207,6 @@ public abstract class GridData<D extends GridData<D>> implements Printer {
 
     }
 
-    protected abstract GridSchema<D> schema();
+    protected abstract GridSchema<R> schema();
 
 }

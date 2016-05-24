@@ -17,19 +17,19 @@ public class DECIMAL extends GridColumn<Decimal> {
         this.precision = precision;
     }
 
-    public int tryValue(GridData dat, Decimal v) {
+    public int tryValue(GridRecord dat, Decimal v) {
         return -1;
     }
 
-    public Decimal getValue(GridData dat) {
+    public Decimal getValue(GridRecord dat) {
         return null;
     }
 
-    public void putValue(GridData dat, Decimal v) {
+    public void putValue(GridRecord dat, Decimal v) {
 
     }
 
-    public void putValue(GridData dat, BigDecimal v) {
+    public void putValue(GridRecord dat, BigDecimal v) {
 
     }
 
@@ -44,20 +44,20 @@ public class DECIMAL extends GridColumn<Decimal> {
     }
 
     @Override
-    void load(GridData dat, ResultSet rs) throws SQLException {
+    void load(GridRecord dat, ResultSet rs) throws SQLException {
         putValue(dat, rs.getBigDecimal(ordinal));
     }
 
-    public int add(GridData data, int a) {
+    public int add(GridRecord data, int a) {
         return 0;
     }
 
-    public int addAndSet(GridData data, int a) {
+    public int addAndSet(GridRecord data, int a) {
         return 0;
     }
 
     @Override
-    void param(GridData dat, PreparedStatement pstmt) throws SQLException {
+    void param(GridRecord dat, PreparedStatement pstmt) throws SQLException {
 
     }
 

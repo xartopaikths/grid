@@ -3,6 +3,7 @@ package greatbone.framework.grid;
 import java.io.IOException;
 
 /**
+ * The management interface for the local grid service.
  */
 public interface GridMBean {
 
@@ -10,8 +11,10 @@ public interface GridMBean {
 
     void stop();
 
-    void restart() throws IOException;
-
     void flush();
+
+    void reload();
+
+    void clear();
 
 }

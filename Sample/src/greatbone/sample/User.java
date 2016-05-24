@@ -1,6 +1,6 @@
 package greatbone.sample;
 
-import greatbone.framework.grid.GridData;
+import greatbone.framework.grid.GridRecord;
 import greatbone.framework.grid.GridSchema;
 import greatbone.framework.grid.KEY;
 import greatbone.framework.grid.STRING;
@@ -9,7 +9,7 @@ import greatbone.framework.web.WebPrincipal;
 /**
  * An administrative mamaber of the platform that can be either a management staff or an agent.
  */
-public class User extends GridData<User> implements WebPrincipal {
+public class User extends GridRecord<User> implements WebPrincipal {
 
     //
     // COLUMNS

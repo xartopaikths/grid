@@ -12,7 +12,7 @@ import java.util.concurrent.atomic.AtomicIntegerArray;
 /**
  * A native (origin) data page that resides in off-heap memory.
  */
-class GridPageX<D extends GridData<D>> extends GridPage<D> implements GridPageMBean {
+class GridPageX<D extends GridRecord<D>> extends GridPage<D> implements GridLocalMBean {
 
     // for atomic operation
     static final Unsafe UNSAFE;
@@ -42,7 +42,7 @@ class GridPageX<D extends GridData<D>> extends GridPage<D> implements GridPageMB
     // 2pc transaction support, every to-put data must be placed there first
     Stage staging;
 
-    GridPageX(GridDataSet<D> parent, String id, int capacity) {
+    GridPageX(GridRecordCache<D> parent, String id, int capacity) {
         super(parent, id);
 
         this.recSize = parent.schema.size;
@@ -67,6 +67,18 @@ class GridPageX<D extends GridData<D>> extends GridPage<D> implements GridPageMB
         } catch (Exception e) {
         }
 
+    }
+
+    @Override
+    public void flush() {
+    }
+
+    @Override
+    public void reload() {
+    }
+
+    @Override
+    public void clear() {
     }
 
     void enterRead(int index) {

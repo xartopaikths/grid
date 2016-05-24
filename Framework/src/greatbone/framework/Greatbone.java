@@ -17,6 +17,7 @@ import javax.management.remote.JMXConnectorServer;
 import javax.management.remote.JMXConnectorServerFactory;
 import javax.management.remote.JMXServiceURL;
 import java.io.FileInputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.lang.management.ManagementFactory;
 import java.rmi.registry.LocateRegistry;
@@ -34,10 +35,9 @@ public class Greatbone {
 
     public final static XnioWorker WORKER;
 
-    static final String CONFIGXML = "config.xml";
+    static final String CONFIG_FILE = "config.xml";
 
-    static Document configdoc;
-
+    // the root element of the config xml document
     public static Element config;
 
     static {
@@ -62,11 +62,10 @@ public class Greatbone {
 
         // load config xml
         try {
-            FileInputStream file = new FileInputStream(CONFIGXML);
+            FileInputStream fis = new FileInputStream(CONFIG_FILE);
             DOMParser parser = new DOMParser();
-            parser.parse(new InputSource(file));
-            configdoc = parser.getDocument();
-            config = configdoc.getDocumentElement();
+            parser.parse(new InputSource(fis));
+            Greatbone.config = parser.getDocument().getDocumentElement();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -84,7 +83,7 @@ public class Greatbone {
 
     }
 
-    public static Element getXmlTopTag(String tag) {
+    public static Element getConfigXmlTopTag(String tag) {
         NodeList lst = config.getElementsByTagName(tag);
         if (lst.getLength() > 0) {
             return (Element) lst.item(0);
@@ -92,20 +91,27 @@ public class Greatbone {
         return null;
     }
 
-    public static Element getChildElementOf(Element parent, String tag, String keyattr) {
+    public static Element getXmlSubElement(Element parent, String tag, String keyattr) {
         Element el = null;
         NodeList lst = parent.getElementsByTagName(tag);
         for (int i = 0; i < lst.getLength(); i++) {
             Element e = (Element) lst.item(i);
-            if (keyattr.equals(e.getAttribute("key"))) el = e;
+            if (keyattr.equals(e.getAttribute("name"))) el = e;
         }
         return el;
     }
 
-    public static String getStringForXml() {
-        DOMImplementationLS dom = (DOMImplementationLS) configdoc.getImplementation();
+    public static void saveConfigXml() {
+        Document doc = config.getOwnerDocument();
+        DOMImplementationLS dom = (DOMImplementationLS) doc.getImplementation();
         LSSerializer lsSerializer = dom.createLSSerializer();
-        return lsSerializer.writeToString(configdoc);
+        try {
+            FileWriter fos = new FileWriter(CONFIG_FILE);
+            String xml = lsSerializer.writeToString(doc);
+            fos.write(xml);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
 }

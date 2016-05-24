@@ -20,7 +20,8 @@ public class DbUtility implements DbMBean, Configurable {
 
     static final String POSTGRESQL = "org.postgresql.ds.PGSimpleDataSource";
 
-    static final DbUtility INST = new DbUtility();
+    // the singleton instance
+    static final DbUtility DB = new DbUtility();
 
     final Element config;
 
@@ -29,7 +30,7 @@ public class DbUtility implements DbMBean, Configurable {
 
     DbUtility() {
 
-        config = Greatbone.getXmlTopTag("db");
+        config = Greatbone.getConfigXmlTopTag("db");
 
         NodeList lst = config.getElementsByTagName("source");
 
@@ -67,11 +68,11 @@ public class DbUtility implements DbMBean, Configurable {
     }
 
     public static DbSource getSource() {
-        return INST.source("");
+        return DB.source("");
     }
 
     public static DbSource getSource(String key) {
-        return INST.source(key);
+        return DB.source(key);
     }
 
     DbSource source(String key) {

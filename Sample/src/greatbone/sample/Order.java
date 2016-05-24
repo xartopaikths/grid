@@ -6,7 +6,7 @@ import greatbone.framework.grid.*;
 /**
  * A sales order that records the state durong purchasing, devliery and payment.
  */
-public class Order extends GridData<Order> {
+public class Order extends GridRecord<Order> {
 
     //
     // COLUMNS

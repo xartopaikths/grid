@@ -40,8 +40,8 @@ abstract class GridColumn<T> {
 
     abstract int size();
 
-    abstract void load(GridData dat, ResultSet rs) throws SQLException;
+    abstract void load(GridRecord dat, ResultSet rs) throws SQLException;
 
-    abstract void param(GridData dat, PreparedStatement pstmt) throws SQLException;
+    abstract void param(GridRecord dat, PreparedStatement pstmt) throws SQLException;
 
 }

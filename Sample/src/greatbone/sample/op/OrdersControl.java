@@ -17,7 +17,7 @@ public class OrdersControl extends WebControl {
     public OrdersControl(WebHost host, WebControl parent) {
         super(host, parent);
 
-        sales = GridUtility.getDataSet(ORDERS.class);
+        sales = GridUtility.getCache(ORDERS.class);
     }
 
     @Override
