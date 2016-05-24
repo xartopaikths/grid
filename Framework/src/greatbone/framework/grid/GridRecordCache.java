@@ -44,7 +44,7 @@ public abstract class GridRecordCache<R extends GridRecord<R>> extends GridCache
         super(grid);
 
         Class<R> datc = (Class<R>) typearg(0); // resolve the data class by type parameter
-        this.schema = grid.schema(datc);
+        this.schema = grid.getSchema(datc);
         // register mbean
         try {
             MBeanServer mbs = ManagementFactory.getPlatformMBeanServer();

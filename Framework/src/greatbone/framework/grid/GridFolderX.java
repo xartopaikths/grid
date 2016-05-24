@@ -6,7 +6,7 @@ import java.nio.file.Paths;
 /**
  * evictable file  cache
  */
-class GridFolderX extends GridFolder implements GridPartitionMBean {
+class GridFolderX extends GridFolder implements GridLocalMBean {
 
     String name;
 

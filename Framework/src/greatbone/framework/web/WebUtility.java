@@ -27,7 +27,7 @@ public class WebUtility implements WebMBean, Configurable {
     final ArrayList<WebHost> hosts = new ArrayList<>(4);
 
     WebUtility() {
-        this.config = Greatbone.getXmlTopTag("web");
+        this.config = Greatbone.getConfigXmlTopTag("web");
 
         // load static resources
         statics = new Roll<>(256);

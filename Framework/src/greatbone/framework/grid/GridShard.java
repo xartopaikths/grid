@@ -2,7 +2,7 @@ package greatbone.framework.grid;
 
 /**
  */
-abstract class GridPartition  {
+abstract class GridShard {
 
     String id;
 

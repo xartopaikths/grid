@@ -7,7 +7,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  *
  * @param <R> type of record
  */
-public abstract class GridPage<R extends GridRecord<R>> extends GridPartition {
+public abstract class GridPage<R extends GridRecord<R>> extends GridShard {
 
     // TODO marks of insertion timestamp for records
 

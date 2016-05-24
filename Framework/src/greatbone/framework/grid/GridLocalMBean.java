@@ -3,7 +3,7 @@ package greatbone.framework.grid;
 /**
  * The management interface for a partition.
  */
-public interface GridPartitionMBean {
+public interface GridLocalMBean {
 
     void flush();
 

@@ -30,7 +30,7 @@ public class DbUtility implements DbMBean, Configurable {
 
     DbUtility() {
 
-        config = Greatbone.getXmlTopTag("db");
+        config = Greatbone.getConfigXmlTopTag("db");
 
         NodeList lst = config.getElementsByTagName("source");
 

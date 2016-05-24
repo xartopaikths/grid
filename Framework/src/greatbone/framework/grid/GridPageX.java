@@ -12,7 +12,7 @@ import java.util.concurrent.atomic.AtomicIntegerArray;
 /**
  * A native (origin) data page that resides in off-heap memory.
  */
-class GridPageX<D extends GridRecord<D>> extends GridPage<D> implements GridPartitionMBean {
+class GridPageX<D extends GridRecord<D>> extends GridPage<D> implements GridLocalMBean {
 
     // for atomic operation
     static final Unsafe UNSAFE;

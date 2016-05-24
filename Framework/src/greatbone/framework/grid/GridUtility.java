@@ -29,14 +29,11 @@ public class GridUtility implements GridMBean, Configurable {
     //
     // REGISTERED (fixed structures)
 
-    // gathering of data schemas
+    // gathering of record schemas
     final Roll<Class<? extends GridRecord>, GridSchema> schemas = new Roll<>(64);
 
-    // registered datasets
-    final Roll<String, GridCache> datasets = new Roll<>(64);
-
-    // registered filesets
-    final Roll<String, GridFileCache> filesets = new Roll<>(16);
+    // registered caches
+    final Roll<String, GridCache> caches = new Roll<>(64);
 
     //
     // CONFIGURED
@@ -56,14 +53,21 @@ public class GridUtility implements GridMBean, Configurable {
     final Persister persister = new Persister();
 
     @SafeVarargs
-    GridUtility(Class<? extends GridCache>... setcs) {
+    GridUtility(Class<? extends GridCache>... classes) {
 
-        this.config = Greatbone.getXmlTopTag("grid");
+        this.config = Greatbone.getConfigXmlTopTag("grid");
 
-        // register datasets & filesets
-        for (Class<? extends GridCache> c : setcs) {
-            register(c);
+        // register caches
+        for (Class<? extends GridCache> c : classes) {
+            try { // create a dataset instance
+                Constructor<? extends GridCache> ctor = c.getConstructor(GridUtility.class);
+                GridCache cache = ctor.newInstance(this);
+                caches.put(cache.name, cache);
+            } catch (NoSuchMethodException | InvocationTargetException | InstantiationException | IllegalAccessException e) {
+                e.printStackTrace();
+            }
         }
+
         // register as mbean
         try {
             MBeanServer mbs = ManagementFactory.getPlatformMBeanServer();
@@ -74,8 +78,8 @@ public class GridUtility implements GridMBean, Configurable {
 
         // parse and validate config attributes
         String bind = config.getAttribute("bind");
-        String interf = config.getAttribute("interfaces");
-        List<String> addrs = parseAddresses(interf);
+        String cluster = config.getAttribute("cluster");
+        List<String> addrs = parseAddresses(cluster);
         for (String addr : addrs) {
             GridEndPoint last = endpoints.last();
             GridEndPoint new_;
@@ -95,20 +99,6 @@ public class GridUtility implements GridMBean, Configurable {
             }
         }
 
-    }
-
-    // register datasets & filesets from classes.
-    void register(Class<? extends GridCache> classes) {
-        if (GridRecordCache.class.isAssignableFrom(classes)) {
-            try { // create a dataset instance
-                Class<? extends GridRecordCache> c = classes.asSubclass(GridRecordCache.class);
-                Constructor<? extends GridCache> ctor = c.getConstructor(GridUtility.class);
-                GridCache set = ctor.newInstance(this);
-                datasets.put(set.name, set);
-            } catch (NoSuchMethodException | InvocationTargetException | InstantiationException | IllegalAccessException e) {
-                e.printStackTrace();
-            }
-        }
     }
 
     public void start() throws IOException {
@@ -137,10 +127,6 @@ public class GridUtility implements GridMBean, Configurable {
     }
 
     @Override
-    public void remove(String cache) {
-    }
-
-    @Override
     public void flush() {
 
     }
@@ -151,9 +137,9 @@ public class GridUtility implements GridMBean, Configurable {
     }
 
     @SafeVarargs
-    public static void initialize(Class<? extends GridCache>... setcs) throws IOException {
+    public static void initialize(Class<? extends GridCache>... classes) throws IOException {
         if (GRID == null) {
-            GRID = new GridUtility(setcs);
+            GRID = new GridUtility(classes);
         }
         GRID.DDL();
         // start the grid service
@@ -161,8 +147,8 @@ public class GridUtility implements GridMBean, Configurable {
     }
 
     public void DDL() {
-        for (int i = 0; i < datasets.count(); i++) {
-            GridCache dset = datasets.get(i);
+        for (int i = 0; i < caches.count(); i++) {
+            GridCache dset = caches.get(i);
             if (dset instanceof GridRecordCache) {
                 System.out.println(((GridRecordCache) dset).CREATE());
             }
@@ -207,14 +193,13 @@ public class GridUtility implements GridMBean, Configurable {
     }
 
     @SuppressWarnings("unchecked")
-    <D extends GridRecord<D>> GridSchema<D> schema(Class<D> datc) {
-        GridSchema<D> sch = schemas.get(datc);
+    <R extends GridRecord<R>> GridSchema<R> getSchema(Class<R> recordClass) {
+        GridSchema<R> sch = schemas.get(recordClass);
         if (sch == null) {
-            D inst;
             try {
-                inst = datc.newInstance(); // create an instance in order to get its schema
-                sch = inst.schema();
-                schemas.put(datc, sch);
+                R rec = recordClass.newInstance(); // create an instance in order to get its schema
+                sch = rec.schema();
+                schemas.put(recordClass, sch);
             } catch (InstantiationException | IllegalAccessException e) {
                 e.printStackTrace();
             }
@@ -223,13 +208,13 @@ public class GridUtility implements GridMBean, Configurable {
     }
 
     @SuppressWarnings("unchecked")
-    <T extends GridRecordCache> T dataset(String key) {
-        return (T) datasets.get(key);
+    <C extends GridCache> C cache(String cacheName) {
+        return (C) caches.get(cacheName);
     }
 
-    public static <T extends GridRecordCache> T getDataSet(Class<T> clazz) {
-        String key = clazz.getSimpleName().toLowerCase();
-        return GRID.dataset(key);
+    public static <C extends GridCache> C getCache(Class<C> cacheClass) {
+        String cacheName = cacheClass.getSimpleName().toLowerCase();
+        return GRID.cache(cacheName);
     }
 
     /**
@@ -287,7 +272,7 @@ public class GridUtility implements GridMBean, Configurable {
                     sleep(1000);
                 } catch (InterruptedException e) {
                 }
-                for (int i = 0; i < datasets.count(); i++) {
+                for (int i = 0; i < caches.count(); i++) {
 //                    datasets.get(i).load();
                 }
             }

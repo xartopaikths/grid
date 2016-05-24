@@ -17,6 +17,4 @@ public interface GridMBean {
 
     void clear();
 
-    void remove(String cache);
-
 }

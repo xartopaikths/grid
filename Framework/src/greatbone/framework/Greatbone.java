@@ -35,7 +35,7 @@ public class Greatbone {
 
     public final static XnioWorker WORKER;
 
-    static final String CONFIGXML = "config.xml";
+    static final String CONFIG_FILE = "config.xml";
 
     // the root element of the config xml document
     public static Element config;
@@ -62,10 +62,10 @@ public class Greatbone {
 
         // load config xml
         try {
-            FileInputStream fis = new FileInputStream(CONFIGXML);
+            FileInputStream fis = new FileInputStream(CONFIG_FILE);
             DOMParser parser = new DOMParser();
             parser.parse(new InputSource(fis));
-            config = parser.getDocument().getDocumentElement();
+            Greatbone.config = parser.getDocument().getDocumentElement();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -83,7 +83,7 @@ public class Greatbone {
 
     }
 
-    public static Element getXmlTopTag(String tag) {
+    public static Element getConfigXmlTopTag(String tag) {
         NodeList lst = config.getElementsByTagName(tag);
         if (lst.getLength() > 0) {
             return (Element) lst.item(0);
@@ -106,7 +106,7 @@ public class Greatbone {
         DOMImplementationLS dom = (DOMImplementationLS) doc.getImplementation();
         LSSerializer lsSerializer = dom.createLSSerializer();
         try {
-            FileWriter fos = new FileWriter(CONFIGXML);
+            FileWriter fos = new FileWriter(CONFIG_FILE);
             String xml = lsSerializer.writeToString(doc);
             fos.write(xml);
         } catch (IOException e) {

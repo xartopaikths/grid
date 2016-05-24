@@ -12,7 +12,7 @@ import java.util.StringTokenizer;
 /**
  * An abstract dataset that can be either a recordset or a fileset.
  */
-public abstract class GridCache<P extends GridPartition> implements GridCacheMBean, Configurable {
+public abstract class GridCache<S extends GridShard> implements GridCacheMBean, Configurable {
 
     // the grid instance
     final GridUtility grid;
@@ -29,13 +29,13 @@ public abstract class GridCache<P extends GridPartition> implements GridCacheMBe
     //
     // partitions
     final SpinWait sync = new SpinWait();
-    P[] partitions;
-    int pcount;
+    S[] shards;
+    int count;
 
     GridCache(GridUtility grid) {
         this.grid = grid;
 
-        // derive the key
+        // derive name from the class name
         Class c = getClass();
         this.name = c.getSimpleName().toLowerCase(); // from class name
 
@@ -74,17 +74,17 @@ public abstract class GridCache<P extends GridPartition> implements GridCacheMBe
     }
 
 
-    public P get(String partition) {
+    public S get(String shardId) {
         sync.enterRead();
         try {
-            for (int i = 0; i < pcount; i++) {
-                P part = partitions[i];
-                if ((partition == null)) { // equals
-                    if (part.id == null) {
-                        return part;
+            for (int i = 0; i < count; i++) {
+                S shard = shards[i];
+                if ((shardId == null)) { // equals
+                    if (shard.id == null) {
+                        return shard;
                     }
-                } else if (partition.equals(part.id)) {
-                    return part;
+                } else if (shardId.equals(shard.id)) {
+                    return shard;
                 }
             }
             return null;
@@ -93,12 +93,12 @@ public abstract class GridCache<P extends GridPartition> implements GridCacheMBe
         }
     }
 
-    P locate(String dataKey) {
+    S locate(String dataKey) {
         if (dataKey != null) {
             sync.enterRead();
             try {
-                for (int i = 0; i < pcount; i++) {
-                    P part = partitions[i];
+                for (int i = 0; i < count; i++) {
+                    S part = shards[i];
                     if (dataKey.startsWith(part.id)) { // starts with
                         return part;
                     }
@@ -111,16 +111,16 @@ public abstract class GridCache<P extends GridPartition> implements GridCacheMBe
     }
 
     @SuppressWarnings("unchecked")
-    void add(P v) {
+    void add(S shard) {
         sync.enterWrite();
         try {
-            int len = partitions.length;
-            if (pcount == len) {
-                P[] new_ = (P[]) new Object[len * 2];
-                System.arraycopy(partitions, 0, new_, 0, len);
-                partitions = new_;
+            int len = shards.length;
+            if (count == len) {
+                S[] new_ = (S[]) new Object[len * 2];
+                System.arraycopy(shards, 0, new_, 0, len);
+                shards = new_;
             }
-            partitions[pcount++] = v;
+            shards[count++] = shard;
         } finally {
             sync.exitWrite();
         }

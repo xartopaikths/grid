@@ -3,7 +3,7 @@
         <host name="op" bind="10.0.0.201:8080"/>
         <host name="mgt" bind="10.0.0.201:8081"/>
     </web>
-    <grid bind="10.0.0.201">
+    <grid bind="10.0.0.201" cluster="10.0.0.201-202">
         <dataset name="users">
             <part id="jx" cap="4096"/>
         </dataset>
