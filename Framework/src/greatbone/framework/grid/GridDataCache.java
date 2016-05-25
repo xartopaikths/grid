@@ -25,25 +25,19 @@ import java.util.List;
  * <p/>
  * setup during environment initialization
  */
-public abstract class GridRecordCache<R extends GridRecord<R>> extends GridCache<GridPage<R>> implements GridCacheMBean {
+public abstract class GridDataCache<D extends GridData<D>> extends GridCache<GridPage<D>> implements GridCacheMBean {
 
     // the record schema
-    final GridSchema<R> schema;
+    final GridSchema<D> schema;
 
     // annotated cache policy, can be null
     final Copy cachepol;
 
-    // primary data pages, both origins and references
-    final GridPages<R> primary;
-
-    // the backup copy of the preceding node's origin data pages
-    final GridPages<R> copy;
-
     @SuppressWarnings("unchecked")
-    protected GridRecordCache(GridUtility grid, int inipages) {
+    protected GridDataCache(GridUtility grid, int inipages) {
         super(grid);
 
-        Class<R> datc = (Class<R>) typearg(0); // resolve the data class by type parameter
+        Class<D> datc = (Class<D>) typearg(0); // resolve the data class by type parameter
         this.schema = grid.getSchema(datc);
         // register mbean
         try {
@@ -56,16 +50,13 @@ public abstract class GridRecordCache<R extends GridRecord<R>> extends GridCache
         // prepare page table
         this.cachepol = getClass().getAnnotation(Copy.class);
 
-        this.primary = new GridPages<>(inipages);
-        this.copy = new GridPages<>(inipages);
-
     }
 
     // resolve a type argument along the inheritance hierarchy
     final Class typearg(int ordinal) {
         // gather along the inheritence hierarchy
         Deque<Class> que = new LinkedList<Class>();
-        for (Class c = getClass(); c != GridRecordCache.class; c = c.getSuperclass()) {
+        for (Class c = getClass(); c != GridDataCache.class; c = c.getSuperclass()) {
             que.addFirst(c);
         }
         for (Class c : que) {
@@ -106,20 +97,12 @@ public abstract class GridRecordCache<R extends GridRecord<R>> extends GridCache
 
     }
 
-    public R newData() {
+    public D newData() {
         return schema.instantiate();
     }
 
     //
     // PAGE OPERATIONS
-
-    public GridPage<R> getPage(String pageid) {
-        return primary.get(pageid);
-    }
-
-    public GridPage<R> locatePage(String datakey) {
-        return primary.locate(datakey);
-    }
 
     String select(String condition) {
         Roll<String, GridColumn> cols = schema.columns;
@@ -188,7 +171,7 @@ public abstract class GridRecordCache<R extends GridRecord<R>> extends GridCache
 
     void loadwith(ResultSet rs) throws SQLException {
         // create a data object with one record buffer
-        R dat = schema.instantiate();
+        D dat = schema.instantiate();
 
         while (rs.next()) {
             // input data from result set
@@ -202,14 +185,14 @@ public abstract class GridRecordCache<R extends GridRecord<R>> extends GridCache
     /**
      * Gets a single specified data entry.
      *
-     * @param key the data entry to find
+     * @param recordKey the data entry to find
      * @return a data object containing a single entry, or null
      */
-    public R getData(String key) {
+    public D get(String recordKey) {
         // locate the page
-        GridPage<R> page = locatePage(key);
-        if (page != null) {
-            return page.get(key);
+        GridPage<D> shard = locateShard(recordKey);
+        if (shard != null) {
+            return shard.get(recordKey);
         }
         return null;
     }
@@ -220,11 +203,11 @@ public abstract class GridRecordCache<R extends GridRecord<R>> extends GridCache
      * @param keys data entries to find
      * @return an merged data object, or null
      */
-    public R getData(String... keys) {
-        List<GridGet<R>> tasks = null;
+    public D get(String... keys) {
+        List<GridGet<D>> tasks = null;
         for (int i = 0; i < keys.length; i++) {
             String key = keys[i];
-            GridPage<R> page = locatePage(key);
+            GridPage<D> page = locateShard(key);
             if (page != null) {
                 if (tasks == null) tasks = new ArrayList<>(keys.length); // lazy creation of task list
                 tasks.add(new GridGet<>(page, key));
@@ -234,9 +217,9 @@ public abstract class GridRecordCache<R extends GridRecord<R>> extends GridCache
             try {
                 GridGet.invokeAll(tasks);
                 // harvest the results
-                R merge = null;
+                D merge = null;
                 for (int i = 0; i < tasks.size(); i++) {
-                    R res = tasks.get(i).result;
+                    D res = tasks.get(i).result;
                     if (res != null) {
                         if (merge == null) {
                             merge = res;
@@ -252,35 +235,20 @@ public abstract class GridRecordCache<R extends GridRecord<R>> extends GridCache
         return null;
     }
 
-    public R getData(Critera<R> d) {
+    public D get(Critera<D> d) {
         return null;
     }
 
     // no autogen of key
-    public void put(R dat) {
-        String key = dat.getKey();
-        GridPage<R> page = locatePage(key);
-        if (page != null) {
-            page.put(null, dat);
+    public void put(D record) {
+        String recordKey = record.getKey();
+        GridPage<D> shard = locateShard(recordKey);
+        if (shard != null) {
+            shard.put(null, record);
         }
     }
 
-    // a subclass may treat key differently, it can be full key, partial key, or null
-    public R put(String key, R dat) {
-        if (key == null) {
-
-        }
-        // find the target page
-        GridPage<R> page = locatePage(key);
-        if (page == null) {
-            page = new GridPageX<>(this, null, 1024);
-            primary.add(page);
-        }
-        page.put(key, dat);
-        return dat;
-    }
-
-    public void forEach(Critera<R> condition) {
+    public void forEach(Critera<D> condition) {
 
     }
 

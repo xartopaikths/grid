@@ -63,17 +63,16 @@ public abstract class GridCache<S extends GridShard> implements GridCacheMBean, 
         return config;
     }
 
-
-    public S get(String shardId) {
+    public S getShard(String shardKey) {
         sync.enterRead();
         try {
             for (int i = 0; i < count; i++) {
                 S shard = shards[i];
-                if ((shardId == null)) { // equals
-                    if (shard.id == null) {
+                if (shardKey == null) { // equals
+                    if (shard.key == null) {
                         return shard;
                     }
-                } else if (shardId.equals(shard.id)) {
+                } else if (shardKey.equals(shard.key)) {
                     return shard;
                 }
             }
@@ -83,14 +82,14 @@ public abstract class GridCache<S extends GridShard> implements GridCacheMBean, 
         }
     }
 
-    S locate(String dataKey) {
+    S locateShard(String dataKey) {
         if (dataKey != null) {
             sync.enterRead();
             try {
                 for (int i = 0; i < count; i++) {
-                    S part = shards[i];
-                    if (dataKey.startsWith(part.id)) { // starts with
-                        return part;
+                    S shard = shards[i];
+                    if (dataKey.startsWith(shard.key)) { // starts with
+                        return shard;
                     }
                 }
             } finally {
@@ -101,7 +100,7 @@ public abstract class GridCache<S extends GridShard> implements GridCacheMBean, 
     }
 
     @SuppressWarnings("unchecked")
-    void add(S shard) {
+    void addShard(S shard) {
         sync.enterWrite();
         try {
             int len = shards.length;

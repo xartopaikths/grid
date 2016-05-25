@@ -17,6 +17,7 @@ import java.net.SocketException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
+import java.util.function.Predicate;
 
 /**
  * The singleton environment for in-memory data grid operations. This is the control center of grid-related assets and operations.
@@ -30,7 +31,7 @@ public class GridUtility implements GridMBean, Configurable {
     // REGISTERED (fixed structures)
 
     // gathering of record schemas
-    final Roll<Class<? extends GridRecord>, GridSchema> schemas = new Roll<>(64);
+    final Roll<Class<? extends GridData>, GridSchema> schemas = new Roll<>(64);
 
     // registered caches
     final Roll<String, GridCache> caches = new Roll<>(64);
@@ -149,8 +150,8 @@ public class GridUtility implements GridMBean, Configurable {
     public void DDL() {
         for (int i = 0; i < caches.count(); i++) {
             GridCache dset = caches.get(i);
-            if (dset instanceof GridRecordCache) {
-                System.out.println(((GridRecordCache) dset).CREATE());
+            if (dset instanceof GridDataCache) {
+                System.out.println(((GridDataCache) dset).CREATE());
             }
         }
     }
@@ -193,7 +194,7 @@ public class GridUtility implements GridMBean, Configurable {
     }
 
     @SuppressWarnings("unchecked")
-    <R extends GridRecord<R>> GridSchema<R> getSchema(Class<R> recordClass) {
+    <R extends GridData<R>> GridSchema<R> getSchema(Class<R> recordClass) {
         GridSchema<R> sch = schemas.get(recordClass);
         if (sch == null) {
             try {
@@ -216,6 +217,28 @@ public class GridUtility implements GridMBean, Configurable {
         String cacheName = cacheClass.getSimpleName().toLowerCase();
         return GRID.cache(cacheName);
     }
+
+
+    @SuppressWarnings("unchecked")
+   public static <D extends GridData<D>> D[] search(Predicate<String> locator, Critera<D> filter) {
+        try {
+            // locate pages
+            List<GridSearch<D>> lst = null;
+            if (lst != null) {
+                // in parallel fork join
+                GridSearch.invokeAll(lst);
+                int len = lst.size();
+                D[] ret = (D[]) new GridData[len];
+                for (int i = 0; i < len; i++) {
+                    ret[i] = lst.get(i).result;
+                }
+                return ret;
+            }
+            return null;
+        } finally {
+        }
+    }
+
 
     /**
      * For monitoring status changes of peers and pages in the cluster.

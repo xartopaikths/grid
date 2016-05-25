@@ -41,7 +41,7 @@ public class TransactsControl extends WebControl {
 
         }
 
-        transacts.put(null,_new) ; // set autogen id during the put
+        transacts.put(_new) ; // set autogen id during the put
 
     }
 

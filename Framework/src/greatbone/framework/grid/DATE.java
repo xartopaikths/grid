@@ -20,12 +20,12 @@ public class DATE extends GridColumn<Date> {
     }
 
     @Override
-    void load(GridRecord dat, ResultSet rs) throws SQLException {
+    void load(GridData dat, ResultSet rs) throws SQLException {
 
     }
 
     @Override
-    void param(GridRecord dat, PreparedStatement pstmt) throws SQLException {
+    void param(GridData dat, PreparedStatement pstmt) throws SQLException {
 
     }
 

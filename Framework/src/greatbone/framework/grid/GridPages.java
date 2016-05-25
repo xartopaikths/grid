@@ -9,7 +9,7 @@ import java.util.function.Predicate;
 /**
  * A collection of data pages that are basically in addition order.
  */
-public class GridPages<D extends GridRecord<D>> {
+public class GridPages<D extends GridData<D>> {
 
     final SpinWait sync = new SpinWait();
 
@@ -117,7 +117,7 @@ public class GridPages<D extends GridRecord<D>> {
                 // in parallel fork join
                 GridSearch.invokeAll(lst);
                 int len = lst.size();
-                D[] ret = (D[]) new GridRecord[len];
+                D[] ret = (D[]) new GridData[len];
                 for (int i = 0; i < len; i++) {
                     ret[i] = lst.get(i).result;
                 }

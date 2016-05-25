@@ -7,7 +7,7 @@ import greatbone.framework.web.WebSpace;
 /**
  * A shop that takes orders and issues delivery tasks.
  */
-public class Client extends GridRecord<Client> implements WebPrincipal, WebSpace {
+public class Client extends GridData<Client> implements WebPrincipal, WebSpace {
 
     // COLUMNS
 

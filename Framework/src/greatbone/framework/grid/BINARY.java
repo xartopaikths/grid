@@ -14,12 +14,12 @@ public class BINARY extends GridColumn<byte[]> {
         this.length = kbytes * 1024;
     }
 
-    public byte[] get(GridRecord dat) {
+    public byte[] get(GridData dat) {
 //        return dat.getString(offset);
         return null;
     }
 
-    public void put(GridRecord dat, byte[] v) {
+    public void put(GridData dat, byte[] v) {
 //        dat.putString(offset, v, len);
     }
 
@@ -35,12 +35,12 @@ public class BINARY extends GridColumn<byte[]> {
     }
 
     @Override
-    void load(GridRecord dat, ResultSet rs) throws SQLException {
+    void load(GridData dat, ResultSet rs) throws SQLException {
 
     }
 
     @Override
-    void param(GridRecord dat, PreparedStatement pstmt) throws SQLException {
+    void param(GridData dat, PreparedStatement pstmt) throws SQLException {
 
     }
 

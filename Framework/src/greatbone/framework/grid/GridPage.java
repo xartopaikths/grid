@@ -7,12 +7,12 @@ import java.util.concurrent.atomic.AtomicInteger;
  *
  * @param <R> type of record
  */
-public abstract class GridPage<R extends GridRecord<R>> extends GridShard {
+public abstract class GridPage<R extends GridData<R>> extends GridShard {
 
     // TODO marks of insertion timestamp for records
 
     // the parent dataset
-    final GridRecordCache<R> parent;
+    final GridDataCache<R> parent;
 
     // the page id
     final String id;
@@ -20,7 +20,7 @@ public abstract class GridPage<R extends GridRecord<R>> extends GridShard {
     // for the key-generating algorithm
     final AtomicInteger serial;
 
-    GridPage(final GridRecordCache<R> parent, String id) {
+    GridPage(final GridDataCache<R> parent, String id) {
         this.parent = parent;
         this.id = id;
         this.serial = new AtomicInteger(0);

@@ -4,7 +4,7 @@ import greatbone.framework.grid.*;
 
 /**
  */
-public class Transact extends GridRecord<Transact> {
+public class Transact extends GridData<Transact> {
 
     //
     // COLUMNS

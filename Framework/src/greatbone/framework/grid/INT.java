@@ -8,11 +8,11 @@ import java.sql.SQLException;
  */
 public class INT extends GridColumn<Integer> {
 
-    public int getValue(GridRecord dat) {
+    public int getValue(GridData dat) {
         return dat.getInt(offset);
     }
 
-    public void putValue(GridRecord dat, int v) {
+    public void putValue(GridData dat, int v) {
         dat.putInt(offset, v);
     }
 
@@ -26,12 +26,12 @@ public class INT extends GridColumn<Integer> {
     }
 
     @Override
-    void load(GridRecord dat, ResultSet rs) throws SQLException {
+    void load(GridData dat, ResultSet rs) throws SQLException {
         putValue(dat, rs.getInt(ordinal));
     }
 
     @Override
-    void param(GridRecord dat, PreparedStatement pstmt) throws SQLException {
+    void param(GridData dat, PreparedStatement pstmt) throws SQLException {
         pstmt.setInt(ordinal, getValue(dat));
     }
 

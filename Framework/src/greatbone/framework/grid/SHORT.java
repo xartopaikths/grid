@@ -8,15 +8,15 @@ import java.sql.SQLException;
  */
 public class SHORT extends GridColumn<Short> {
 
-    public int tryValue(GridRecord dat, short v) {
+    public int tryValue(GridData dat, short v) {
         return -1;
     }
 
-    public short getValue(GridRecord dat) {
+    public short getValue(GridData dat) {
         return dat.getShort(offset);
     }
 
-    public void putValue(GridRecord dat, short v) {
+    public void putValue(GridData dat, short v) {
         dat.putShort(offset, v);
     }
 
@@ -31,12 +31,12 @@ public class SHORT extends GridColumn<Short> {
     }
 
     @Override
-    void load(GridRecord dat, ResultSet rs) throws SQLException {
+    void load(GridData dat, ResultSet rs) throws SQLException {
 
     }
 
     @Override
-    void param(GridRecord dat, PreparedStatement pstmt) throws SQLException {
+    void param(GridData dat, PreparedStatement pstmt) throws SQLException {
 
     }
 

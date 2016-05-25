@@ -26,25 +26,25 @@ public class STRING extends GridColumn<String> {
         return "VARCHAR(" + size() + ")";
     }
 
-    public int tryValue(GridRecord dat, String v) {
+    public int tryValue(GridData dat, String v) {
         return -1;
     }
 
-    public String getValue(GridRecord dat) {
+    public String getValue(GridData dat) {
         return dat.getString(offset, length);
     }
 
-    public void putValue(GridRecord dat, String v) {
+    public void putValue(GridData dat, String v) {
         dat.putString(offset, v, length);
     }
 
     @Override
-    void load(GridRecord dat, ResultSet rs) throws SQLException {
+    void load(GridData dat, ResultSet rs) throws SQLException {
         putValue(dat, rs.getString(ordinal));
     }
 
     @Override
-    void param(GridRecord dat, PreparedStatement pstmt) throws SQLException {
+    void param(GridData dat, PreparedStatement pstmt) throws SQLException {
         pstmt.setString(ordinal, getValue(dat));
     }
 

@@ -5,7 +5,7 @@ import greatbone.framework.grid.*;
 /**
  * A devliery order, created from scatch, or derived from a number of purchase orders
  */
-public class Delivery extends GridRecord<Delivery> {
+public class Delivery extends GridData<Delivery> {
 
     //
     // COLUMNS

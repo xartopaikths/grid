@@ -14,7 +14,7 @@ import java.sql.SQLException;
  *
  * @param <D> data object
  */
-public class GridSchema<D extends GridRecord<D>> {
+public class GridSchema<D extends GridData<D>> {
 
     // each data entry reserves 12 leading bytes for controlling purposes (FLAGS, HASH, NEXT)
     static final int RESERVED = 12;
@@ -86,7 +86,7 @@ public class GridSchema<D extends GridRecord<D>> {
         return columns;
     }
 
-    void loadRecord(GridRecord<D> dat, ResultSet rs) throws SQLException {
+    void loadRecord(GridData<D> dat, ResultSet rs) throws SQLException {
         for (int i = 0; i < columns.count(); i++) {
             GridColumn col = columns.get(i);
             col.load(dat, rs);

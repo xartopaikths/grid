@@ -7,7 +7,7 @@ import io.undertow.util.Headers;
 import io.undertow.util.HttpString;
 import greatbone.framework.Out;
 import greatbone.framework.Printer;
-import greatbone.framework.grid.GridRecord;
+import greatbone.framework.grid.GridData;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -166,7 +166,7 @@ public class WebContext implements Out<WebContext>, AutoCloseable {
         return null;
     }
 
-    public <T extends GridRecord> T content(T obj) {
+    public <T extends GridData> T content(T obj) {
         return null;
     }
 
@@ -323,22 +323,22 @@ public class WebContext implements Out<WebContext>, AutoCloseable {
         return this;
     }
 
-    public WebContext $obj(GridRecord dat) {
+    public WebContext $obj(GridData dat) {
 
         return this;
     }
 
-    public WebContext $obj(GridRecord dat, int flags) {
+    public WebContext $obj(GridData dat, int flags) {
 
         return this;
     }
 
-    public WebContext $obj(List<GridRecord> data) {
+    public WebContext $obj(List<GridData> data) {
 
         return this;
     }
 
-    public WebContext $obj(List<GridRecord> datalst, int flags) {
+    public WebContext $obj(List<GridData> datalst, int flags) {
 
         return this;
     }

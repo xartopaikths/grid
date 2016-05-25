@@ -10,14 +10,14 @@ import java.nio.ByteBuffer;
 import java.sql.ResultSet;
 
 /**
- * An abstract data record. that can contain one or more data records.
+ * An abstract data cursor. that can contain one or more data records.
  * A data recordt is also used internally as a cursor that points to a backing native page store.
  * <p/>
  * may map to an underlying database table definition
  *
  * @param <R> type of this object
  */
-public abstract class GridRecord<R extends GridRecord<R>> implements Printer {
+public abstract class GridData<R extends GridData<R>> implements Printer {
 
     // the associated data page
     // it is the backing store if native page and the buffer field is null

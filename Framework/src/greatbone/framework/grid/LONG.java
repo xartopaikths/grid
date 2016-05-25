@@ -8,7 +8,7 @@ import java.sql.SQLException;
  */
 public class LONG extends GridColumn {
 
-    public int getValue(GridRecord dat) {
+    public int getValue(GridData dat) {
         return 0;
     }
 
@@ -23,12 +23,12 @@ public class LONG extends GridColumn {
     }
 
     @Override
-    void load(GridRecord dat, ResultSet rs) throws SQLException {
+    void load(GridData dat, ResultSet rs) throws SQLException {
 
     }
 
     @Override
-    void param(GridRecord dat, PreparedStatement pstmt) throws SQLException {
+    void param(GridData dat, PreparedStatement pstmt) throws SQLException {
 
     }
 

@@ -5,31 +5,31 @@ import java.util.concurrent.ForkJoinTask;
 /**
  * A query task that works on a particular page
  */
-class GridSearch<D extends GridRecord<D>> extends ForkJoinTask<D> {
+class GridSearch<R extends GridData<R>> extends ForkJoinTask<R> {
 
-    final GridPage<D> page;
+    final GridPage<R> page;
 
-    final Critera<D> filter;
+    final Critera<R> filter;
 
     final boolean ascending;
 
     // return data
-    D result;
+    R result;
 
 
-    GridSearch(GridPage<D> page, Critera<D> filter, boolean ascending) {
+    GridSearch(GridPage<R> page, Critera<R> filter, boolean ascending) {
         this.page = page;
         this.filter = filter;
         this.ascending = ascending;
     }
 
     @Override
-    public D getRawResult() {
+    public R getRawResult() {
         return result;
     }
 
     @Override
-    protected void setRawResult(D value) {
+    protected void setRawResult(R value) {
         this.result = value;
     }
 

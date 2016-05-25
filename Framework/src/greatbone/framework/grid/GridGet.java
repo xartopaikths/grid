@@ -5,7 +5,7 @@ import java.util.concurrent.ForkJoinTask;
 /**
  * A get task that works on a particular page
  */
-class GridGet<D extends GridRecord<D>> extends ForkJoinTask<D> {
+class GridGet<D extends GridData<D>> extends ForkJoinTask<D> {
 
     // the target abstract page
     final GridPage<D> page;

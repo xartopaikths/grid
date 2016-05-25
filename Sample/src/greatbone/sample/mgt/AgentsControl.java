@@ -27,7 +27,7 @@ public class AgentsControl extends WebControl {
     }
 
     public void Get(String rsc, WebContext wc) throws Exception {
-        Shop ret = shops.getData(rsc);
+        Shop ret = shops.get(rsc);
         if (ret == null) {
             wc.sendNotFound();
         } else {
@@ -41,7 +41,7 @@ public class AgentsControl extends WebControl {
 
         wc.content(agent);
 
-        shops.put(null, agent);
+        shops.put(agent);
     }
 
 }
