@@ -11,7 +11,7 @@ import java.util.ArrayDeque;
 /**
  * The client connectivity and RPC endpoint to a particular member node.
  */
-class GridClient extends GridEndPoint {
+class GridConnector extends GridEndPoint {
 
     static final OptionMap OPTIONS = OptionMap.builder()
             .set(Options.RECEIVE_BUFFER, (1024 * 1024 * 4)) // large buffer for high speed LAN
@@ -28,14 +28,16 @@ class GridClient extends GridEndPoint {
     volatile long tried;
 
     // the connection pool
-    final int poolsiz;
+    final int poolSize;
+
+    // the pool of client side connections
     final ArrayDeque<StreamConnection> pool;
 
-    GridClient(GridUtility grid, String interf, int poolsiz) throws IOException {
+    GridConnector(GridUtility grid, String interf, int poolSize) throws IOException {
         super(grid, interf);
 
-        this.poolsiz = poolsiz;
-        this.pool = new ArrayDeque<>(poolsiz);
+        this.poolSize = poolSize;
+        this.pool = new ArrayDeque<>(poolSize);
     }
 
     final StreamConnection checkout() throws IOException {
@@ -52,7 +54,7 @@ class GridClient extends GridEndPoint {
     final void checkin(StreamConnection conn) {
         if (conn != null) {
             synchronized (pool) {
-                if (pool.size() == poolsiz) { // if pool already full then drop the conn
+                if (pool.size() == poolSize) { // if pool already full then drop the conn
                     try {
                         conn.close();
                     } catch (IOException e) {

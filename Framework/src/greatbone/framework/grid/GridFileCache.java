@@ -15,14 +15,14 @@ public abstract class GridFileCache extends GridCache<GridFolder> {
         // register mbean
         try {
             MBeanServer mbs = ManagementFactory.getPlatformMBeanServer();
-            ObjectName objname = new ObjectName("grid.fileset:type=FileSet,name=" + name);
+            ObjectName objname = new ObjectName("grid.cache:type=File,name=" + name);
             mbs.registerMBean(this, objname);
         } catch (Exception e) {
         }
 
     }
 
-    public String key() {
+    public String name() {
         return name;
     }
 

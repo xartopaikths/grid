@@ -43,6 +43,7 @@ public class GridUtility implements GridMBean, Configurable {
 
     // each corresponds to a member peer, in configuration order so that query results are consistent
     final Roll<String, GridEndPoint> endpoints = new Roll<>(256);
+
     GridServer server;
 
     volatile int status;
@@ -88,7 +89,7 @@ public class GridUtility implements GridMBean, Configurable {
                 if (addr.equals(bind) || (bind.isEmpty() && isLocalAddress(InetAddress.getByName(addr)))) {
                     new_ = server = new GridServer(this, addr);
                 } else {
-                    new_ = new GridClient(this, addr, 10);
+                    new_ = new GridConnector(this, addr, 10);
                 }
                 endpoints.put(addr, new_);
                 if (last != null) {
@@ -257,7 +258,7 @@ public class GridUtility implements GridMBean, Configurable {
 
                 for (int i = 0; i < endpoints.count(); i++) {
                     GridEndPoint peer = endpoints.get(i);
-                    if (peer instanceof GridClient) {
+                    if (peer instanceof GridConnector) {
                         try {
 //                            ((GridClient) peer).call();
                         } catch (Exception e) {

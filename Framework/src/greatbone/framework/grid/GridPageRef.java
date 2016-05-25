@@ -10,36 +10,31 @@ import java.io.ObjectOutputStream;
  */
 class GridPageRef<D extends GridData<D>> extends GridPage<D> {
 
-    // client endpoint to the origin peer
-    GridClient origincli;
+    // connector to the origin peer
+    GridConnector connector;
 
     // status of origin
-    int orginstatus;
+    int status;
 
-    // client endpoint to the backup peer
-    volatile GridClient backupcli;
-
-    int backupstatus;
-
-    GridPageRef(GridDataCache<D> parent, String id, GridClient origincli) {
+    GridPageRef(GridDataCache<D> parent, String id, GridConnector connector) {
         super(parent, id);
 
-        this.origincli = origincli;
+        this.connector = connector;
     }
 
     @Override
     public D get(String key) {
         StreamConnection conn = null;
-        try (GridContext gc = new GridContext(conn = this.origincli.checkout())) {
+        try (GridContext gc = new GridContext(conn = this.connector.checkout())) {
             //
             // parent.key
             // id;
             // key
-            this.origincli.call(gc);
+            this.connector.call(gc);
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
-            this.origincli.checkin(conn);
+            this.connector.checkin(conn);
         }
         return null;
     }
@@ -47,16 +42,16 @@ class GridPageRef<D extends GridData<D>> extends GridPage<D> {
     @Override
     public D put(String key, D dat) {
         StreamConnection conn = null;
-        try (GridContext gc = new GridContext(conn = this.origincli.checkout())) {
+        try (GridContext gc = new GridContext(conn = this.connector.checkout())) {
             //
             // parent.key
             // id;
             // key
-            this.origincli.call(gc);
+            this.connector.call(gc);
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
-            this.origincli.checkin(conn);
+            this.connector.checkin(conn);
         }
         return null;
     }
@@ -64,7 +59,7 @@ class GridPageRef<D extends GridData<D>> extends GridPage<D> {
     @Override
     public D search(Critera<D> filter) {
         StreamConnection conn = null;
-        try (GridContext gc = new GridContext(conn = this.origincli.checkout())) {
+        try (GridContext gc = new GridContext(conn = this.connector.checkout())) {
             //
             // parent.key
             // id;
@@ -75,11 +70,11 @@ class GridPageRef<D extends GridData<D>> extends GridPage<D> {
             out.writeObject(filter);
             out.close();
 
-            this.origincli.call(gc);
+            this.connector.call(gc);
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
-            this.origincli.checkin(conn);
+            this.connector.checkin(conn);
         }
         return null;
     }

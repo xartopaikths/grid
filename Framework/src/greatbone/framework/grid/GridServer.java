@@ -33,6 +33,7 @@ class GridServer extends GridEndPoint {
                         // stream channel has been accepted at this stage.
                         conn.getSourceChannel().setReadListener(srcchan -> {
                             //
+//                            srcchan.read()
                             GridContext gc = new GridContext(conn);
                             handle(gc);
                         });
