@@ -28,11 +28,11 @@ class GridFolderX extends GridFolder implements GridLocalMBean {
     }
 
     public GridFile get(String key) throws IOException {
-        GridFile info = cache.get(key);
+        GridFile info = files.get(key);
         if (info == null) {
             // It's OK to construct a Heavy that ends up not being used
             info = new GridFile(Paths.get(key));
-            GridFile other = cache.putIfAbsent(key, info);
+            GridFile other = files.putIfAbsent(key, info);
             if (other != null) {
                 info = other;
             }

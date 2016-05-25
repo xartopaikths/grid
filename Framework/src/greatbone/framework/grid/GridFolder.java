@@ -11,18 +11,18 @@ class GridFolder extends GridShard {
 
     String name;
 
-    final ConcurrentHashMap<String, GridFile> cache;
+    final ConcurrentHashMap<String, GridFile> files;
 
     GridFolder(int capacity) {
-        cache = new ConcurrentHashMap<>(capacity);
+        files = new ConcurrentHashMap<>(capacity);
     }
 
     public GridFile get(String key) throws IOException {
-        GridFile info = cache.get(key);
+        GridFile info = files.get(key);
         if (info == null) {
             // It's OK to construct a Heavy that ends up not being used
             info = new GridFile(Paths.get(key));
-            GridFile other = cache.putIfAbsent(key, info);
+            GridFile other = files.putIfAbsent(key, info);
             if (other != null) {
                 info = other;
             }
