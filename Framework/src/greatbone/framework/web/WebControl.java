@@ -11,10 +11,10 @@ import java.lang.reflect.Modifier;
 /**
  * A set of actions working on request/response eachanges to carry out management tasks on a collection of resources.
  */
-public abstract class WebControl {
+public abstract class WebControl{
 
     // the root handler
-    protected final WebHost host;
+    protected final WebVirtualHost host;
 
     // the parent of this work instance, if any
     protected final WebControl parent;
@@ -25,16 +25,16 @@ public abstract class WebControl {
     String key;
 
     // access checker
-    Check guarder;
+    Guard guard;
 
     // the subordinate structures
-    Sub subordinate;
+    ControlSet subordinates;
 
     // execution of background tasks
     Thread cycler;
 
-    protected WebControl(WebHost host, WebControl parent) {
-        this.host = (host != null) ? host : (WebHost) this;
+    protected WebControl(WebVirtualHost host, WebControl parent) {
+        this.host = (host != null) ? host : (WebVirtualHost) this;
         this.parent = parent;
 
         // initialize web methods
@@ -61,16 +61,16 @@ public abstract class WebControl {
         }
     }
 
-    public <T extends WebControl> void addSub(String key, Class<T> controller, Check guarder) {
+    public <T extends WebControl> void addSub(String key, Class<T> controlClass, Guard guard) {
         try {
-            Constructor<T> ctor = controller.getConstructor(WebHost.class, WebControl.class);
+            Constructor<T> ctor = controlClass.getConstructor(WebVirtualHost.class, WebControl.class);
             T sub = ctor.newInstance(host, this);
             sub.key = key;
-            sub.guarder = guarder;
-            if (this.subordinate == null) {
-                this.subordinate = new Children(8);
+            sub.guard = guard;
+            if (this.subordinates == null) {
+                this.subordinates = new HardControlSet(8);
             }
-            ((Children) this.subordinate).add(sub);
+            ((HardControlSet) this.subordinates).add(sub);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -80,8 +80,8 @@ public abstract class WebControl {
         return key;
     }
 
-    public Sub children() {
-        return subordinate;
+    public ControlSet children() {
+        return subordinates;
     }
 
     /**
@@ -95,9 +95,9 @@ public abstract class WebControl {
         if (slash == -1) { // without a slash then handle by this controller instance
             exch.control = this;
             HttpString method = exch.method();
-            if (method == Methods.GET) index(exch);
-        } else if (subordinate != null) { // resolve the sub structure
-            WebControl controller = subordinate.locate(base.substring(0, slash), exch);
+            if (method == Methods.GET) default_(exch);
+        } else if (subordinates != null) { // resolve the sub structure
+            WebControl controller = subordinates.locateSub(base.substring(0, slash), exch);
             if (controller != null) {
                 controller.perform(base.substring(slash + 1), exch);
             } else {
@@ -108,21 +108,21 @@ public abstract class WebControl {
         }
     }
 
-    public void index(WebContext exch) throws Exception {
+    public void default_(WebContext exch) throws Exception {
     }
 
     /**
      * A hashmap-based implemention that holds a set of sub works.
      */
-    static class Children implements Sub {
+    static class HardControlSet implements ControlSet {
 
         final Roll<String, WebControl> controllers;
 
-        Children(int initial) {
+        HardControlSet(int initial) {
             this.controllers = new Roll<>(initial);
         }
 
-        public WebControl locate(String key, WebContext exch) {
+        public WebControl locateSub(String key, WebContext wc) {
             return controllers.get(key);
         }
 

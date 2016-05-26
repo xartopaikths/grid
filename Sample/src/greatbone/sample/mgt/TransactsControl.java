@@ -5,7 +5,7 @@ import greatbone.sample.TRANSACTS;
 import greatbone.sample.Transact;
 import greatbone.framework.web.WebContext;
 import greatbone.framework.web.WebControl;
-import greatbone.framework.web.WebHost;
+import greatbone.framework.web.WebVirtualHost;
 
 /**
  * The menu management handler.
@@ -14,7 +14,7 @@ public class TransactsControl extends WebControl {
 
     final TRANSACTS transacts;
 
-    public TransactsControl(WebHost host, WebControl parent) {
+    public TransactsControl(WebVirtualHost host, WebControl parent) {
         super(host, parent);
 
          transacts = GridUtility.getCache(TRANSACTS.class);
@@ -22,7 +22,7 @@ public class TransactsControl extends WebControl {
     }
 
     @Override
-    public void index(WebContext exch) {
+    public void default_(WebContext exch) {
 
 
     }

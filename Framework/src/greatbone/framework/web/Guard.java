@@ -2,7 +2,7 @@ package greatbone.framework.web;
 
 /**
  */
-public interface Check {
+public interface Guard {
 
     Permission check(WebPrincipal prin);
 

@@ -3,19 +3,19 @@ package greatbone.sample.op;
 import greatbone.framework.web.WebSpace;
 import greatbone.framework.web.WebControl;
 import greatbone.framework.web.WebContext;
-import greatbone.framework.web.WebHost;
+import greatbone.framework.web.WebVirtualHost;
 
 /**
  * The menu management handler.
  */
 public class SettingsControl extends WebControl {
 
-    public SettingsControl(WebHost host, WebControl parent) {
+    public SettingsControl(WebVirtualHost host, WebControl parent) {
         super(host, parent);
     }
 
     @Override
-    public void index(WebContext exch) {
+    public void default_(WebContext exch) {
         WebSpace shopid = exch.space();
 
     }

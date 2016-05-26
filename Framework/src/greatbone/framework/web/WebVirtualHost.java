@@ -31,7 +31,7 @@ import static io.undertow.util.StatusCodes.*;
 /**
  * A root web folder that may have a hub handler which deals with variable sector folders.
  */
-public abstract class WebHost extends WebControl implements HttpHandler, WebHostMBean, Configurable {
+public abstract class WebVirtualHost extends WebControl implements HttpHandler, WebHostMBean, Configurable {
 
     static final String EMPTY = "";
 
@@ -53,10 +53,10 @@ public abstract class WebHost extends WebControl implements HttpHandler, WebHost
 
     boolean ssl;
 
-    protected WebHost(WebUtility web, String key) {
+    protected WebVirtualHost(WebUtility web, String name) {
         super(null, null);
         this.web = web;
-        this.key = key;
+        this.key = name;
 
         // register as mbean
         try {
@@ -67,19 +67,19 @@ public abstract class WebHost extends WebControl implements HttpHandler, WebHost
         }
 
         // get address settings from configuration, can be null if no configuration for the host is found
-        this.config = Greatbone.getXmlSubElement(web.config, "host", key);
+        this.config = Greatbone.getXmlSubElement(web.config, "host", name);
         this.hostname = (config != null) ? config.getAttribute("hostname") : null;
         this.port = (config != null) ? Integer.parseInt(config.getAttribute("port")) : 80;
         this.address = (hostname == null) ? null : new InetSocketAddress(hostname, port);
 
     }
 
-    public <T extends WebControl & Sub> void setHub(Class<T> clazz, Check guarder) {
+    public <T extends WebControl & ControlSet> void setHub(Class<T> clazz, Guard guarder) {
         try {
-            Constructor<T> ctor = clazz.getConstructor(WebHost.class, WebControl.class);
+            Constructor<T> ctor = clazz.getConstructor(WebVirtualHost.class, WebControl.class);
             T sub = ctor.newInstance(this, this);
-            sub.guarder = guarder;
-            this.subordinate = sub;
+            sub.guard = guarder;
+            this.subordinates = sub;
         } catch (Exception e) {
             e.printStackTrace();
         }

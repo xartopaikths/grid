@@ -2,7 +2,7 @@ package greatbone.sample.mgt;
 
 import greatbone.framework.db.DbContext;
 import greatbone.framework.web.WebControl;
-import greatbone.framework.web.WebHost;
+import greatbone.framework.web.WebVirtualHost;
 import greatbone.sample.User;
 
 import java.sql.SQLException;
@@ -15,7 +15,7 @@ public class UsersControl extends WebControl implements Runnable {
 
     final ConcurrentHashMap<Integer, User> cache = new ConcurrentHashMap<>();
 
-    public UsersControl(WebHost host, WebControl parent) {
+    public UsersControl(WebVirtualHost host, WebControl parent) {
         super(host, parent);
     }
 

@@ -8,26 +8,26 @@ import java.io.IOException;
 /**
  * The operation (agents and shops) subdomain & module. [op.company.com]
  */
-public class OpHost extends WebHost {
+public class OperationVirtualHost extends WebVirtualHost {
 
-    public OpHost(WebUtility web, String key) {
+    public OperationVirtualHost(WebUtility web, String key) {
         super(web, key);
 
-        setHub(ShopControl.class, null);
+        setHub(SoftControlSet.class, null);
     }
 
     @Override
-    public void index(WebContext wc) throws IOException {
+    public void default_(WebContext wc) throws IOException {
         wc.sendOK((x) -> x.$("OK, it's alomost done."));
     }
 
     /**
      * A hub that covers orgs.
      */
-    public static class ShopControl extends WebControl implements Sub {
+    public static class SoftControlSet extends WebControl implements ControlSet {
 
-        public ShopControl(WebHost host, WebControl parent) {
-            super(host, parent);
+        public SoftControlSet(WebVirtualHost vhost, WebControl parent) {
+            super(vhost, parent);
 
             // agent functions
 //            addSub("shop", OrgControl.class, null);
@@ -40,7 +40,7 @@ public class OpHost extends WebHost {
         }
 
         @Override
-        public WebControl locate(String key, WebContext wc) {
+        public WebControl locateSub(String key, WebContext wc) {
             Shop shop = null;
             if (shop != null) {
                 wc.setSpace(shop);

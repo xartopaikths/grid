@@ -1,7 +1,7 @@
 package greatbone.sample.mgt;
 
 import greatbone.framework.web.WebContext;
-import greatbone.framework.web.WebHost;
+import greatbone.framework.web.WebVirtualHost;
 import greatbone.framework.web.WebUtility;
 
 import java.io.IOException;
@@ -9,7 +9,7 @@ import java.io.IOException;
 /**
  * The management subdomain & module. [mgt.company.com]
  */
-public class MgtHost extends WebHost {
+public class MgtHost extends WebVirtualHost {
 
     public MgtHost(WebUtility web, String key) {
         super(web, key);
@@ -20,7 +20,7 @@ public class MgtHost extends WebHost {
     }
 
     @Override
-    public void index(WebContext wc) throws IOException {
+    public void default_(WebContext wc) throws IOException {
         wc.sendOK((x) -> x.$("OK, it's alomost done."));
     }
 

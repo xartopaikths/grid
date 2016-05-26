@@ -3,7 +3,7 @@ package greatbone.sample.op;
 import greatbone.framework.grid.GridUtility;
 import greatbone.framework.web.WebContext;
 import greatbone.framework.web.WebControl;
-import greatbone.framework.web.WebHost;
+import greatbone.framework.web.WebVirtualHost;
 import greatbone.sample.ORDERS;
 import greatbone.sample.Shop;
 
@@ -14,14 +14,14 @@ public class OrdersControl extends WebControl {
 
     final ORDERS sales;
 
-    public OrdersControl(WebHost host, WebControl parent) {
+    public OrdersControl(WebVirtualHost host, WebControl parent) {
         super(host, parent);
 
         sales = GridUtility.getCache(ORDERS.class);
     }
 
     @Override
-    public void index(WebContext exch) {
+    public void default_(WebContext exch) {
         Shop shop = (Shop) exch.space();
 
         int id = 213;

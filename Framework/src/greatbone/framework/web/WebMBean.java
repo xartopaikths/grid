@@ -10,6 +10,4 @@ public interface WebMBean {
 
     void stop() throws IOException;
 
-    void restart();
-
 }

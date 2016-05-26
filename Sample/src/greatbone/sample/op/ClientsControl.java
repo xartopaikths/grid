@@ -2,7 +2,7 @@ package greatbone.sample.op;
 
 import greatbone.framework.web.WebContext;
 import greatbone.framework.web.WebControl;
-import greatbone.framework.web.WebHost;
+import greatbone.framework.web.WebVirtualHost;
 import greatbone.sample.Shop;
 
 /**
@@ -11,13 +11,13 @@ import greatbone.sample.Shop;
 public class ClientsControl extends WebControl {
 
 
-    public ClientsControl(WebHost host, WebControl parent) {
+    public ClientsControl(WebVirtualHost host, WebControl parent) {
         super(host, parent);
 
     }
 
     @Override
-    public void index(WebContext exch) {
+    public void default_(WebContext exch) {
         Shop shop = (Shop) exch.space();
     }
 

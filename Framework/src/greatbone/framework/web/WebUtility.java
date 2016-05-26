@@ -12,7 +12,7 @@ import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 
 /**
- * The managerial point of web services.
+ * The containment of static resources and virtual hosts.
  */
 public class WebUtility implements WebMBean, Configurable {
 
@@ -24,7 +24,7 @@ public class WebUtility implements WebMBean, Configurable {
     final Roll<String, WebStatic> statics;
 
     // virtual hosts maintained by this JVM process
-    final ArrayList<WebHost> hosts = new ArrayList<>(4);
+    final ArrayList<WebVirtualHost> vhosts = new ArrayList<>(4);
 
     WebUtility() {
         this.config = Greatbone.getConfigXmlTopTag("web");
@@ -55,13 +55,13 @@ public class WebUtility implements WebMBean, Configurable {
         return statics.get(key);
     }
 
-    <T extends WebHost> T addHost(String key, Class<T> clazz, Check guarder) {
+    <T extends WebVirtualHost> T _addVirtualHost(String name, Class<T> clazz, Guard guard) {
         try {
             Constructor<T> ctor = clazz.getConstructor(WebUtility.class, String.class);
-            T host = ctor.newInstance(this, key);
-            host.guarder = guarder;
-            hosts.add(host);
-            return host;
+            T vhost = ctor.newInstance(this, name);
+            vhost.guard = guard;
+            vhosts.add(vhost);
+            return vhost;
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -70,35 +70,28 @@ public class WebUtility implements WebMBean, Configurable {
 
     @Override
     public void start() throws IOException {
-        for (WebHost host : hosts) {
-            host.start();
+        for (WebVirtualHost vhost : vhosts) {
+            vhost.start();
         }
     }
 
     @Override
     public void stop() throws IOException {
-        for (WebHost host : hosts) {
-            host.stop();
+        for (WebVirtualHost vhost : vhosts) {
+            vhost.stop();
         }
     }
-
-    @Override
-    public void restart() {
-        for (WebHost host : hosts) {
-        }
-    }
-
 
     @Override
     public Element config() {
         return config;
     }
 
-    public static <T extends WebHost> T createHost(String key, Class<T> clazz, Check guarder) {
+    public static <T extends WebVirtualHost> T addVirtualHost(String key, Class<T> clazz, Guard guard) {
         if (WEB == null) {
             WEB = new WebUtility();
         }
-        return WEB.addHost(key, clazz, guarder);
+        return WEB._addVirtualHost(key, clazz, guard);
     }
 
     public static final String
