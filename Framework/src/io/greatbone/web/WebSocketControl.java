@@ -8,7 +8,7 @@ public class WebSocketControl extends WebControl implements ControlSet {
 
     WebSocketProtocolHandshakeHandler dv;
 
-    protected WebSocketControl(WebVHost vhost, WebControl parent) {
+    protected WebSocketControl(WebVirtualHost vhost, WebControl parent) {
         super(vhost, parent);
     }
 

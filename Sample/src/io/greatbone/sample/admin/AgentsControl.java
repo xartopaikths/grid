@@ -1,11 +1,11 @@
-package io.greatbone.sample.mgt;
+package io.greatbone.sample.admin;
 
 import io.greatbone.grid.GridUtility;
 import io.greatbone.sample.SHOPS;
 import io.greatbone.sample.Shop;
 import io.greatbone.web.WebContext;
 import io.greatbone.web.WebControl;
-import io.greatbone.web.WebVHost;
+import io.greatbone.web.WebVirtualHost;
 
 /**
  */
@@ -13,7 +13,7 @@ public class AgentsControl extends WebControl {
 
     final SHOPS shops;
 
-    public AgentsControl(WebVHost host, WebControl parent) {
+    public AgentsControl(WebVirtualHost host, WebControl parent) {
         super(host, parent);
 
         this.shops = GridUtility.getCache(SHOPS.class);

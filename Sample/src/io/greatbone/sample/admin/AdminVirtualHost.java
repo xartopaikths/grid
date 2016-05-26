@@ -1,7 +1,7 @@
-package io.greatbone.sample.mgt;
+package io.greatbone.sample.admin;
 
 import io.greatbone.web.WebContext;
-import io.greatbone.web.WebVHost;
+import io.greatbone.web.WebVirtualHost;
 import io.greatbone.web.WebUtility;
 
 import java.io.IOException;
@@ -9,9 +9,9 @@ import java.io.IOException;
 /**
  * The management subdomain & module. [mgt.company.com]
  */
-public class AdminVHost extends WebVHost {
+public class AdminVirtualHost extends WebVirtualHost {
 
-    public AdminVHost(WebUtility web, String key) {
+    public AdminVirtualHost(WebUtility web, String key) {
         super(web, key);
 
         addSub("users", UsersControl.class, null);

@@ -31,7 +31,7 @@ import static io.undertow.util.StatusCodes.*;
 /**
  * A root web folder that may have a hub handler which deals with variable sector folders.
  */
-public abstract class WebVHost extends WebControl implements HttpHandler, WebVHostMBean, Configurable {
+public abstract class WebVirtualHost extends WebControl implements HttpHandler, WebVHostMBean, Configurable {
 
     static final String EMPTY = "";
 
@@ -53,7 +53,7 @@ public abstract class WebVHost extends WebControl implements HttpHandler, WebVHo
 
     boolean ssl;
 
-    protected WebVHost(WebUtility web, String name) {
+    protected WebVirtualHost(WebUtility web, String name) {
         super(null, null);
         this.web = web;
         this.key = name;
@@ -76,7 +76,7 @@ public abstract class WebVHost extends WebControl implements HttpHandler, WebVHo
 
     public <T extends WebControl & ControlSet> void setHub(Class<T> clazz, Authorizer authorizer) {
         try {
-            Constructor<T> ctor = clazz.getConstructor(WebVHost.class, WebControl.class);
+            Constructor<T> ctor = clazz.getConstructor(WebVirtualHost.class, WebControl.class);
             T sub = ctor.newInstance(this, this);
             sub.guard = authorizer;
             this.subordinates = sub;

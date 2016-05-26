@@ -14,7 +14,7 @@ import java.lang.reflect.Modifier;
 public abstract class WebControl {
 
     // the root handler
-    protected final WebVHost vhost;
+    protected final WebVirtualHost vhost;
 
     // the parent of this work instance, if any
     protected final WebControl parent;
@@ -33,8 +33,8 @@ public abstract class WebControl {
     // execution of background tasks
     Thread cycler;
 
-    protected WebControl(WebVHost vhost, WebControl parent) {
-        this.vhost = (vhost != null) ? vhost : (WebVHost) this;
+    protected WebControl(WebVirtualHost vhost, WebControl parent) {
+        this.vhost = (vhost != null) ? vhost : (WebVirtualHost) this;
         this.parent = parent;
 
         // initialize web methods
@@ -61,12 +61,12 @@ public abstract class WebControl {
         }
     }
 
-    public <T extends WebControl> void addSub(String key, Class<T> controlClass, Authorizer guard) {
+    public <T extends WebControl> void addSub(String key, Class<T> controlClass, Authorizer auth) {
         try {
-            Constructor<T> ctor = controlClass.getConstructor(WebVHost.class, WebControl.class);
+            Constructor<T> ctor = controlClass.getConstructor(WebVirtualHost.class, WebControl.class);
             T sub = ctor.newInstance(vhost, this);
             sub.key = key;
-            sub.guard = guard;
+            sub.guard = auth;
             if (this.subordinates == null) {
                 this.subordinates = new HardControlSet(8);
             }
@@ -97,9 +97,9 @@ public abstract class WebControl {
             HttpString method = exch.method();
             if (method == Methods.GET) default_(exch);
         } else if (subordinates != null) { // resolve the sub structure
-            WebControl controller = subordinates.locateSub(base.substring(0, slash), exch);
-            if (controller != null) {
-                controller.perform(base.substring(slash + 1), exch);
+            WebControl control = subordinates.locateSub(base.substring(0, slash), exch);
+            if (control != null) {
+                control.perform(base.substring(slash + 1), exch);
             } else {
                 exch.sendNotFound();
             }
