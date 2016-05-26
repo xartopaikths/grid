@@ -1,0 +1,28 @@
+package io.greatbone.sample.op;
+
+import io.greatbone.web.WebSpace;
+import io.greatbone.web.WebControl;
+import io.greatbone.web.WebContext;
+import io.greatbone.web.WebVHost;
+
+/**
+ * The menu management handler.
+ */
+public class SettingsControl extends WebControl {
+
+    public SettingsControl(WebVHost host, WebControl parent) {
+        super(host, parent);
+    }
+
+    @Override
+    public void default_(WebContext exch) {
+        WebSpace shopid = exch.space();
+
+    }
+
+    public void Post(WebContext exch) {
+        WebSpace shopid = exch.space();
+
+    }
+
+}
