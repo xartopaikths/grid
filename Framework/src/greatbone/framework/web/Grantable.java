@@ -2,7 +2,7 @@ package greatbone.framework.web;
 
 /**
  */
-public interface Permission {
+public interface Grantable {
 
     String scope();
 

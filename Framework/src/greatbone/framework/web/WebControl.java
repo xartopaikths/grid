@@ -25,7 +25,7 @@ public abstract class WebControl {
     String key;
 
     // access checker
-    Guard guard;
+    Authorizer guard;
 
     // the subordinate structures
     ControlSet subordinates;
@@ -61,7 +61,7 @@ public abstract class WebControl {
         }
     }
 
-    public <T extends WebControl> void addSub(String key, Class<T> controlClass, Guard guard) {
+    public <T extends WebControl> void addSub(String key, Class<T> controlClass, Authorizer guard) {
         try {
             Constructor<T> ctor = controlClass.getConstructor(WebVHost.class, WebControl.class);
             T sub = ctor.newInstance(vhost, this);

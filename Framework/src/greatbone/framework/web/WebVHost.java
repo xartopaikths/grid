@@ -74,11 +74,11 @@ public abstract class WebVHost extends WebControl implements HttpHandler, WebVHo
 
     }
 
-    public <T extends WebControl & ControlSet> void setHub(Class<T> clazz, Guard guarder) {
+    public <T extends WebControl & ControlSet> void setHub(Class<T> clazz, Authorizer authorizer) {
         try {
             Constructor<T> ctor = clazz.getConstructor(WebVHost.class, WebControl.class);
             T sub = ctor.newInstance(this, this);
-            sub.guard = guarder;
+            sub.guard = authorizer;
             this.subordinates = sub;
         } catch (Exception e) {
             e.printStackTrace();
