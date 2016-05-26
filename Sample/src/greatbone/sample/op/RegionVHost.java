@@ -8,9 +8,9 @@ import java.io.IOException;
 /**
  * The operation (agents and shops) subdomain & module. [op.company.com]
  */
-public class OperationVirtualHost extends WebVirtualHost {
+public class RegionVHost extends WebVHost {
 
-    public OperationVirtualHost(WebUtility web, String key) {
+    public RegionVHost(WebUtility web, String key) {
         super(web, key);
 
         setHub(SoftControlSet.class, null);
@@ -26,7 +26,7 @@ public class OperationVirtualHost extends WebVirtualHost {
      */
     public static class SoftControlSet extends WebControl implements ControlSet {
 
-        public SoftControlSet(WebVirtualHost vhost, WebControl parent) {
+        public SoftControlSet(WebVHost vhost, WebControl parent) {
             super(vhost, parent);
 
             // agent functions

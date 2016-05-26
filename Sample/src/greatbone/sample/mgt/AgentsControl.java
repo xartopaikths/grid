@@ -5,7 +5,7 @@ import greatbone.sample.SHOPS;
 import greatbone.sample.Shop;
 import greatbone.framework.web.WebContext;
 import greatbone.framework.web.WebControl;
-import greatbone.framework.web.WebVirtualHost;
+import greatbone.framework.web.WebVHost;
 
 /**
  */
@@ -13,7 +13,7 @@ public class AgentsControl extends WebControl {
 
     final SHOPS shops;
 
-    public AgentsControl(WebVirtualHost host, WebControl parent) {
+    public AgentsControl(WebVHost host, WebControl parent) {
         super(host, parent);
 
         this.shops = GridUtility.getCache(SHOPS.class);

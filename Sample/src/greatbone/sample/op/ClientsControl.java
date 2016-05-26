@@ -2,7 +2,7 @@ package greatbone.sample.op;
 
 import greatbone.framework.web.WebContext;
 import greatbone.framework.web.WebControl;
-import greatbone.framework.web.WebVirtualHost;
+import greatbone.framework.web.WebVHost;
 import greatbone.sample.Shop;
 
 /**
@@ -11,7 +11,7 @@ import greatbone.sample.Shop;
 public class ClientsControl extends WebControl {
 
 
-    public ClientsControl(WebVirtualHost host, WebControl parent) {
+    public ClientsControl(WebVHost host, WebControl parent) {
         super(host, parent);
 
     }

@@ -4,7 +4,7 @@ import java.io.IOException;
 
 /**
  */
-public interface WebHostMBean {
+public interface WebVHostMBean {
 
     void start() throws IOException;
 

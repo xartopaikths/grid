@@ -49,7 +49,7 @@ public class WebContext implements Out<WebContext>, AutoCloseable {
 
     static final long[] LONGS = {10, 100, 1000, 10000, 100000, 1000000, 10000000, 100000000, 1000000000, 1000000000, 100000000000L, 1000000000000L, 10000000000000L, 100000000000000L, 100000000000000L, 10000000000000000L, 100000000000000000L, 1000000000000000000L};
 
-    final WebVirtualHost host;
+    final WebVHost host;
 
     // the underlying exchange impl
     final HttpServerExchange exchange;
@@ -74,7 +74,7 @@ public class WebContext implements Out<WebContext>, AutoCloseable {
     // the underlying blocking I/O output buffer
     OutputStream out;
 
-    WebContext(WebVirtualHost host, HttpServerExchange exchange) {
+    WebContext(WebVHost host, HttpServerExchange exchange) {
         this.host = host;
         this.exchange = exchange;
         this.requesth = exchange.getRequestHeaders();

@@ -3,14 +3,14 @@ package greatbone.sample.op;
 import greatbone.framework.web.WebSpace;
 import greatbone.framework.web.WebControl;
 import greatbone.framework.web.WebContext;
-import greatbone.framework.web.WebVirtualHost;
+import greatbone.framework.web.WebVHost;
 
 /**
  * The menu management handler.
  */
 public class SettingsControl extends WebControl {
 
-    public SettingsControl(WebVirtualHost host, WebControl parent) {
+    public SettingsControl(WebVHost host, WebControl parent) {
         super(host, parent);
     }
 

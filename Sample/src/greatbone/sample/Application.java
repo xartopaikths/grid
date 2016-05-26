@@ -2,8 +2,8 @@ package greatbone.sample;
 
 import greatbone.framework.grid.GridUtility;
 import greatbone.framework.web.WebUtility;
-import greatbone.sample.mgt.MgtHost;
-import greatbone.sample.op.OperationVirtualHost;
+import greatbone.sample.mgt.AdminVHost;
+import greatbone.sample.op.RegionVHost;
 
 import java.io.IOException;
 
@@ -29,8 +29,8 @@ public class Application {
 
         // start virtual hosts
         try {
-            WebUtility.addVirtualHost("mgt", MgtHost.class, null).start();
-            WebUtility.addVirtualHost("op", OperationVirtualHost.class, null).start();
+            WebUtility.addVirtualHost("mgt", AdminVHost.class, null).start();
+            WebUtility.addVirtualHost("op", RegionVHost.class, null).start();
         } catch (IOException e) {
             e.printStackTrace();
         }

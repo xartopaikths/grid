@@ -3,14 +3,14 @@ package greatbone.sample.op;
 import greatbone.sample.Shop;
 import greatbone.framework.web.WebControl;
 import greatbone.framework.web.WebContext;
-import greatbone.framework.web.WebVirtualHost;
+import greatbone.framework.web.WebVHost;
 
 /**
  * The menu management handler.
  */
 public class NoticeControl extends WebControl implements Runnable {
 
-    public NoticeControl(WebVirtualHost host, WebControl parent) {
+    public NoticeControl(WebVHost host, WebControl parent) {
         super(host, parent);
     }
 
