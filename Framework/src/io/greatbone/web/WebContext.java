@@ -354,7 +354,7 @@ public class WebContext implements Out<WebContext>, AutoCloseable {
         }
 
         // print out content
-        printer.print(null);
+        printer.print(this);
 
         out.flush();
         out.close();

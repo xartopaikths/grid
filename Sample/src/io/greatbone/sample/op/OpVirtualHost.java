@@ -9,13 +9,13 @@ import java.io.IOException;
 /**
  * The operation (agents and shops) subdomain & module. [op.company.com]
  */
-public class OperationVirtualHost extends WebVirtualHost {
+public class OpVirtualHost extends WebVirtualHost {
 
-    public OperationVirtualHost(WebUtility web, String key) {
+    public OpVirtualHost(WebUtility web, String key) {
         super(web, key);
 
-        addSub("sales", OrdersControl.class, null);
-        addSub("user", ClientsControl.class, null);
+        addSub("orders", OrdersControl.class, null);
+        addSub("persons", PersonsControl.class, null);
         addSub("stocks", SettingsControl.class, null);
         addSub("notice", NoticeControl.class, null);
     }

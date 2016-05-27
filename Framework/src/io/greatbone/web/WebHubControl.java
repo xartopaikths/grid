@@ -2,7 +2,7 @@ package io.greatbone.web;
 
 /**
  */
-public class WebHubControl extends WebSuperControl {
+public class WebHubControl extends WebParentControl {
 
     WebHubControl(WebVirtualHost vhost, WebControl parent) {
         super(vhost, parent);

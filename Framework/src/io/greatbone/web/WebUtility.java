@@ -21,6 +21,7 @@ public class WebUtility implements WebMBean, Configurable {
 
     final Element config;
 
+    // static resources, shared among all virtual hosts
     final Roll<String, WebStatic> statics;
 
     // virtual hosts maintained by this JVM process

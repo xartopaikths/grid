@@ -7,10 +7,10 @@ import io.greatbone.web.WebVirtualHost;
 /**
  * The order management handler.
  */
-public class ClientsControl extends WebControl {
+public class PersonsControl extends WebControl {
 
 
-    public ClientsControl(WebVirtualHost host, WebControl parent) {
+    public PersonsControl(WebVirtualHost host, WebControl parent) {
         super(host, parent);
 
     }

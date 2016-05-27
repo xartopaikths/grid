@@ -9,9 +9,9 @@ import java.io.IOException;
 /**
  * The management subdomain & module. [mgt.company.com]
  */
-public class ManagementVirtualHost extends WebVirtualHost {
+public class MgtVirtualHost extends WebVirtualHost {
 
-    public ManagementVirtualHost(WebUtility web, String key) {
+    public MgtVirtualHost(WebUtility web, String key) {
         super(web, key);
 
         addSub("users", UsersControl.class, (x, y)-> y.check(x, 0));

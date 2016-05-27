@@ -30,7 +30,7 @@ import static io.undertow.util.StatusCodes.*;
 /**
  * A root web folder that may have a hub handler which deals with variable sector folders.
  */
-public abstract class WebVirtualHost extends WebSuperControl implements HttpHandler, WebVirtualHostMBean, Configurable {
+public abstract class WebVirtualHost extends WebParentControl implements HttpHandler, WebVirtualHostMBean, Configurable {
 
     static final String EMPTY = "";
 
@@ -42,9 +42,7 @@ public abstract class WebVirtualHost extends WebSuperControl implements HttpHand
 
     final Element config;
 
-    final String hostname;
-
-    final int port;
+    final String name;
 
     final InetSocketAddress address;
 
@@ -55,7 +53,7 @@ public abstract class WebVirtualHost extends WebSuperControl implements HttpHand
     protected WebVirtualHost(WebUtility web, String name) {
         super(null, null);
         this.web = web;
-        this.key = name;
+        this.name = name;
 
         // register as mbean
         try {
@@ -66,19 +64,20 @@ public abstract class WebVirtualHost extends WebSuperControl implements HttpHand
         }
 
         // get address settings from configuration, can be null if no configuration for the host is found
-        this.config = Greatbone.getXmlSubElement(web.config, "host", name);
-        this.hostname = (config != null) ? config.getAttribute("hostname") : null;
-        this.port = (config != null) ? Integer.parseInt(config.getAttribute("port")) : 80;
-        this.address = (hostname == null) ? null : new InetSocketAddress(hostname, port);
-
+        this.config = Greatbone.getXmlSubElement(web.config, "vhost", name);
+        if (config != null) {
+            String bind = config.getAttribute("bind");
+            int colon = bind.indexOf(':');
+            String hostname = colon == -1 ? bind : bind.substring(0, colon);
+            int port = colon == -1 ? 80 : Integer.parseInt(bind.substring(colon + 1));
+            this.address = new InetSocketAddress(hostname, port);
+        } else {
+            this.address = null;
+        }
     }
 
-    public String hostname() {
-        return hostname;
-    }
-
-    public int port() {
-        return port;
+    public final String name() {
+        return name;
     }
 
     /**
@@ -123,27 +122,27 @@ public abstract class WebVirtualHost extends WebSuperControl implements HttpHand
     }
 
     @Override
-    public void handleRequest(HttpServerExchange exchange) throws Exception {
+    public void handleRequest(HttpServerExchange exch) throws Exception {
 
         // handle static resources in a IO thread
-        String path = exchange.getRelativePath();
+        String path = exch.getRelativePath();
         String base = path.substring(1);
         int dot = base.lastIndexOf('.');
         if (dot != -1) {
             WebStatic sta = web.getStatic(base);
-            handleStatic(sta, exchange);
-            exchange.endExchange();
+            handleStatic(sta, exch);
+            exch.endExchange();
             return;
         }
 
         // displatch to a task thread for dynamic content handling
-        if (exchange.isInIoThread()) {
-            exchange.dispatch(this);
+        if (exch.isInIoThread()) {
+            exch.dispatch(this);
             return;
         }
 
         // NOTE: by design, the exchange is closed after this processing
-        try (WebContext wc = new WebContext(this, exchange)) {
+        try (WebContext wc = new WebContext(this, exch)) {
             // BASIC authentication from client
             authenticate(wc);
 

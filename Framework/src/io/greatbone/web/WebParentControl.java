@@ -5,12 +5,13 @@ import io.greatbone.util.Roll;
 import java.lang.reflect.Constructor;
 
 /**
+ * A control that can contain a number of sub controls.
  */
-abstract class WebSuperControl extends WebControl {
+abstract class WebParentControl extends WebControl {
 
     Roll<String, WebControl> subs;
 
-    WebSuperControl(WebVirtualHost vhost, WebControl parent) {
+    WebParentControl(WebVirtualHost vhost, WebControl parent) {
         super(vhost, parent);
     }
 

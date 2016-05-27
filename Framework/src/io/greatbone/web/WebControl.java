@@ -18,10 +18,10 @@ public abstract class WebControl {
     // the parent of this work instance, if any
     protected final WebControl parent;
 
-    final Roll<String, Action> actions = new Roll<>(32);
-
-    // name as appeared in the uri
+    // the key by which this control is added to a parent
     String key;
+
+    final Roll<String, Action> actions = new Roll<>(32);
 
     // access checker
     Authorizer authorizer;
