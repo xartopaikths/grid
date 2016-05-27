@@ -8,7 +8,7 @@ import io.greatbone.web.WebSpace;
  * A shop that takes orders and issues delivery tasks.
  */
 @Storage
-public class Shop extends GridData<Shop> implements WebPrincipal, WebSpace {
+public class Org extends GridData<Org> implements WebPrincipal, WebSpace {
 
     // COLUMNS
 
@@ -47,16 +47,16 @@ public class Shop extends GridData<Shop> implements WebPrincipal, WebSpace {
     }
 
     @Override
-    public boolean check(String space, int roles) {
+    public boolean check(String scope, int roles) {
         return false;
     }
 
     @Override
-    protected GridSchema<Shop> schema() {
+    protected GridSchema<Org> schema() {
         return SCHEMA;
     }
 
-    static final GridSchema<Shop> SCHEMA = new GridSchema<>(Shop.class);
+    static final GridSchema<Org> SCHEMA = new GridSchema<>(Org.class);
 
 }
 
@@ -67,7 +67,6 @@ class STOCK extends STRUCT {
     final STRING ITEM = new STRING(12);
 
     final DECIMAL PRICE = new DECIMAL(2);
-
 
 }
 

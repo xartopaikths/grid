@@ -10,9 +10,9 @@ import io.greatbone.grid.Storage;
  */
 @Storage
 @Copy
-public class SHOPS extends GridDataCache<Shop> {
+public class ORGS extends GridDataCache<Org> {
 
-    public SHOPS(GridUtility grid) {
+    public ORGS(GridUtility grid) {
         super(grid, 12);
     }
 

@@ -8,6 +8,6 @@ public interface WebPrincipal{
 
     String getCredential();
 
-    boolean check(String space, int roles);
+    boolean check(String scope, int roles);
 
 }

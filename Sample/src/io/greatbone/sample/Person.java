@@ -7,7 +7,7 @@ import io.greatbone.web.WebSpace;
 /**
  * A shop that takes orders and issues delivery tasks.
  */
-public class Client extends GridData<Client> implements WebPrincipal, WebSpace {
+public class Person extends GridData<Person> implements WebPrincipal, WebSpace {
 
     // COLUMNS
 
@@ -43,16 +43,16 @@ public class Client extends GridData<Client> implements WebPrincipal, WebSpace {
     }
 
     @Override
-    public boolean check(String space, int roles) {
+    public boolean check(String scope, int roles) {
         return false;
     }
 
     @Override
-    protected GridSchema<Client> schema() {
+    protected GridSchema<Person> schema() {
         return SCHEMA;
     }
 
-    static final GridSchema<Client> SCHEMA = new GridSchema<>(Client.class);
+    static final GridSchema<Person> SCHEMA = new GridSchema<>(Person.class);
 
 }
 

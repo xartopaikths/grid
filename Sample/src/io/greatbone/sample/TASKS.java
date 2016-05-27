@@ -8,9 +8,9 @@ import io.greatbone.grid.GridUtility;
  * A transient dataset that keep tracts of delivery tasks.
  */
 @Copy
-public class DELIVERIES extends GridDataCache<Delivery> {
+public class TASKS extends GridDataCache<Task> {
 
-    public DELIVERIES(GridUtility grid) {
+    public TASKS(GridUtility grid) {
         super(grid, 12);
     }
 

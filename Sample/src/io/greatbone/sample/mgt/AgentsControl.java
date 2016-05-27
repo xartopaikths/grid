@@ -1,8 +1,8 @@
 package io.greatbone.sample.mgt;
 
 import io.greatbone.grid.GridUtility;
-import io.greatbone.sample.SHOPS;
-import io.greatbone.sample.Shop;
+import io.greatbone.sample.ORGS;
+import io.greatbone.sample.Org;
 import io.greatbone.web.WebContext;
 import io.greatbone.web.WebControl;
 import io.greatbone.web.WebVirtualHost;
@@ -11,12 +11,12 @@ import io.greatbone.web.WebVirtualHost;
  */
 public class AgentsControl extends WebControl {
 
-    final SHOPS shops;
+    final ORGS shops;
 
     public AgentsControl(WebVirtualHost host, WebControl parent) {
         super(host, parent);
 
-        this.shops = GridUtility.getCache(SHOPS.class);
+        this.shops = GridUtility.getCache(ORGS.class);
     }
 
     public void default_(WebContext wc) {
@@ -27,7 +27,7 @@ public class AgentsControl extends WebControl {
     }
 
     public void Get(String rsc, WebContext wc) throws Exception {
-        Shop ret = shops.get(rsc);
+        Org ret = shops.get(rsc);
         if (ret == null) {
             wc.sendNotFound();
         } else {
@@ -37,7 +37,7 @@ public class AgentsControl extends WebControl {
     }
 
     public void Post(WebContext wc) {
-        Shop agent = shops.newData();
+        Org agent = shops.newData();
 
         wc.content(agent);
 

@@ -3,9 +3,9 @@ package io.greatbone.sample;
 import io.greatbone.grid.*;
 
 /**
- * A devliery order, created from scatch, or derived from a number of purchase orders
+ * A demanding task posted by someone.
  */
-public class Delivery extends GridData<Delivery> {
+public class Task extends GridData<Task> {
 
     //
     // COLUMNS
@@ -27,7 +27,6 @@ public class Delivery extends GridData<Delivery> {
     static final DECIMAL Y = new DECIMAL(2);
 
 
-
     public String getId() {
         return ID.getValue(this);
     }
@@ -41,11 +40,11 @@ public class Delivery extends GridData<Delivery> {
     // SCHEMA
 
     @Override
-    protected GridSchema<Delivery> schema() {
+    protected GridSchema<Task> schema() {
         return SCHEMA;
     }
 
-    static final GridSchema<Delivery> SCHEMA = new GridSchema<>(Delivery.class);
+    static final GridSchema<Task> SCHEMA = new GridSchema<>(Task.class);
 
 }
 

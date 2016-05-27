@@ -5,7 +5,6 @@ import io.greatbone.web.WebContext;
 import io.greatbone.web.WebControl;
 import io.greatbone.web.WebVirtualHost;
 import io.greatbone.sample.ORDERS;
-import io.greatbone.sample.Shop;
 
 /**
  * The order management handler.

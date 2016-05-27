@@ -16,10 +16,10 @@ public class Application {
         try {
             GridUtility.initialize(
                     STAFFERS.class,
-                    SHOPS.class,
-                    CLIENTS.class,
+                    ORGS.class,
+                    PERSONS.class,
                     ORDERS.class,
-                    DELIVERIES.class,
+                    TASKS.class,
                     TRANSACTS.class,
                     CLIPS.class
             );
