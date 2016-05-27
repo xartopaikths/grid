@@ -129,7 +129,7 @@ public abstract class WebVirtualHost extends WebParentControl implements HttpHan
         String base = path.substring(1);
         int dot = base.lastIndexOf('.');
         if (dot != -1) {
-            WebStatic sta = web.getStatic(base);
+            WebStatic sta = web.getStatic(path);
             handleStatic(sta, exch);
             exch.endExchange();
             return;
@@ -154,7 +154,6 @@ public abstract class WebVirtualHost extends WebParentControl implements HttpHan
             e.printStackTrace();
         }
     }
-
 
     @SuppressWarnings("deprecation")
     void authenticate(WebContext wc) {

@@ -29,34 +29,41 @@ public class WebUtility implements WebMBean, Configurable {
 
     WebUtility() {
         this.config = Greatbone.getConfigXmlTopTag("web");
-
-        // load static resources
+        // load static resources recursively
         statics = new Roll<>(256);
-        File dir = new File("./RES/");
-        if (dir.exists() && dir.isDirectory()) {
-            //noinspection ConstantConditions
-            for (File file : dir.listFiles()) {
-                int flen = (int) file.length(); // NOTE: large file not supported
+        File resDir = new File("./RES/");
+        if (resDir.exists() && resDir.isDirectory()) {
+            gather("/", resDir);
+        }
+    }
+
+    final void gather(String base, File dir) {
+        //noinspection ConstantConditions
+        for (File sub : dir.listFiles()) {
+            if (sub.isDirectory()) {
+                gather(base + sub.getName() + "/", sub);
+            } else {
+                int flen = (int) sub.length(); // NOTE: large file not supported
                 byte[] content = new byte[flen];
                 try {
-                    FileInputStream in = new FileInputStream(file);
+                    FileInputStream in = new FileInputStream(sub);
                     if (flen != in.read(content)) { // never happen
-                        throw new IOException("file reading error: " + file.getName());
+                        throw new IOException("file reading error: " + sub.getName());
                     }
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-                WebStatic sta = new WebStatic(file.getName(), content);
-                statics.put(sta.key, sta);
+                WebStatic sta = new WebStatic(sub.getName(), content);
+                statics.put(base + sta.key, sta);
             }
         }
     }
 
-    WebStatic getStatic(String key) {
-        return statics.get(key);
+    WebStatic getStatic(String path) {
+        return statics.get(path);
     }
 
-    <T extends WebVirtualHost> T _addVirtualHost(String name, Class<T> clazz, Authorizer authorizer) {
+    final <T extends WebVirtualHost> T putVirtualHost(String name, Class<T> clazz, Authorizer authorizer) {
         try {
             Constructor<T> ctor = clazz.getConstructor(WebUtility.class, String.class);
             T vhost = ctor.newInstance(this, name);
@@ -92,7 +99,7 @@ public class WebUtility implements WebMBean, Configurable {
         if (WEB == null) {
             WEB = new WebUtility();
         }
-        return WEB._addVirtualHost(key, clazz, authorizer);
+        return WEB.putVirtualHost(key, clazz, authorizer);
     }
 
     public static final String
