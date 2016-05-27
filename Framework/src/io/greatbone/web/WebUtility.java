@@ -55,11 +55,11 @@ public class WebUtility implements WebMBean, Configurable {
         return statics.get(key);
     }
 
-    <T extends WebVirtualHost> T _addVirtualHost(String name, Class<T> clazz, Authorizer guard) {
+    <T extends WebVirtualHost> T _addVirtualHost(String name, Class<T> clazz, Authorizer authorizer) {
         try {
             Constructor<T> ctor = clazz.getConstructor(WebUtility.class, String.class);
             T vhost = ctor.newInstance(this, name);
-            vhost.guard = guard;
+            vhost.authorizer = authorizer;
             vhosts.add(vhost);
             return vhost;
         } catch (Exception e) {
@@ -87,11 +87,11 @@ public class WebUtility implements WebMBean, Configurable {
         return config;
     }
 
-    public static <T extends WebVirtualHost> T addVirtualHost(String key, Class<T> clazz, Authorizer guard) {
+    public static <T extends WebVirtualHost> T addVirtualHost(String key, Class<T> clazz, Authorizer authorizer) {
         if (WEB == null) {
             WEB = new WebUtility();
         }
-        return WEB._addVirtualHost(key, clazz, guard);
+        return WEB._addVirtualHost(key, clazz, authorizer);
     }
 
     public static final String

@@ -29,8 +29,8 @@ public class Application {
 
         // start virtual hosts
         try {
+            WebUtility.addVirtualHost("op", OpVirtualHost.class, null).start();
             WebUtility.addVirtualHost("admin", AdminVirtualHost.class, null).start();
-            WebUtility.addVirtualHost("region", OpVirtualHost.class, null).start();
         } catch (IOException e) {
             e.printStackTrace();
         }

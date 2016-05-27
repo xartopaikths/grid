@@ -25,7 +25,7 @@ public abstract class WebControl {
     String key;
 
     // access checker
-    Authorizer guard;
+    Authorizer authorizer;
 
     // the subordinate structures
     ControlSet subordinates;
@@ -66,7 +66,7 @@ public abstract class WebControl {
             Constructor<T> ctor = controlClass.getConstructor(WebVirtualHost.class, WebControl.class);
             T sub = ctor.newInstance(vhost, this);
             sub.key = key;
-            sub.guard = auth;
+            sub.authorizer = auth;
             if (this.subordinates == null) {
                 this.subordinates = new HardControlSet(8);
             }

@@ -1,7 +1,7 @@
 <greatbone>
     <web>
-        <virtualhost name="op" bind="10.0.0.201:8080"/>
-        <virtualhost name="admin" bind="10.0.0.201:8081"/>
+        <vhost name="op" bind="10.0.0.201:8080"/>
+        <vhost name="admin" bind="10.0.0.201:8081"/>
     </web>
     <grid bind="10.0.0.201" cluster="10.0.0.201-202">
         <cache name="users"/>

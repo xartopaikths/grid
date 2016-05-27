@@ -78,7 +78,7 @@ public abstract class WebVirtualHost extends WebControl implements HttpHandler, 
         try {
             Constructor<T> ctor = clazz.getConstructor(WebVirtualHost.class, WebControl.class);
             T sub = ctor.newInstance(this, this);
-            sub.guard = authorizer;
+            sub.authorizer = authorizer;
             this.subordinates = sub;
         } catch (Exception e) {
             e.printStackTrace();
