@@ -47,8 +47,8 @@ public class Shop extends GridData<Shop> implements WebPrincipal, WebSpace {
     }
 
     @Override
-    public int roles() {
-        return 0;
+    public boolean check(String space, int roles) {
+        return false;
     }
 
     @Override

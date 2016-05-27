@@ -1,15 +1,12 @@
 package io.greatbone.sample;
 
-import io.greatbone.grid.GridData;
-import io.greatbone.grid.GridSchema;
-import io.greatbone.grid.KEY;
-import io.greatbone.grid.STRING;
+import io.greatbone.grid.*;
 import io.greatbone.web.WebPrincipal;
 
 /**
  * An administrative mamaber of the platform that can be either a management staff or an agent.
  */
-public class User extends GridData<User> implements WebPrincipal {
+public class Staffer extends GridData<Staffer> implements WebPrincipal {
 
     //
     // COLUMNS
@@ -19,6 +16,11 @@ public class User extends GridData<User> implements WebPrincipal {
     static final STRING CREDENTIAL = new STRING(12);
 
     static final STRING NAME = new STRING(12);
+
+    static final PERM[] PERMS = new PERM[]{
+            new PERM(), new PERM(), new PERM(), new PERM(), new PERM(), new PERM(), new PERM(), new PERM()
+    };
+
 
     //
     // ACCESSORS
@@ -47,18 +49,32 @@ public class User extends GridData<User> implements WebPrincipal {
     }
 
     @Override
-    public int roles() {
-        return 0;
+    public boolean check(String space, int roles) {
+        return false;
     }
 
     //
     // SCHEMA
 
     @Override
-    protected GridSchema<User> schema() {
+    protected GridSchema<Staffer> schema() {
         return SCHEMA;
     }
 
-    static final GridSchema<User> SCHEMA = new GridSchema<>(User.class);
+    static final GridSchema<Staffer> SCHEMA = new GridSchema<>(Staffer.class);
 
 }
+
+/**
+ */
+class PERM extends STRUCT {
+
+    final STRING SPACE = new STRING(12);
+
+    final SHORT ROLES = new SHORT();
+
+}
+
+
+
+

@@ -21,8 +21,7 @@ public class OrdersControl extends WebControl {
     }
 
     @Override
-    public void default_(WebContext exch) {
-        Shop shop = (Shop) exch.space();
+    public void default_(WebContext wc) {
 
         int id = 213;
         String name = "asdfadf";

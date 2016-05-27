@@ -43,8 +43,8 @@ public class Client extends GridData<Client> implements WebPrincipal, WebSpace {
     }
 
     @Override
-    public int roles() {
-        return 0;
+    public boolean check(String space, int roles) {
+        return false;
     }
 
     @Override

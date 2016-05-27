@@ -1,8 +1,8 @@
 package io.greatbone.sample;
 
 import io.greatbone.grid.GridUtility;
-import io.greatbone.sample.admin.AdminVirtualHost;
-import io.greatbone.sample.op.OpVirtualHost;
+import io.greatbone.sample.mgt.ManagementVirtualHost;
+import io.greatbone.sample.op.OperationVirtualHost;
 import io.greatbone.web.WebUtility;
 
 import java.io.IOException;
@@ -15,7 +15,7 @@ public class Application {
 
         try {
             GridUtility.initialize(
-                    USERS.class,
+                    STAFFERS.class,
                     SHOPS.class,
                     CLIENTS.class,
                     ORDERS.class,
@@ -29,8 +29,8 @@ public class Application {
 
         // start virtual hosts
         try {
-            WebUtility.addVirtualHost("op", OpVirtualHost.class, null).start();
-            WebUtility.addVirtualHost("admin", AdminVirtualHost.class, null).start();
+            WebUtility.addVirtualHost("op", OperationVirtualHost.class, null).start();
+            WebUtility.addVirtualHost("admin", ManagementVirtualHost.class, null).start();
         } catch (IOException e) {
             e.printStackTrace();
         }

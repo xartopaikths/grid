@@ -4,8 +4,8 @@ package io.greatbone.web;
  */
 public interface Grantable {
 
-    String scope();
+    String space();
 
-    Object spec();
+    short roles();
 
 }

@@ -1,13 +1,13 @@
 package io.greatbone.web;
 
 
+import io.greatbone.Out;
+import io.greatbone.Printer;
+import io.greatbone.grid.GridData;
 import io.undertow.server.HttpServerExchange;
 import io.undertow.util.HeaderMap;
 import io.undertow.util.Headers;
 import io.undertow.util.HttpString;
-import io.greatbone.Out;
-import io.greatbone.Printer;
-import io.greatbone.grid.GridData;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -62,7 +62,7 @@ public class WebContext implements Out<WebContext>, AutoCloseable {
     // response headers
     final HeaderMap responseh;
 
-    WebSpace space;
+    String space;
 
     WebControl control;
 
@@ -85,12 +85,8 @@ public class WebContext implements Out<WebContext>, AutoCloseable {
         return exchange.getRequestMethod();
     }
 
-    public WebSpace space() {
+    public String space() {
         return space;
-    }
-
-    public void setSpace(WebSpace space) {
-        this.space = space;
     }
 
     public WebControl control() {

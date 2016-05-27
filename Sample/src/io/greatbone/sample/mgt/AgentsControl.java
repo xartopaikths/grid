@@ -1,4 +1,4 @@
-package io.greatbone.sample.admin;
+package io.greatbone.sample.mgt;
 
 import io.greatbone.grid.GridUtility;
 import io.greatbone.sample.SHOPS;

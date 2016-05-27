@@ -2,12 +2,12 @@ package io.greatbone.web;
 
 /**
  */
-public interface WebPrincipal {
+public interface WebPrincipal{
 
     String getName();
 
     String getCredential();
 
-    int roles();
+    boolean check(String space, int roles);
 
 }

@@ -1,6 +1,8 @@
 package io.greatbone.web;
 
 
+import io.greatbone.Configurable;
+import io.greatbone.Greatbone;
 import io.undertow.UndertowOptions;
 import io.undertow.connector.ByteBufferPool;
 import io.undertow.server.DefaultByteBufferPool;
@@ -8,8 +10,6 @@ import io.undertow.server.HttpHandler;
 import io.undertow.server.HttpServerExchange;
 import io.undertow.server.protocol.http.HttpOpenListener;
 import io.undertow.util.HttpString;
-import io.greatbone.Configurable;
-import io.greatbone.Greatbone;
 import org.w3c.dom.Element;
 import org.xnio.*;
 import org.xnio.channels.AcceptingChannel;
@@ -18,7 +18,6 @@ import javax.management.MBeanServer;
 import javax.management.ObjectName;
 import java.io.IOException;
 import java.lang.management.ManagementFactory;
-import java.lang.reflect.Constructor;
 import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
 import java.util.Base64;
@@ -31,7 +30,7 @@ import static io.undertow.util.StatusCodes.*;
 /**
  * A root web folder that may have a hub handler which deals with variable sector folders.
  */
-public abstract class WebVirtualHost extends WebControl implements HttpHandler, WebVHostMBean, Configurable {
+public abstract class WebVirtualHost extends WebSuperControl implements HttpHandler, WebVirtualHostMBean, Configurable {
 
     static final String EMPTY = "";
 
@@ -72,17 +71,6 @@ public abstract class WebVirtualHost extends WebControl implements HttpHandler, 
         this.port = (config != null) ? Integer.parseInt(config.getAttribute("port")) : 80;
         this.address = (hostname == null) ? null : new InetSocketAddress(hostname, port);
 
-    }
-
-    public <T extends WebControl & ControlSet> void setHub(Class<T> clazz, Authorizer authorizer) {
-        try {
-            Constructor<T> ctor = clazz.getConstructor(WebVirtualHost.class, WebControl.class);
-            T sub = ctor.newInstance(this, this);
-            sub.authorizer = authorizer;
-            this.subordinates = sub;
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
     }
 
     public String hostname() {

@@ -15,13 +15,11 @@ public class SettingsControl extends WebControl {
     }
 
     @Override
-    public void default_(WebContext exch) {
-        WebSpace shopid = exch.space();
+    public void default_(WebContext wc) {
 
     }
 
     public void Post(WebContext exch) {
-        WebSpace shopid = exch.space();
 
     }
 

@@ -1,4 +1,4 @@
-package io.greatbone.sample.admin;
+package io.greatbone.sample.mgt;
 
 import io.greatbone.grid.GridUtility;
 import io.greatbone.sample.TRANSACTS;
@@ -22,7 +22,7 @@ public class TransactsControl extends WebControl {
     }
 
     @Override
-    public void default_(WebContext exch) {
+    public void default_(WebContext wc) {
 
 
     }
