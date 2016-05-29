@@ -3,34 +3,31 @@ package io.greatbone.web;
 
 import io.greatbone.Configurable;
 import io.greatbone.Greatbone;
-import io.undertow.UndertowOptions;
-import io.undertow.connector.ByteBufferPool;
-import io.undertow.server.DefaultByteBufferPool;
-import io.undertow.server.HttpHandler;
-import io.undertow.server.HttpServerExchange;
-import io.undertow.server.protocol.http.HttpOpenListener;
-import io.undertow.util.HttpString;
+import io.netty.bootstrap.ServerBootstrap;
+import io.netty.channel.Channel;
+import io.netty.channel.ChannelHandlerContext;
+import io.netty.channel.ChannelInboundHandler;
+import io.netty.channel.ChannelPipeline;
+import io.netty.channel.socket.nio.NioServerSocketChannel;
+import io.netty.handler.codec.http.FullHttpRequest;
+import io.netty.handler.codec.http.HttpMethod;
+import io.netty.handler.codec.http.HttpObjectAggregator;
+import io.netty.handler.codec.http.HttpServerCodec;
+import io.netty.handler.codec.http.websocketx.WebSocketServerProtocolHandler;
+import io.netty.handler.codec.http.websocketx.extensions.compression.WebSocketServerCompressionHandler;
 import org.w3c.dom.Element;
-import org.xnio.*;
-import org.xnio.channels.AcceptingChannel;
 
 import javax.management.MBeanServer;
 import javax.management.ObjectName;
 import java.io.IOException;
 import java.lang.management.ManagementFactory;
 import java.net.InetSocketAddress;
-import java.nio.ByteBuffer;
 import java.util.Base64;
-
-import static io.undertow.util.Headers.IF_MODIFIED_SINCE;
-import static io.undertow.util.Methods.GET;
-import static io.undertow.util.Methods.HEAD;
-import static io.undertow.util.StatusCodes.*;
 
 /**
  * A root web folder that may have a hub handler which deals with variable sector folders.
  */
-public abstract class WebVirtualHost extends WebParentControl implements HttpHandler, WebVirtualHostMBean, Configurable {
+public abstract class WebHostActivity extends WebParentActivity implements ChannelInboundHandler, WebVirtualHostMBean, Configurable {
 
     static final String EMPTY = "";
 
@@ -46,11 +43,12 @@ public abstract class WebVirtualHost extends WebParentControl implements HttpHan
 
     final InetSocketAddress address;
 
-    volatile AcceptingChannel<? extends StreamConnection> server;
+    // the server socket channel
+    volatile Channel serverchan;
 
     boolean ssl;
 
-    protected WebVirtualHost(WebUtility web, String name) {
+    protected WebHostActivity(WebUtility web, String name) {
         super(null, null);
         this.web = web;
         this.name = name;
@@ -88,50 +86,103 @@ public abstract class WebVirtualHost extends WebParentControl implements HttpHan
             return;
         }
 
-        OptionMap options = OptionMap.builder()
-                .set(Options.TCP_NODELAY, true)
-                .set(Options.REUSE_ADDRESSES, true)
-                .set(Options.BALANCING_TOKENS, 1)
-                .set(Options.BALANCING_CONNECTIONS, 2)
-                .set(Options.BACKLOG, 1024)
-                .getMap();
+        try {
+            ServerBootstrap b = new ServerBootstrap();
+            b.group(Greatbone.BOSS, Greatbone.WORK)
+                    .channel(NioServerSocketChannel.class)
+//                    .handler(new LoggingHandler(LogLevel.INFO))
+//                           .childHandler(new HttpStaticFileServerInitializer(sslCtx))
+            ;
 
-        OptionMap serverOptions = OptionMap.builder()
-                .set(UndertowOptions.NO_REQUEST_TIMEOUT, 60000000)
-                .getMap();
-
-
-        // make undertow outputstream efficient by applying relatively large buffers
-        ByteBufferPool buffers = new DefaultByteBufferPool(true, 1024 * 32, -1, 4);
-
-        OptionMap undertowOptions = OptionMap.builder().set(UndertowOptions.BUFFER_PIPELINED_DATA, true).addAll(serverOptions).getMap();
-        HttpOpenListener openListener = new HttpOpenListener(buffers, undertowOptions);
-        openListener.setRootHandler(this);
-        ChannelListener<AcceptingChannel<StreamConnection>> acceptListener = ChannelListeners.openListenerAdapter(openListener);
-        server = Greatbone.WORKER.createStreamConnectionServer(address, acceptListener, options);
-        server.resumeAccepts();
+            serverchan = b.bind(address).channel();
+            serverchan.closeFuture();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } finally {
+            bossGroup.shutdownGracefully();
+            workerGroup.shutdownGracefully();
+        }
     }
 
     public void stop() throws IOException {
         if (address == null) {
             return;
         }
-        if (server.isOpen()) {
-            server.close();
+        if (serverchan.isOpen()) {
+            serverchan.close();
+        }
+    }
+
+
+    @Override
+    public void channelRegistered(ChannelHandlerContext ctx) throws Exception {
+        Channel ch = ctx.channel();
+        ChannelPipeline pipeline = ch.pipeline();
+
+        pipeline.addLast(new HttpServerCodec());
+        pipeline.addLast(new HttpObjectAggregator(65536));
+        pipeline.addLast(new WebSocketServerCompressionHandler());
+        pipeline.addLast(new WebSocketServerProtocolHandler("", null, true));
+//        pipeline.addLast(new WebSocketFrameHandler());
+    }
+
+    @Override
+    public void channelUnregistered(ChannelHandlerContext ctx) throws Exception {
+    }
+
+    @Override
+    public void channelActive(ChannelHandlerContext ctx) throws Exception {
+    }
+
+    @Override
+    public void channelInactive(ChannelHandlerContext ctx) throws Exception {
+    }
+
+    @Override
+    public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
+        if (msg instanceof FullHttpRequest) {
+            handleRequest((FullHttpRequest) msg);
         }
     }
 
     @Override
-    public void handleRequest(HttpServerExchange exch) throws Exception {
+    public void channelReadComplete(ChannelHandlerContext ctx) throws Exception {
+    }
+
+    @Override
+    public void userEventTriggered(ChannelHandlerContext ctx, Object evt) throws Exception {
+    }
+
+    @Override
+    public void channelWritabilityChanged(ChannelHandlerContext ctx) throws Exception {
+        //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
+        //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public void handlerAdded(ChannelHandlerContext ctx) throws Exception {
+        //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public void handlerRemoved(ChannelHandlerContext ctx) throws Exception {
+        //To change body of implemented methods use File | Settings | File Templates.
+    }
+
+    @Override
+    public void handleRequest(FullHttpRequest exch) throws Exception {
 
         // handle static resources in a IO thread
-        String path = exch.getRelativePath();
+        String path = exch.uri();
         String base = path.substring(1);
         int dot = base.lastIndexOf('.');
         if (dot != -1) {
             WebStatic sta = web.getStatic(path);
             handleStatic(sta, exch);
-            exch.endExchange();
             return;
         }
 
@@ -185,22 +236,22 @@ public abstract class WebVirtualHost extends WebParentControl implements HttpHan
         return null;
     }
 
-    void handleStatic(WebStatic sta, HttpServerExchange exch) {
+    void handleStatic(WebStatic sta, FullHttpRequest req) {
         if (sta == null) {
-            exch.setStatusCode(NOT_FOUND);
+//            exch.setStatusCode(NOT_FOUND);
         } else {
-            HttpString method = exch.getRequestMethod();
-            if (method == GET) {
-                String since = exch.getRequestHeaders().getFirst(IF_MODIFIED_SINCE);
+            HttpMethod method = req.method();
+            if (method == HttpMethod.GET) {
+                String since = req.headers().get("If-Modified-Since");
                 if (since != null) {
-                    exch.setStatusCode(NOT_MODIFIED);
+//                    exch(NOT_MODIFIED);
                 } else {
                     // async sending
-                    exch.getResponseSender().send(ByteBuffer.wrap(sta.content));
+                    req.getResponseSender().send(ByteBuffer.wrap(sta.content));
                 }
             } else if (method == HEAD) {
             } else {
-                exch.setStatusCode(METHOD_NOT_ALLOWED);
+                req.setStatusCode(METHOD_NOT_ALLOWED);
             }
         }
     }

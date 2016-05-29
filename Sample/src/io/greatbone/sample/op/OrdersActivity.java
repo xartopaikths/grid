@@ -2,18 +2,18 @@ package io.greatbone.sample.op;
 
 import io.greatbone.grid.GridUtility;
 import io.greatbone.web.WebContext;
-import io.greatbone.web.WebControl;
-import io.greatbone.web.WebVirtualHost;
+import io.greatbone.web.WebActivity;
+import io.greatbone.web.WebHostActivity;
 import io.greatbone.sample.ORDERS;
 
 /**
  * The order management handler.
  */
-public class OrdersControl extends WebControl {
+public class OrdersActivity extends WebActivity {
 
     final ORDERS sales;
 
-    public OrdersControl(WebVirtualHost host, WebControl parent) {
+    public OrdersActivity(WebHostActivity host, WebActivity parent) {
         super(host, parent);
 
         sales = GridUtility.getCache(ORDERS.class);

@@ -51,7 +51,7 @@ class GridServer extends GridEndPoint {
                 .getMap();
 
         // create the server.
-        acceptchan = Greatbone.WORKER.createStreamConnectionServer(address, acceptor, options);
+        acceptchan = Greatbone.WORK.createStreamConnectionServer(address, acceptor, options);
 
         // start accepting connections
         acceptchan.resumeAccepts();

@@ -1,16 +1,14 @@
 package io.greatbone;
 
 import com.sun.org.apache.xerces.internal.parsers.DOMParser;
+import io.netty.channel.EventLoopGroup;
+import io.netty.channel.nio.NioEventLoopGroup;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.w3c.dom.ls.DOMImplementationLS;
 import org.w3c.dom.ls.LSSerializer;
 import org.xml.sax.InputSource;
-import org.xnio.OptionMap;
-import org.xnio.Options;
-import org.xnio.Xnio;
-import org.xnio.XnioWorker;
 
 import javax.management.MBeanServer;
 import javax.management.remote.JMXConnectorServer;
@@ -33,7 +31,9 @@ public class Greatbone {
 
     public static final int WORKER_THREADS = CORES * 16;
 
-    public final static XnioWorker WORKER;
+    public final static EventLoopGroup BOSS = new NioEventLoopGroup(CORES > 32 ? 4 : 2);
+
+    public final static EventLoopGroup WORK = new NioEventLoopGroup(CORES * 16);
 
     static final String CONFIG_FILE = "config.xml";
 
@@ -41,24 +41,6 @@ public class Greatbone {
     public static Element config;
 
     static {
-
-        // initialize the global XNIO worker
-        Xnio xnio = Xnio.getInstance(Greatbone.class.getClassLoader());
-        XnioWorker worker = null;
-        try {
-            worker = xnio.createWorker(OptionMap.builder()
-                    .set(Options.WORKER_IO_THREADS, CORES * 2)
-                    .set(Options.CONNECTION_HIGH_WATER, 1000000)
-                    .set(Options.CONNECTION_LOW_WATER, 1000000)
-                    .set(Options.WORKER_TASK_CORE_THREADS, CORES * 8)
-                    .set(Options.WORKER_TASK_MAX_THREADS, CORES * 12)
-                    .set(Options.TCP_NODELAY, true)
-                    .set(Options.CORK, true)
-                    .getMap());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        WORKER = worker;
 
         // load config xml
         try {

@@ -5,6 +5,6 @@ package io.greatbone.web;
  */
 public interface ControlSet {
 
-    WebControl locateSub(String key, WebContext wc);
+    WebActivity locateSub(String key, WebContext wc);
 
 }

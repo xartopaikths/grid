@@ -1,8 +1,8 @@
 package io.greatbone.sample.mgt;
 
 import io.greatbone.db.DbContext;
-import io.greatbone.web.WebControl;
-import io.greatbone.web.WebVirtualHost;
+import io.greatbone.web.WebActivity;
+import io.greatbone.web.WebHostActivity;
 import io.greatbone.sample.Staffer;
 
 import java.sql.SQLException;
@@ -11,11 +11,11 @@ import java.util.concurrent.ConcurrentHashMap;
 /**
  * The management of platform users and agents
  */
-public class UsersControl extends WebControl implements Runnable {
+public class UsersActivity extends WebActivity implements Runnable {
 
     final ConcurrentHashMap<Integer, Staffer> cache = new ConcurrentHashMap<>();
 
-    public UsersControl(WebVirtualHost host, WebControl parent) {
+    public UsersActivity(WebHostActivity host, WebActivity parent) {
         super(host, parent);
     }
 

@@ -4,17 +4,17 @@ import io.greatbone.grid.GridUtility;
 import io.greatbone.sample.TRANSACTS;
 import io.greatbone.sample.Transact;
 import io.greatbone.web.WebContext;
-import io.greatbone.web.WebControl;
-import io.greatbone.web.WebVirtualHost;
+import io.greatbone.web.WebActivity;
+import io.greatbone.web.WebHostActivity;
 
 /**
  * The menu management handler.
  */
-public class TransactsControl extends WebControl {
+public class TransactsActivity extends WebActivity {
 
     final TRANSACTS transacts;
 
-    public TransactsControl(WebVirtualHost host, WebControl parent) {
+    public TransactsActivity(WebHostActivity host, WebActivity parent) {
         super(host, parent);
 
          transacts = GridUtility.getCache(TRANSACTS.class);

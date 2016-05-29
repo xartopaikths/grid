@@ -4,16 +4,16 @@ import io.greatbone.grid.GridUtility;
 import io.greatbone.sample.ORGS;
 import io.greatbone.sample.Org;
 import io.greatbone.web.WebContext;
-import io.greatbone.web.WebControl;
-import io.greatbone.web.WebVirtualHost;
+import io.greatbone.web.WebActivity;
+import io.greatbone.web.WebHostActivity;
 
 /**
  */
-public class AgentsControl extends WebControl {
+public class AgentsActivity extends WebActivity {
 
     final ORGS shops;
 
-    public AgentsControl(WebVirtualHost host, WebControl parent) {
+    public AgentsActivity(WebHostActivity host, WebActivity parent) {
         super(host, parent);
 
         this.shops = GridUtility.getCache(ORGS.class);

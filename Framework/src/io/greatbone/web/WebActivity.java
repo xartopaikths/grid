@@ -10,13 +10,13 @@ import java.lang.reflect.Modifier;
 /**
  * A set of actions working on request/response eachanges to carry out management tasks on a collection of resources.
  */
-public abstract class WebControl {
+public abstract class WebActivity {
 
     // the root handler
-    protected final WebVirtualHost vhost;
+    protected final WebHostActivity vhost;
 
     // the parent of this work instance, if any
-    protected final WebControl parent;
+    protected final WebActivity parent;
 
     // the key by which this control is added to a parent
     String key;
@@ -29,8 +29,8 @@ public abstract class WebControl {
     // execution of background tasks
     Thread cycler;
 
-    protected WebControl(WebVirtualHost vhost, WebControl parent) {
-        this.vhost = (vhost != null) ? vhost : (WebVirtualHost) this;
+    protected WebActivity(WebHostActivity vhost, WebActivity parent) {
+        this.vhost = (vhost != null) ? vhost : (WebHostActivity) this;
         this.parent = parent;
 
         // initialize web methods

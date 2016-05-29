@@ -2,22 +2,22 @@ package io.greatbone.sample.op;
 
 import io.greatbone.web.WebContext;
 import io.greatbone.web.WebUtility;
-import io.greatbone.web.WebVirtualHost;
+import io.greatbone.web.WebHostActivity;
 
 import java.io.IOException;
 
 /**
  * The operation (agents and shops) subdomain & module. [op.company.com]
  */
-public class OpVirtualHost extends WebVirtualHost {
+public class OpHostActivity extends WebHostActivity {
 
-    public OpVirtualHost(WebUtility web, String key) {
+    public OpHostActivity(WebUtility web, String key) {
         super(web, key);
 
-        addSub("orders", OrdersControl.class, null);
-        addSub("persons", PersonsControl.class, null);
-        addSub("stocks", SettingsControl.class, null);
-        addSub("notice", NoticeControl.class, null);
+        addSub("orders", OrdersActivity.class, null);
+        addSub("persons", PersonsActivity.class, null);
+        addSub("stocks", SettingsActivity.class, null);
+        addSub("notice", NoticeActivity.class, null);
     }
 
     @Override

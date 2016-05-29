@@ -1,16 +1,15 @@
 package io.greatbone.sample.op;
 
-import io.greatbone.web.WebSpace;
-import io.greatbone.web.WebControl;
+import io.greatbone.web.WebActivity;
 import io.greatbone.web.WebContext;
-import io.greatbone.web.WebVirtualHost;
+import io.greatbone.web.WebHostActivity;
 
 /**
  * The menu management handler.
  */
-public class SettingsControl extends WebControl {
+public class SettingsActivity extends WebActivity {
 
-    public SettingsControl(WebVirtualHost host, WebControl parent) {
+    public SettingsActivity(WebHostActivity host, WebActivity parent) {
         super(host, parent);
     }
 

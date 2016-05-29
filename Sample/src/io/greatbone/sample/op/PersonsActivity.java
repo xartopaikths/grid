@@ -1,16 +1,16 @@
 package io.greatbone.sample.op;
 
 import io.greatbone.web.WebContext;
-import io.greatbone.web.WebControl;
-import io.greatbone.web.WebVirtualHost;
+import io.greatbone.web.WebActivity;
+import io.greatbone.web.WebHostActivity;
 
 /**
  * The order management handler.
  */
-public class PersonsControl extends WebControl {
+public class PersonsActivity extends WebActivity {
 
 
-    public PersonsControl(WebVirtualHost host, WebControl parent) {
+    public PersonsActivity(WebHostActivity host, WebActivity parent) {
         super(host, parent);
 
     }

@@ -4,16 +4,16 @@ import io.undertow.websockets.WebSocketProtocolHandshakeHandler;
 
 /**
  */
-public class WebSocketControl extends WebControl implements ControlSet {
+public class WebSocketActivity extends WebActivity implements ControlSet {
 
     WebSocketProtocolHandshakeHandler dv;
 
-    protected WebSocketControl(WebVirtualHost vhost, WebControl parent) {
+    protected WebSocketActivity(WebHostActivity vhost, WebActivity parent) {
         super(vhost, parent);
     }
 
     @Override
-    public WebControl locateSub(String key, WebContext wc) {
+    public WebActivity locateSub(String key, WebContext wc) {
         return null;
     }
 

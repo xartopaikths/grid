@@ -7,11 +7,11 @@ import java.lang.reflect.Method;
  */
 class Action {
 
-    final WebControl instance;
+    final WebActivity instance;
 
     final Method method;
 
-    Action(WebControl instance, Method method) {
+    Action(WebActivity instance, Method method) {
         this.instance = instance;
         this.method = method;
     }

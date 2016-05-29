@@ -46,7 +46,7 @@ class GridConnector extends GridEndPoint {
             conn = pool.poll();
         }
         if (conn == null) {
-            conn = Greatbone.WORKER.openStreamConnection(address, null, OPTIONS).get();
+            conn = Greatbone.WORK.openStreamConnection(address, null, OPTIONS).get();
         }
         return conn;
     }
