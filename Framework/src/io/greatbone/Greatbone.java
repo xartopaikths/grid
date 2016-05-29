@@ -31,9 +31,9 @@ public class Greatbone {
 
     public static final int WORKER_THREADS = CORES * 16;
 
-    public final static EventLoopGroup BOSS = new NioEventLoopGroup(CORES > 32 ? 4 : 2);
+    public final static EventLoopGroup BOSS;
 
-    public final static EventLoopGroup WORK = new NioEventLoopGroup(CORES * 16);
+    public final static EventLoopGroup WORK;
 
     static final String CONFIG_FILE = "config.xml";
 
@@ -62,6 +62,18 @@ public class Greatbone {
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+
+        // event loop groups
+        BOSS = new NioEventLoopGroup(CORES > 32 ? 4 : CORES > 4 ? 2 : 1);
+        WORK = new NioEventLoopGroup(CORES * 8);
+        Runtime.getRuntime().removeShutdownHook(new Thread() {
+            @Override
+            public void run() {
+                BOSS.shutdownGracefully();
+                WORK.shutdownGracefully();
+            }
+        });
 
     }
 

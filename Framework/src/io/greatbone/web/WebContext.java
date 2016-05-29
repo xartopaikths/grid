@@ -4,10 +4,7 @@ package io.greatbone.web;
 import io.greatbone.Out;
 import io.greatbone.Printer;
 import io.greatbone.grid.GridData;
-import io.undertow.server.HttpServerExchange;
-import io.undertow.util.HeaderMap;
-import io.undertow.util.Headers;
-import io.undertow.util.HttpString;
+import io.netty.handler.codec.http.FullHttpRequest;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -15,9 +12,6 @@ import java.nio.charset.Charset;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
-
-import static io.undertow.util.Headers.CONTENT_TYPE;
-import static io.undertow.util.StatusCodes.NOT_FOUND;
 
 /**
  * A web request/response exchange.
@@ -52,7 +46,7 @@ public class WebContext implements Out<WebContext>, AutoCloseable {
     final WebHostActivity host;
 
     // the underlying exchange impl
-    final HttpServerExchange exchange;
+    final FullHttpRequest exchange;
 
     // request headers
     final HeaderMap requesth;
@@ -74,7 +68,7 @@ public class WebContext implements Out<WebContext>, AutoCloseable {
     // the underlying blocking I/O output buffer
     OutputStream out;
 
-    WebContext(WebHostActivity host, HttpServerExchange exchange) {
+    WebContext(WebHostActivity host, FullHttpRequest exchange) {
         this.host = host;
         this.exchange = exchange;
         this.requesth = exchange.getRequestHeaders();

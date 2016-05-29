@@ -90,17 +90,12 @@ public abstract class WebHostActivity extends WebParentActivity implements Chann
             ServerBootstrap b = new ServerBootstrap();
             b.group(Greatbone.BOSS, Greatbone.WORK)
                     .channel(NioServerSocketChannel.class)
-//                    .handler(new LoggingHandler(LogLevel.INFO))
-//                           .childHandler(new HttpStaticFileServerInitializer(sslCtx))
+                    .childHandler(this)
             ;
-
             serverchan = b.bind(address).channel();
             serverchan.closeFuture();
-        } catch (InterruptedException e) {
+        } catch (Exception e) {
             e.printStackTrace();
-        } finally {
-            bossGroup.shutdownGracefully();
-            workerGroup.shutdownGracefully();
         }
     }
 
@@ -186,13 +181,6 @@ public abstract class WebHostActivity extends WebParentActivity implements Chann
             return;
         }
 
-        // displatch to a task thread for dynamic content handling
-        if (exch.isInIoThread()) {
-            exch.dispatch(this);
-            return;
-        }
-
-        // NOTE: by design, the exchange is closed after this processing
         try (WebContext wc = new WebContext(this, exch)) {
             // BASIC authentication from client
             authenticate(wc);

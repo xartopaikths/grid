@@ -1,7 +1,5 @@
 package io.greatbone.grid;
 
-import io.undertow.server.DefaultByteBufferPool;
-import org.xnio.StreamConnection;
 import org.xnio.conduits.ConduitStreamSinkChannel;
 import org.xnio.conduits.ConduitStreamSourceChannel;
 
@@ -9,19 +7,14 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.ByteBuffer;
+import java.nio.channels.Channel;
 
 /**
  * A call & reply exchange between two grid endpoints.
  */
-class GridContext implements AutoCloseable{
+class GridContext implements AutoCloseable {
 
-    // buffer pool for calls, replies and streams
-    static final DefaultByteBufferPool
-            CALLP = new DefaultByteBufferPool(true, 1024 * 64, -1, 4),
-            REPLYP = new DefaultByteBufferPool(true, 64, -1, 4),
-            STREAMP = new DefaultByteBufferPool(true, 64, -1, 4);
-
-    StreamConnection conn;
+    Channel conn;
 
     // the header part of the call
     ByteBuffer call;
@@ -38,10 +31,8 @@ class GridContext implements AutoCloseable{
     GridContext() {
     }
 
-    GridContext(StreamConnection conn) {
+    GridContext(Channel conn) {
         this.conn = conn;
-        this.call = CALLP.allocate().getBuffer();
-        this.reply = REPLYP.allocate().getBuffer();
     }
 
     final InputStream getInputStream() {
