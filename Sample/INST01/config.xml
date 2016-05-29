@@ -1,13 +1,13 @@
 <greatbone>
     <web>
-        <vhost name="op" bind="10.0.0.201:8080"/>
-        <vhost name="admin" bind="10.0.0.201:8081"/>
+        <vhost name="op" bind="127.0.0.1:8080"/>
+        <vhost name="admin" bind="127.0.0.1:8081"/>
     </web>
     <grid bind="10.0.0.201" cluster="10.0.0.201-202">
-        <cache name="users"/>
+        <cache name="staffers"/>
         <cache name="shops" shards="jx" load="date > (current_date() - 3)"/>
-        <cache name="individuals" shards="jx"/>
-        <cache name="demands" shards="jxnc, jxgz" load="date > (current_date() - 3)"/>
+        <cache name="persons" shards="jx"/>
+        <cache name="tasks" shards="jxnc, jxgz" load="date > (current_date() - 3)"/>
         <cache name="orders" shards="jx" load="date > (current_date() - 3)"/>
         <cache name="journals" shards="jx" capacity="1024"/>
         <cache name="transacts" shards="jx"/>
