@@ -7,11 +7,11 @@ import java.lang.reflect.Constructor;
 /**
  * An activity that can contain a number of sub activities.
  */
-abstract class WebParentActivity extends WebActivity {
+abstract class WebParent extends WebActivity {
 
     Roll<String, WebActivity> subs;
 
-    WebParentActivity(WebHostActivity root, WebActivity parent) {
+    WebParent(WebHost root, WebActivity parent) {
         super(root, parent);
     }
 
@@ -21,7 +21,7 @@ abstract class WebParentActivity extends WebActivity {
 
     public <T extends WebActivity> void addSub(String key, Class<T> class_, Authorizer authorizer) {
         try {
-            Constructor<T> ctor = class_.getConstructor(WebHostActivity.class, WebActivity.class);
+            Constructor<T> ctor = class_.getConstructor(WebHost.class, WebActivity.class);
             T sub = ctor.newInstance(vhost, this);
             sub.key = key;
             sub.authorizer = authorizer;

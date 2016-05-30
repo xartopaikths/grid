@@ -2,16 +2,16 @@ package io.greatbone.sample.op;
 
 import io.greatbone.web.WebContext;
 import io.greatbone.web.WebUtility;
-import io.greatbone.web.WebHostActivity;
+import io.greatbone.web.WebHost;
 
 import java.io.IOException;
 
 /**
  * The operation (agents and shops) subdomain & module. [op.company.com]
  */
-public class OpHostActivity extends WebHostActivity {
+public class OperationHost extends WebHost {
 
-    public OpHostActivity(WebUtility web, String key) {
+    public OperationHost(WebUtility web, String key) {
         super(web, key);
 
         addSub("orders", OrdersActivity.class, null);

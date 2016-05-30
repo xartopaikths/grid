@@ -2,7 +2,7 @@ package io.greatbone.sample.mgt;
 
 import io.greatbone.db.DbContext;
 import io.greatbone.web.WebActivity;
-import io.greatbone.web.WebHostActivity;
+import io.greatbone.web.WebHost;
 import io.greatbone.sample.Staffer;
 
 import java.sql.SQLException;
@@ -15,7 +15,7 @@ public class UsersActivity extends WebActivity implements Runnable {
 
     final ConcurrentHashMap<Integer, Staffer> cache = new ConcurrentHashMap<>();
 
-    public UsersActivity(WebHostActivity host, WebActivity parent) {
+    public UsersActivity(WebHost host, WebActivity parent) {
         super(host, parent);
     }
 

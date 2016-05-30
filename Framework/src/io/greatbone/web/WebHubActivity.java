@@ -2,9 +2,9 @@ package io.greatbone.web;
 
 /**
  */
-public class WebHubActivity extends WebParentActivity {
+public class WebHubActivity extends WebParent {
 
-    WebHubActivity(WebHostActivity vhost, WebActivity parent) {
+    WebHubActivity(WebHost vhost, WebActivity parent) {
         super(vhost, parent);
     }
 

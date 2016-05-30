@@ -5,7 +5,7 @@ import io.greatbone.sample.TRANSACTS;
 import io.greatbone.sample.Transact;
 import io.greatbone.web.WebContext;
 import io.greatbone.web.WebActivity;
-import io.greatbone.web.WebHostActivity;
+import io.greatbone.web.WebHost;
 
 /**
  * The menu management handler.
@@ -14,7 +14,7 @@ public class TransactsActivity extends WebActivity {
 
     final TRANSACTS transacts;
 
-    public TransactsActivity(WebHostActivity host, WebActivity parent) {
+    public TransactsActivity(WebHost host, WebActivity parent) {
         super(host, parent);
 
          transacts = GridUtility.getCache(TRANSACTS.class);

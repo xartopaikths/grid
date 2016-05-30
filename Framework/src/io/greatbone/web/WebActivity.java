@@ -12,7 +12,7 @@ import java.lang.reflect.Modifier;
 public abstract class WebActivity {
 
     // the root handler
-    protected final WebHostActivity vhost;
+    protected final WebHost vhost;
 
     // the parent of this work instance, if any
     protected final WebActivity parent;
@@ -28,8 +28,8 @@ public abstract class WebActivity {
     // execution of background tasks
     Thread cycler;
 
-    protected WebActivity(WebHostActivity vhost, WebActivity parent) {
-        this.vhost = (vhost != null) ? vhost : (WebHostActivity) this;
+    protected WebActivity(WebHost vhost, WebActivity parent) {
+        this.vhost = (vhost != null) ? vhost : (WebHost) this;
         this.parent = parent;
 
         // initialize web methods

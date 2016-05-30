@@ -4,10 +4,8 @@ package io.greatbone.web;
 import io.greatbone.Configurable;
 import io.greatbone.Greatbone;
 import io.netty.bootstrap.ServerBootstrap;
-import io.netty.channel.Channel;
-import io.netty.channel.ChannelHandlerContext;
-import io.netty.channel.ChannelInboundHandler;
-import io.netty.channel.ChannelPipeline;
+import io.netty.channel.*;
+import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.handler.codec.http.FullHttpRequest;
 import io.netty.handler.codec.http.HttpMethod;
@@ -27,7 +25,7 @@ import java.util.Base64;
 /**
  * A root web folder that may have a hub handler which deals with variable sector folders.
  */
-public abstract class WebHostActivity extends WebParentActivity implements ChannelInboundHandler, WebVirtualHostMBean, Configurable {
+public abstract class WebHost extends WebParent implements ChannelInboundHandler, WebVirtualHostMBean, Configurable {
 
     static final String EMPTY = "";
 
@@ -48,7 +46,7 @@ public abstract class WebHostActivity extends WebParentActivity implements Chann
 
     boolean ssl;
 
-    protected WebHostActivity(WebUtility web, String name) {
+    protected WebHost(WebUtility web, String name) {
         super(null, null);
         this.web = web;
         this.name = name;
@@ -86,11 +84,21 @@ public abstract class WebHostActivity extends WebParentActivity implements Chann
             return;
         }
 
+        final WebHost host = this;
         try {
             ServerBootstrap b = new ServerBootstrap();
             b.group(Greatbone.BOSS, Greatbone.WORK)
                     .channel(NioServerSocketChannel.class)
-                    .childHandler(this)
+                    .childHandler(new ChannelInitializer<SocketChannel>() {
+                        protected void initChannel(SocketChannel ch) throws Exception {
+                            ChannelPipeline pipeline = ch.pipeline();
+                            pipeline.addLast(new HttpServerCodec());
+                            pipeline.addLast(new HttpObjectAggregator(65536));
+                            pipeline.addLast(host);
+                            pipeline.addLast(new WebSocketServerCompressionHandler());
+                            pipeline.addLast(new WebSocketServerProtocolHandler("", null, true));
+                        }
+                    })
             ;
             serverchan = b.bind(address).channel();
             serverchan.closeFuture();
@@ -108,17 +116,8 @@ public abstract class WebHostActivity extends WebParentActivity implements Chann
         }
     }
 
-
     @Override
     public void channelRegistered(ChannelHandlerContext ctx) throws Exception {
-        Channel ch = ctx.channel();
-        ChannelPipeline pipeline = ch.pipeline();
-
-        pipeline.addLast(new HttpServerCodec());
-        pipeline.addLast(new HttpObjectAggregator(65536));
-        pipeline.addLast(new WebSocketServerCompressionHandler());
-        pipeline.addLast(new WebSocketServerProtocolHandler("", null, true));
-//        pipeline.addLast(new WebSocketFrameHandler());
     }
 
     @Override
@@ -150,22 +149,18 @@ public abstract class WebHostActivity extends WebParentActivity implements Chann
 
     @Override
     public void channelWritabilityChanged(ChannelHandlerContext ctx) throws Exception {
-        //To change body of implemented methods use File | Settings | File Templates.
     }
 
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
-        //To change body of implemented methods use File | Settings | File Templates.
     }
 
     @Override
     public void handlerAdded(ChannelHandlerContext ctx) throws Exception {
-        //To change body of implemented methods use File | Settings | File Templates.
     }
 
     @Override
     public void handlerRemoved(ChannelHandlerContext ctx) throws Exception {
-        //To change body of implemented methods use File | Settings | File Templates.
     }
 
     public void handleRequest(FullHttpRequest exch) throws Exception {

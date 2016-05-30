@@ -2,7 +2,7 @@ package io.greatbone.sample.op;
 
 import io.greatbone.web.WebContext;
 import io.greatbone.web.WebActivity;
-import io.greatbone.web.WebHostActivity;
+import io.greatbone.web.WebHost;
 
 /**
  * The order management handler.
@@ -10,7 +10,7 @@ import io.greatbone.web.WebHostActivity;
 public class PersonsActivity extends WebActivity {
 
 
-    public PersonsActivity(WebHostActivity host, WebActivity parent) {
+    public PersonsActivity(WebHost host, WebActivity parent) {
         super(host, parent);
 
     }

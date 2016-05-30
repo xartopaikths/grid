@@ -5,7 +5,7 @@ import io.greatbone.sample.ORGS;
 import io.greatbone.sample.Org;
 import io.greatbone.web.WebContext;
 import io.greatbone.web.WebActivity;
-import io.greatbone.web.WebHostActivity;
+import io.greatbone.web.WebHost;
 
 /**
  */
@@ -13,7 +13,7 @@ public class AgentsActivity extends WebActivity {
 
     final ORGS shops;
 
-    public AgentsActivity(WebHostActivity host, WebActivity parent) {
+    public AgentsActivity(WebHost host, WebActivity parent) {
         super(host, parent);
 
         this.shops = GridUtility.getCache(ORGS.class);

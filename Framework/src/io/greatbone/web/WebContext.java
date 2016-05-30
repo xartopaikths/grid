@@ -46,7 +46,7 @@ public class WebContext implements Out<WebContext>, AutoCloseable {
 
     static final long[] LONGS = {10, 100, 1000, 10000, 100000, 1000000, 10000000, 100000000, 1000000000, 1000000000, 100000000000L, 1000000000000L, 10000000000000L, 100000000000000L, 100000000000000L, 10000000000000000L, 100000000000000000L, 1000000000000000000L};
 
-    final WebHostActivity host;
+    final WebHost host;
 
     // the underlying exchange impl
     final FullHttpRequest request;
@@ -73,7 +73,7 @@ public class WebContext implements Out<WebContext>, AutoCloseable {
     // the underlying blocking I/O output buffer
     ByteBuf out;
 
-    WebContext(WebHostActivity host, FullHttpRequest request) {
+    WebContext(WebHost host, FullHttpRequest request) {
         this.host = host;
         this.request = request;
         this.requesth = request.headers();

@@ -5,7 +5,7 @@ package io.greatbone.web;
 public class WebSocketActivity extends WebActivity implements ControlSet {
 
 
-    protected WebSocketActivity(WebHostActivity vhost, WebActivity parent) {
+    protected WebSocketActivity(WebHost vhost, WebActivity parent) {
         super(vhost, parent);
     }
 

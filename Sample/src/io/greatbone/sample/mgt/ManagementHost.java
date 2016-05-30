@@ -1,7 +1,7 @@
 package io.greatbone.sample.mgt;
 
 import io.greatbone.web.WebContext;
-import io.greatbone.web.WebHostActivity;
+import io.greatbone.web.WebHost;
 import io.greatbone.web.WebUtility;
 
 import java.io.IOException;
@@ -9,9 +9,9 @@ import java.io.IOException;
 /**
  * The management subdomain & module. [mgt.company.com]
  */
-public class MgtHostActivity extends WebHostActivity {
+public class ManagementHost extends WebHost {
 
-    public MgtHostActivity(WebUtility web, String key) {
+    public ManagementHost(WebUtility web, String key) {
         super(web, key);
 
         addSub("users", UsersActivity.class, (x, y)-> y.check(x, 0));
