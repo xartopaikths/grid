@@ -1,11 +1,7 @@
 package io.greatbone.grid;
 
 import io.greatbone.Greatbone;
-import org.xnio.ChannelListener;
-import org.xnio.OptionMap;
-import org.xnio.Options;
-import org.xnio.StreamConnection;
-import org.xnio.channels.AcceptingChannel;
+import io.netty.channel.Channel;
 
 import java.io.IOException;
 
@@ -15,7 +11,7 @@ import java.io.IOException;
 class GridServer extends GridEndPoint {
 
     // the connection acceptor
-    volatile AcceptingChannel<? extends StreamConnection> acceptchan;
+    volatile Channel acceptchan;
 
     GridServer(GridUtility grid, String interf) {
         super(grid, interf);
@@ -24,37 +20,15 @@ class GridServer extends GridEndPoint {
     public void start() throws IOException {
 
         // Create an accept listener.
-        final ChannelListener<AcceptingChannel<StreamConnection>> acceptor = acceptchan -> {
-            try {
-                // channel is ready to accept zero or more connections
-                for (; ; ) {
-                    final StreamConnection conn = acceptchan.accept();
-                    if (conn != null) {
-                        // stream channel has been accepted at this stage.
-                        conn.getSourceChannel().setReadListener(srcchan -> {
-                            //
-//                            srcchan.read()
-                            GridContext gc = new GridContext(conn);
-                            handle(gc);
-                        });
-                    }
-                }
-            } catch (IOException ignored) {
-            }
-        };
 
-        // server options
-        OptionMap options = OptionMap.builder()
-                .set(Options.RECEIVE_BUFFER, (1024 * 1024 * 4)) // large buffer for high speed LAN
-                .set(Options.SEND_BUFFER, (1024 * 1024 * 4))
-                .set(Options.BACKLOG, 512)
-                .getMap();
+//        // server options
+//        OptionMap options = OptionMap.builder()
+//                .set(Options.RECEIVE_BUFFER, (1024 * 1024 * 4)) // large buffer for high speed LAN
+//                .set(Options.SEND_BUFFER, (1024 * 1024 * 4))
+//                .set(Options.BACKLOG, 512)
+//                .getMap();
 
         // create the server.
-        acceptchan = Greatbone.WORK.createStreamConnectionServer(address, acceptor, options);
-
-        // start accepting connections
-        acceptchan.resumeAccepts();
 
     }
 

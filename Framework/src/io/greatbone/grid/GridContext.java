@@ -1,13 +1,11 @@
 package io.greatbone.grid;
 
-import org.xnio.conduits.ConduitStreamSinkChannel;
-import org.xnio.conduits.ConduitStreamSourceChannel;
+import io.netty.channel.Channel;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.ByteBuffer;
-import java.nio.channels.Channel;
 
 /**
  * A call & reply exchange between two grid endpoints.
@@ -38,7 +36,6 @@ class GridContext implements AutoCloseable {
     final InputStream getInputStream() {
         if (input == null) {
             input = new InputStream() {
-                final ConduitStreamSourceChannel chan = conn.getSourceChannel();
                 ByteBuffer buf;
 
                 @Override
@@ -53,12 +50,8 @@ class GridContext implements AutoCloseable {
     final OutputStream getOutputStream() {
         if (output == null) {
             final OutputStream ostream = new OutputStream() {
-                final ConduitStreamSinkChannel chan = conn.getSinkChannel();
-                ByteBuffer buf;
-
                 @Override
                 public void write(int b) throws IOException {
-                    chan.write(buf);
                 }
             };
         }

@@ -1,8 +1,7 @@
 package io.greatbone.web;
 
 import io.greatbone.util.Roll;
-import io.undertow.util.HttpString;
-import io.undertow.util.Methods;
+import io.netty.handler.codec.http.HttpMethod;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
@@ -71,8 +70,8 @@ public abstract class WebActivity {
         int slash = base.indexOf('/');
         if (slash == -1) { // without a slash then handle by this controller instance
             exch.control = this;
-            HttpString method = exch.method();
-            if (method == Methods.GET) default_(exch);
+            HttpMethod method = exch.method();
+            if (method == HttpMethod.GET) default_(exch);
 //        } else if (subordinates != null) { // resolve the sub structure
 //            WebControl control = subordinates.locateSub(base.substring(0, slash), exch);
 //            if (control != null) {

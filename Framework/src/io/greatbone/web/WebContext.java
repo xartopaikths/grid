@@ -1,17 +1,20 @@
 package io.greatbone.web;
 
-
 import io.greatbone.Out;
 import io.greatbone.Printer;
 import io.greatbone.grid.GridData;
-import io.netty.handler.codec.http.FullHttpRequest;
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.PooledByteBufAllocator;
+import io.netty.handler.codec.http.*;
 
 import java.io.IOException;
-import java.io.OutputStream;
 import java.nio.charset.Charset;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.Date;
+import java.util.List;
+import java.util.Locale;
+import java.util.TimeZone;
 
 /**
  * A web request/response exchange.
@@ -46,15 +49,17 @@ public class WebContext implements Out<WebContext>, AutoCloseable {
     final WebHostActivity host;
 
     // the underlying exchange impl
-    final FullHttpRequest exchange;
+    final FullHttpRequest request;
+
+    final FullHttpResponse response;
 
     // request headers
-    final HeaderMap requesth;
+    final HttpHeaders requesth;
 
     WebPrincipal principal;
 
     // response headers
-    final HeaderMap responseh;
+    HttpHeaders responseh;
 
     String space;
 
@@ -66,17 +71,17 @@ public class WebContext implements Out<WebContext>, AutoCloseable {
     Object content;
 
     // the underlying blocking I/O output buffer
-    OutputStream out;
+    ByteBuf out;
 
-    WebContext(WebHostActivity host, FullHttpRequest exchange) {
+    WebContext(WebHostActivity host, FullHttpRequest request) {
         this.host = host;
-        this.exchange = exchange;
-        this.requesth = exchange.getRequestHeaders();
-        this.responseh = exchange.getResponseHeaders();
+        this.request = request;
+        this.requesth = request.headers();
+        this.response = new DefaultFullHttpResponse(HttpVersion.HTTP_1_1, HttpResponseStatus.OK);
     }
 
-    public HttpString method() {
-        return exchange.getRequestMethod();
+    public HttpMethod method() {
+        return request.method();
     }
 
     public String space() {
@@ -92,15 +97,15 @@ public class WebContext implements Out<WebContext>, AutoCloseable {
     }
 
     String authorization() {
-        return requesth.getFirst(Headers.AUTHORIZATION);
+        return requesth.get(HttpHeaderNames.AUTHORIZATION);
     }
 
     public String hstring(String name) {
-        return requesth.getFirst(name);
+        return requesth.get(name);
     }
 
     public int hint(String header) {
-        String v = requesth.getFirst(header);
+        String v = requesth.get(header);
         try {
             return Integer.parseInt(v);
         } catch (NumberFormatException e) {
@@ -109,7 +114,7 @@ public class WebContext implements Out<WebContext>, AutoCloseable {
     }
 
     public Date hdate(String name) {
-        String v = requesth.getFirst(name);
+        String v = requesth.get(name);
         if (v != null) {
             try {
                 return DATE_FORMAT.parse(v);
@@ -119,42 +124,8 @@ public class WebContext implements Out<WebContext>, AutoCloseable {
         return null;
     }
 
-    public String qstring(String name) {
-        Map<String, Deque<String>> map = exchange.getQueryParameters();
-        Deque<String> v = map.get(name);
-        if (v != null) {
-            return v.getFirst();
-        }
-        return null;
-    }
-
-    public Deque<String> qstrings(String name) {
-        Map<String, Deque<String>> map = exchange.getQueryParameters();
-        return map.get(name);
-    }
-
-    public int qint(String name) {
-        Map<String, Deque<String>> map = exchange.getQueryParameters();
-        Deque<String> v = map.get(name);
-        if (v != null) {
-            try {
-                return Integer.parseInt(v.getFirst());
-            } catch (NumberFormatException e) {
-            }
-        }
-        return 0;
-    }
-
-    public boolean qboolean(String name) {
-        return false;
-    }
-
     //
     // REQUEST CONTENT
-
-    public Pairs content() {
-        return null;
-    }
 
     public <T extends GridData> T content(T obj) {
         return null;
@@ -166,23 +137,22 @@ public class WebContext implements Out<WebContext>, AutoCloseable {
 
     void write(char c) throws IOException {
         if (out == null) {
-            exchange.startBlocking();
-            out = exchange.getOutputStream();
+            out = PooledByteBufAllocator.DEFAULT.buffer();
         }
 
         // UTF-8 encoding but without surrogate support
         if (c < 0x80) {
             // have at most seven bits
-            out.write((byte) c);
+            out.writeByte((byte) c);
         } else if (c < 0x800) {
             // 2 text, 11 bits
-            out.write((byte) (0xc0 | (c >> 6)));
-            out.write((byte) (0x80 | (c & 0x3f)));
+            out.writeByte((byte) (0xc0 | (c >> 6)));
+            out.writeByte((byte) (0x80 | (c & 0x3f)));
         } else {
             // 3 text, 16 bits
-            out.write((byte) (0xe0 | ((c >> 12))));
-            out.write((byte) (0x80 | ((c >> 6) & 0x3f)));
-            out.write((byte) (0x80 | (c & 0x3f)));
+            out.writeByte((byte) (0xe0 | ((c >> 12))));
+            out.writeByte((byte) (0x80 | ((c >> 6) & 0x3f)));
+            out.writeByte((byte) (0x80 | (c & 0x3f)));
         }
     }
 
@@ -334,24 +304,21 @@ public class WebContext implements Out<WebContext>, AutoCloseable {
     }
 
     public void sendNotFound() throws IOException {
-        exchange.setStatusCode(NOT_FOUND);
     }
 
     public void sendOK(Printer printer) throws IOException {
-        exchange.setStatusCode(200);
-        if (printer instanceof WebView) {
-            WebView view = (WebView) printer;
-            view.wc = this;
-            responseh.put(CONTENT_TYPE, view.ctype());
-        } else {
-            responseh.put(CONTENT_TYPE, "text/plain");
-        }
-
+//        request.setStatusCode(200);
+//        if (printer instanceof WebView) {
+//            WebView view = (WebView) printer;
+//            view.wc = this;
+//            responseh.put(CONTENT_TYPE, view.ctype());
+//        } else {
+//            responseh.put(CONTENT_TYPE, "text/plain");
+//        }
+//
         // print out content
         printer.print(this);
 
-        out.flush();
-        out.close();
     }
 
     @Override

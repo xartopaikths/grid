@@ -1,6 +1,6 @@
 package io.greatbone.grid;
 
-import org.xnio.StreamConnection;
+import io.netty.channel.Channel;
 
 import java.io.IOException;
 import java.io.ObjectOutputStream;
@@ -24,7 +24,7 @@ class GridPageRef<D extends GridData<D>> extends GridPage<D> {
 
     @Override
     public D get(String key) {
-        StreamConnection conn = null;
+        Channel conn = null;
         try (GridContext gc = new GridContext(conn = this.connector.checkout())) {
             //
             // parent.key
@@ -41,7 +41,7 @@ class GridPageRef<D extends GridData<D>> extends GridPage<D> {
 
     @Override
     public D put(String key, D dat) {
-        StreamConnection conn = null;
+        Channel conn = null;
         try (GridContext gc = new GridContext(conn = this.connector.checkout())) {
             //
             // parent.key
@@ -58,7 +58,7 @@ class GridPageRef<D extends GridData<D>> extends GridPage<D> {
 
     @Override
     public D search(Critera<D> filter) {
-        StreamConnection conn = null;
+        Channel conn = null;
         try (GridContext gc = new GridContext(conn = this.connector.checkout())) {
             //
             // parent.key

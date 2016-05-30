@@ -1,7 +1,5 @@
 package io.greatbone.grid;
 
-import org.xnio.*;
-
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
@@ -38,35 +36,6 @@ abstract class GridEndPoint {
     public void callasd() throws IOException {
 
         final Charset charset = Charset.forName("utf-8");
-        final Xnio xnio = Xnio.getInstance();
-        final XnioWorker worker = xnio.createWorker(OptionMap.EMPTY);
-
-        try {
-            final IoFuture<StreamConnection> futureConnection = worker.openStreamConnection(new InetSocketAddress("localhost", 12345), null, OptionMap.EMPTY);
-            final StreamConnection channel = futureConnection.get(); // throws exceptions
-
-            try {
-                // Send the greeting
-//                    Channels.writeBlocking(channel, ByteBuffer.wrap("Hello world!\n".getBytes(charset)));
-//                    // Make sure all data is written
-//                    Channels.flushBlocking(channel);
-//                    // And send EOF
-//                    channel.shutdownWrites();
-                System.out.println("Sent greeting string!  The response is...");
-                ByteBuffer recvBuf = ByteBuffer.allocate(128);
-                // Now receive and print the whole response
-//                    while (Channels.readBlocking(channel, recvBuf) != -1) {
-//                        recvBuf.flip();
-//                        final CharBuffer chars = charset.decode(recvBuf);
-//                        System.out.print(chars);
-//                        recvBuf.clear();
-//                    }
-            } finally {
-                IoUtils.safeClose(channel);
-            }
-        } finally {
-            worker.shutdown();
-        }
     }
 
     public void start() throws IOException {

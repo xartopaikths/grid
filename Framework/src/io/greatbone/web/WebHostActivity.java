@@ -168,7 +168,6 @@ public abstract class WebHostActivity extends WebParentActivity implements Chann
         //To change body of implemented methods use File | Settings | File Templates.
     }
 
-    @Override
     public void handleRequest(FullHttpRequest exch) throws Exception {
 
         // handle static resources in a IO thread
@@ -235,11 +234,11 @@ public abstract class WebHostActivity extends WebParentActivity implements Chann
 //                    exch(NOT_MODIFIED);
                 } else {
                     // async sending
-                    req.getResponseSender().send(ByteBuffer.wrap(sta.content));
+//                    req.getResponseSender().send(ByteBuffer.wrap(sta.content));
                 }
-            } else if (method == HEAD) {
+//            } else if (method == HEAD) {
             } else {
-                req.setStatusCode(METHOD_NOT_ALLOWED);
+//                req.setStatusCode(METHOD_NOT_ALLOWED);
             }
         }
     }
@@ -248,6 +247,5 @@ public abstract class WebHostActivity extends WebParentActivity implements Chann
     public Element config() {
         return config;
     }
-
 
 }

@@ -20,10 +20,6 @@ public class AgentsActivity extends WebActivity {
     }
 
     public void default_(WebContext wc) {
-        String st = wc.qstring("status");
-        if (st.equals("")) {
-
-        }
     }
 
     public void Get(String rsc, WebContext wc) throws Exception {
