@@ -7,11 +7,11 @@ import java.lang.reflect.Constructor;
 /**
  * An activity that can contain a number of sub activities.
  */
-abstract class WebParent extends WebActivity {
+abstract class WebParentActivity extends WebActivity {
 
     Roll<String, WebActivity> subs;
 
-    WebParent(WebHost root, WebActivity parent) {
+    WebParentActivity(WebHost root, WebActivity parent) {
         super(root, parent);
     }
 

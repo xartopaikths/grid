@@ -1,6 +1,5 @@
 package io.greatbone.web;
 
-
 import io.greatbone.Configurable;
 import io.greatbone.Greatbone;
 import io.netty.bootstrap.ServerBootstrap;
@@ -13,6 +12,7 @@ import io.netty.handler.codec.http.HttpObjectAggregator;
 import io.netty.handler.codec.http.HttpServerCodec;
 import io.netty.handler.codec.http.websocketx.WebSocketServerProtocolHandler;
 import io.netty.handler.codec.http.websocketx.extensions.compression.WebSocketServerCompressionHandler;
+import io.netty.util.ReferenceCountUtil;
 import org.w3c.dom.Element;
 
 import javax.management.MBeanServer;
@@ -25,7 +25,7 @@ import java.util.Base64;
 /**
  * A root web folder that may have a hub handler which deals with variable sector folders.
  */
-public abstract class WebHost extends WebParent implements ChannelInboundHandler, WebVirtualHostMBean, Configurable {
+public abstract class WebHost extends WebParentActivity implements ChannelInboundHandler, WebHostMBean, Configurable {
 
     static final String EMPTY = "";
 
@@ -134,8 +134,18 @@ public abstract class WebHost extends WebParent implements ChannelInboundHandler
 
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
-        if (msg instanceof FullHttpRequest) {
-            handleRequest((FullHttpRequest) msg);
+        boolean release = true;
+        try {
+            if (msg instanceof FullHttpRequest) {
+                handleRequest((FullHttpRequest) msg);
+            } else {
+                release = false;
+                ctx.fireChannelRead(msg);
+            }
+        } finally {
+            if (release) {
+                ReferenceCountUtil.release(msg);
+            }
         }
     }
 
