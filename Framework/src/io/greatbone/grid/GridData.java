@@ -1,7 +1,7 @@
 package io.greatbone.grid;
 
 import io.greatbone.Out;
-import io.greatbone.Printer;
+import io.greatbone.Print;
 import io.greatbone.util.Roll;
 import io.greatbone.web.WebContext;
 
@@ -17,7 +17,7 @@ import java.sql.ResultSet;
  *
  * @param <R> type of this object
  */
-public abstract class GridData<R extends GridData<R>> implements Printer {
+public abstract class GridData<R extends GridData<R>> implements Print {
 
     // the associated data page
     // it is the backing store if native page and the buffer field is null

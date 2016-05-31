@@ -1,10 +1,11 @@
 package io.greatbone.web;
 
 import io.greatbone.Out;
-import io.greatbone.Printer;
+import io.greatbone.Print;
 import io.greatbone.grid.GridData;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.PooledByteBufAllocator;
+import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.http.*;
 
 import java.io.IOException;
@@ -25,7 +26,9 @@ public class WebContext implements Out<WebContext>, AutoCloseable {
 
     static final int MAX_BODY = 64 * 1024;
 
-    static final int OUT_INITIAL = 4 * 1024;
+    static final int OUTBUF_INITIAL = 4 * 1024;
+
+    static final int OUTBUF_MAX = 64 * 1024;
 
     // standard HTTP date format
     static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss zzz", Locale.US);
@@ -48,36 +51,37 @@ public class WebContext implements Out<WebContext>, AutoCloseable {
 
     final WebHost host;
 
-    // the underlying exchange impl
-    final FullHttpRequest request;
+    final ChannelHandlerContext context;
 
-    final FullHttpResponse response;
+    final FullHttpRequest request;
 
     // request headers
     final HttpHeaders requesth;
 
     WebPrincipal principal;
 
-    // response headers
-    HttpHeaders responseh;
+    String scope;
 
-    String space;
-
-    WebActivity control;
-
-    String resource;
+    WebActivity activity;
 
     // converted request content: form-data, json-deserilized and input stream
     Object content;
 
-    // the underlying blocking I/O output buffer
-    ByteBuf out;
+    // the output buffer
+    ByteBuf outbuf;
 
-    WebContext(WebHost host, FullHttpRequest request) {
+    WebContext(WebHost host, ChannelHandlerContext context, FullHttpRequest req) {
         this.host = host;
-        this.request = request;
-        this.requesth = request.headers();
-        this.response = new DefaultFullHttpResponse(HttpVersion.HTTP_1_1, HttpResponseStatus.OK);
+        this.context = context;
+        this.request = req;
+        this.requesth = req.headers();
+    }
+
+    ByteBuf outbuf(boolean alloc) {
+        if (outbuf == null && alloc) {
+            outbuf = PooledByteBufAllocator.DEFAULT.buffer(OUTBUF_INITIAL, OUTBUF_MAX);
+        }
+        return outbuf;
     }
 
     public HttpMethod method() {
@@ -85,15 +89,11 @@ public class WebContext implements Out<WebContext>, AutoCloseable {
     }
 
     public String space() {
-        return space;
+        return scope;
     }
 
     public WebActivity control() {
-        return control;
-    }
-
-    public String resource() {
-        return resource;
+        return activity;
     }
 
     String authorization() {
@@ -131,28 +131,24 @@ public class WebContext implements Out<WebContext>, AutoCloseable {
         return null;
     }
 
-
     //
     // OUTPUT FUNCTIONS
 
     void write(char c) throws IOException {
-        if (out == null) {
-            out = PooledByteBufAllocator.DEFAULT.buffer();
-        }
-
+        final ByteBuf buf = outbuf(true);
         // UTF-8 encoding but without surrogate support
         if (c < 0x80) {
             // have at most seven bits
-            out.writeByte((byte) c);
+            buf.writeByte((byte) c);
         } else if (c < 0x800) {
             // 2 text, 11 bits
-            out.writeByte((byte) (0xc0 | (c >> 6)));
-            out.writeByte((byte) (0x80 | (c & 0x3f)));
+            buf.writeByte((byte) (0xc0 | (c >> 6)));
+            buf.writeByte((byte) (0x80 | (c & 0x3f)));
         } else {
             // 3 text, 16 bits
-            out.writeByte((byte) (0xe0 | ((c >> 12))));
-            out.writeByte((byte) (0x80 | ((c >> 6) & 0x3f)));
-            out.writeByte((byte) (0x80 | (c & 0x3f)));
+            buf.writeByte((byte) (0xe0 | ((c >> 12))));
+            buf.writeByte((byte) (0x80 | ((c >> 6) & 0x3f)));
+            buf.writeByte((byte) (0x80 | (c & 0x3f)));
         }
     }
 
@@ -306,19 +302,25 @@ public class WebContext implements Out<WebContext>, AutoCloseable {
     public void sendNotFound() throws IOException {
     }
 
-    public void sendOK(Printer printer) throws IOException {
-//        request.setStatusCode(200);
-//        if (printer instanceof WebView) {
-//            WebView view = (WebView) printer;
-//            view.wc = this;
-//            responseh.put(CONTENT_TYPE, view.ctype());
-//        } else {
-//            responseh.put(CONTENT_TYPE, "text/plain");
-//        }
-//
-        // print out content
-        printer.print(this);
+    PooledByteBufAllocator pool;
 
+    public void sendOK(Print print) throws IOException {
+
+        HttpHeaders headers = new DefaultHttpHeaders();
+
+        if (print instanceof WebView) {
+            WebView view = (WebView) print;
+            view.wctx = this;
+            headers.add(HttpHeaderNames.CONTENT_TYPE, view.ctype());
+        } else {
+            headers.add(HttpHeaderNames.CONTENT_TYPE, "text/plain");
+        }
+        // print out content
+        print.print(this);
+
+        FullHttpResponse resp = new DefaultFullHttpResponse(HttpVersion.HTTP_1_1, HttpResponseStatus.OK, outbuf(false), headers, new DefaultHttpHeaders());
+
+        context.writeAndFlush(resp);
     }
 
     @Override

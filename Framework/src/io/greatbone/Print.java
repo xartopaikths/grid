@@ -4,7 +4,7 @@ import java.io.IOException;
 
 /**
  */
-public interface Printer {
+public interface Print {
 
     void print(Out out) throws IOException;
 

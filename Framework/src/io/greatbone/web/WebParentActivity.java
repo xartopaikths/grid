@@ -19,12 +19,12 @@ abstract class WebParentActivity extends WebActivity {
         return subs.get(key);
     }
 
-    public <T extends WebActivity> void addSub(String key, Class<T> class_, Authorizer authorizer) {
+    public <T extends WebActivity> void addSub(String key, Class<T> class_, Authorize authorize) {
         try {
             Constructor<T> ctor = class_.getConstructor(WebHost.class, WebActivity.class);
             T sub = ctor.newInstance(vhost, this);
             sub.key = key;
-            sub.authorizer = authorizer;
+            sub.authorize = authorize;
             if (subs == null) {
                 this.subs = new Roll<>(8);
             }

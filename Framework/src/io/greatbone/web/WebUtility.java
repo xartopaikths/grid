@@ -63,11 +63,11 @@ public class WebUtility implements WebMBean, Configurable {
         return statics.get(path);
     }
 
-    final <T extends WebHost> T putHost(String name, Class<T> clazz, Authorizer authorizer) {
+    final <T extends WebHost> T putHost(String name, Class<T> clazz, Authorize authorize) {
         try {
             Constructor<T> ctor = clazz.getConstructor(WebUtility.class, String.class);
             T vhost = ctor.newInstance(this, name);
-            vhost.authorizer = authorizer;
+            vhost.authorize = authorize;
             vhosts.add(vhost);
             return vhost;
         } catch (Exception e) {
@@ -95,11 +95,11 @@ public class WebUtility implements WebMBean, Configurable {
         return config;
     }
 
-    public static <T extends WebHost> T addHost(String key, Class<T> hostClass, Authorizer authorizer) {
+    public static <T extends WebHost> T addHost(String key, Class<T> hostClass, Authorize authorize) {
         if (WEB == null) {
             WEB = new WebUtility();
         }
-        return WEB.putHost(key, hostClass, authorizer);
+        return WEB.putHost(key, hostClass, authorize);
     }
 
     public static final String

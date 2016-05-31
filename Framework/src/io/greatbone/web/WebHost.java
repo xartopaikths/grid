@@ -118,18 +118,22 @@ public abstract class WebHost extends WebParentActivity implements ChannelInboun
 
     @Override
     public void channelRegistered(ChannelHandlerContext ctx) throws Exception {
+        ctx.fireChannelRegistered();
     }
 
     @Override
     public void channelUnregistered(ChannelHandlerContext ctx) throws Exception {
+        ctx.fireChannelUnregistered();
     }
 
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
+        ctx.fireChannelActive();
     }
 
     @Override
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
+        ctx.fireChannelInactive();
     }
 
     @Override
@@ -137,7 +141,7 @@ public abstract class WebHost extends WebParentActivity implements ChannelInboun
         boolean release = true;
         try {
             if (msg instanceof FullHttpRequest) {
-                handleRequest((FullHttpRequest) msg);
+                handle(ctx, (FullHttpRequest) msg);
             } else {
                 release = false;
                 ctx.fireChannelRead(msg);
@@ -151,18 +155,22 @@ public abstract class WebHost extends WebParentActivity implements ChannelInboun
 
     @Override
     public void channelReadComplete(ChannelHandlerContext ctx) throws Exception {
+        ctx.fireChannelReadComplete();
     }
 
     @Override
     public void userEventTriggered(ChannelHandlerContext ctx, Object evt) throws Exception {
+        ctx.fireUserEventTriggered(evt);
     }
 
     @Override
     public void channelWritabilityChanged(ChannelHandlerContext ctx) throws Exception {
+        ctx.fireChannelWritabilityChanged();
     }
 
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
+        ctx.fireExceptionCaught(cause);
     }
 
     @Override
@@ -173,19 +181,19 @@ public abstract class WebHost extends WebParentActivity implements ChannelInboun
     public void handlerRemoved(ChannelHandlerContext ctx) throws Exception {
     }
 
-    public void handleRequest(FullHttpRequest exch) throws Exception {
+    final void handle(ChannelHandlerContext ctx, FullHttpRequest req) throws Exception {
 
         // handle static resources in a IO thread
-        String path = exch.uri();
+        String path = req.uri();
         String base = path.substring(1);
         int dot = base.lastIndexOf('.');
         if (dot != -1) {
             WebStatic sta = web.getStatic(path);
-            handleStatic(sta, exch);
+            handleStatic(sta, req);
             return;
         }
 
-        try (WebContext wc = new WebContext(this, exch)) {
+        try (WebContext wc = new WebContext(this, ctx, req)) {
             // BASIC authentication from client
             authenticate(wc);
 

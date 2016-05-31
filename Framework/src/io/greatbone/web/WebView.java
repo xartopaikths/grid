@@ -1,17 +1,17 @@
 package io.greatbone.web;
 
 import io.greatbone.Out;
-import io.greatbone.Printer;
+import io.greatbone.Print;
 
 import java.io.IOException;
 
 /**
  */
 @SuppressWarnings("unchecked")
-public abstract class WebView<U extends Out<U>> implements Out<U>, Printer {
+public abstract class WebView<O extends Out<O>> implements Out<O>, Print {
 
     // the wrapped output object
-    WebContext wc;
+    WebContext wctx;
 
     protected abstract String ctype();
 
@@ -19,33 +19,33 @@ public abstract class WebView<U extends Out<U>> implements Out<U>, Printer {
     public abstract void print(Out out) throws IOException;
 
     @Override
-    public U $(boolean v) throws IOException {
-        wc.$(v);
-        return (U) this;
+    public O $(boolean v) throws IOException {
+        wctx.$(v);
+        return (O) this;
     }
 
     @Override
-    public U $(short v) throws IOException {
-        wc.$(v);
-        return (U) this;
+    public O $(short v) throws IOException {
+        wctx.$(v);
+        return (O) this;
     }
 
     @Override
-    public U $(int v) throws IOException {
-        wc.$(v);
-        return (U) this;
+    public O $(int v) throws IOException {
+        wctx.$(v);
+        return (O) this;
     }
 
     @Override
-    public U $(long v) throws IOException {
-        wc.$(v);
-        return (U) this;
+    public O $(long v) throws IOException {
+        wctx.$(v);
+        return (O) this;
     }
 
     @Override
-    public U $(CharSequence v) throws IOException {
-        wc.$(v);
-        return (U) this;
+    public O $(CharSequence v) throws IOException {
+        wctx.$(v);
+        return (O) this;
     }
 
 }

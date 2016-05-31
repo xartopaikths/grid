@@ -10,7 +10,7 @@ public class WebHubActivity extends WebParentActivity {
 
     @Override
     public WebActivity locateSub(String key, WebContext wc) {
-        wc.space = key;
+        wc.scope = key;
         return this;
     }
 

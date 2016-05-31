@@ -23,7 +23,7 @@ public abstract class WebActivity {
     final Roll<String, Action> actions = new Roll<>(32);
 
     // access checker
-    Authorizer authorizer;
+    Authorize authorize;
 
     // execution of background tasks
     Thread cycler;
@@ -69,7 +69,7 @@ public abstract class WebActivity {
     protected void perform(String base, WebContext exch) throws Exception {
         int slash = base.indexOf('/');
         if (slash == -1) { // without a slash then handle by this controller instance
-            exch.control = this;
+            exch.activity = this;
             HttpMethod method = exch.method();
             if (method == HttpMethod.GET) default_(exch);
 //        } else if (subordinates != null) { // resolve the sub structure

@@ -2,7 +2,7 @@ package io.greatbone.web;
 
 /**
  */
-public interface Authorizer {
+public interface Authorize {
 
     boolean authorize(String scope, WebPrincipal prin);
 
