@@ -229,16 +229,16 @@ public abstract class WebHost extends WebParentActivity implements ChannelInboun
         while (ret[p++] != (byte) ':') ;
         String username = new String(ret, 0, 0, p); // we use this direct string construction for speed
         String password = new String(ret, 0, p + 1, len - p);
-        WebPrincipal prin = acquire(username, password);
+        WebPrincipal prin = fetch(username, password);
 
         wc.principal = prin;
     }
 
-    protected WebPrincipal acquire(String username, String password) {
+    protected WebPrincipal fetch(String username, String password) {
         return null;
     }
 
-    void handleStatic(ChannelHandlerContext ctx, FullHttpRequest req) {
+    final void handleStatic(ChannelHandlerContext ctx, FullHttpRequest req) {
         String path = req.uri();
         WebStatic sta = web.getStatic(path);
         if (sta == null) {

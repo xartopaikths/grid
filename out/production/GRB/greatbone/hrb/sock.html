@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head><title>Web Socket Test</title></head>
+<body>
+<video id="video" controls="true"></video>
+<script>
+    var socket;
+    if (window.WebSocket) {
+        socket = new WebSocket("ws://10.0.0.201:8080/myapp");
+        socket.onmessage = function (event) {
+
+            var video = document.getElementById('myvideo');
+            var url = window.URL.createObjectURL(event.data);
+            video.src = url;
+            video.play();
+
+            alert("Received data from websocket: " + event.data);
+        };
+        socket.onopen = function (event) {
+            alert("Web Socket opened!");
+        };
+        socket.onclose = function (event) {
+            alert("Web Socket closed.");
+        };
+    } else {
+        alert("Your browser does not support Websockets. (Use Chrome)");
+    }
+    function send(message) {
+        if (!window.WebSocket) {
+            return;
+        }
+        if (socket.readyState == WebSocket.OPEN) {
+            socket.send(message);
+        } else {
+            alert("The socket is not open.");
+        }
+    }
+</script>
+
+</body>
+</html>
