@@ -1,13 +1,12 @@
 package io.greatbone.sample;
 
-import io.greatbone.Out;
-import io.greatbone.web.WebView;
+import io.greatbone.web.WebPrint;
 
 import java.io.IOException;
 
 /**
  */
-public class JSON extends WebView<JSON> {
+public class JSON extends WebPrint<JSON> {
 
     @Override
     protected String ctype() {
@@ -15,7 +14,7 @@ public class JSON extends WebView<JSON> {
     }
 
     @Override
-    public void print(Out out) throws IOException {
+    public void print() throws IOException {
 
     }
 

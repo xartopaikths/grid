@@ -89,6 +89,8 @@ public abstract class WebHost extends WebParentActivity implements ChannelInboun
             ServerBootstrap b = new ServerBootstrap();
             b.group(Greatbone.BOSS, Greatbone.WORK)
                     .channel(NioServerSocketChannel.class)
+                    .option(ChannelOption.SO_BACKLOG, 128)
+                    .childOption(ChannelOption.SO_KEEPALIVE, true)
                     .childHandler(new ChannelInitializer<SocketChannel>() {
                         protected void initChannel(SocketChannel ch) throws Exception {
                             ChannelPipeline pipeline = ch.pipeline();
@@ -169,6 +171,7 @@ public abstract class WebHost extends WebParentActivity implements ChannelInboun
     }
 
     @Override
+    @Deprecated
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
         ctx.fireExceptionCaught(cause);
     }
@@ -188,8 +191,7 @@ public abstract class WebHost extends WebParentActivity implements ChannelInboun
         String base = path.substring(1);
         int dot = base.lastIndexOf('.');
         if (dot != -1) {
-            WebStatic sta = web.getStatic(path);
-            handleStatic(sta, req);
+            handleStatic(ctx, req);
             return;
         }
 
@@ -236,7 +238,9 @@ public abstract class WebHost extends WebParentActivity implements ChannelInboun
         return null;
     }
 
-    void handleStatic(WebStatic sta, FullHttpRequest req) {
+    void handleStatic(ChannelHandlerContext ctx, FullHttpRequest req) {
+        String path = req.uri();
+        WebStatic sta = web.getStatic(path);
         if (sta == null) {
 //            exch.setStatusCode(NOT_FOUND);
         } else {
@@ -244,6 +248,7 @@ public abstract class WebHost extends WebParentActivity implements ChannelInboun
             if (method == HttpMethod.GET) {
                 String since = req.headers().get("If-Modified-Since");
                 if (since != null) {
+
 //                    exch(NOT_MODIFIED);
                 } else {
                     // async sending

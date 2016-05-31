@@ -1,11 +1,8 @@
 package io.greatbone.grid;
 
-import io.greatbone.Out;
-import io.greatbone.Print;
 import io.greatbone.util.Roll;
 import io.greatbone.web.WebContext;
 
-import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.sql.ResultSet;
 
@@ -17,7 +14,7 @@ import java.sql.ResultSet;
  *
  * @param <R> type of this object
  */
-public abstract class GridData<R extends GridData<R>> implements Print {
+public abstract class GridData<R extends GridData<R>> {
 
     // the associated data page
     // it is the backing store if native page and the buffer field is null
@@ -200,11 +197,6 @@ public abstract class GridData<R extends GridData<R>> implements Print {
 
     public void move() {
         index++;
-    }
-
-    @Override
-    public void print(Out out) throws IOException {
-
     }
 
     protected abstract GridSchema<R> schema();

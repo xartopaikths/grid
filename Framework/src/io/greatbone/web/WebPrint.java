@@ -1,22 +1,20 @@
 package io.greatbone.web;
 
 import io.greatbone.Out;
-import io.greatbone.Print;
 
 import java.io.IOException;
 
 /**
  */
 @SuppressWarnings("unchecked")
-public abstract class WebView<O extends Out<O>> implements Out<O>, Print {
+public abstract class WebPrint<O extends Out<O>> implements Out<O> {
 
     // the wrapped output object
     WebContext wctx;
 
     protected abstract String ctype();
 
-    @Override
-    public abstract void print(Out out) throws IOException;
+    protected abstract void print() throws IOException;
 
     @Override
     public O $(boolean v) throws IOException {

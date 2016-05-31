@@ -1,5 +1,6 @@
 package io.greatbone.sample.op;
 
+import io.greatbone.sample.HTML;
 import io.greatbone.web.WebContext;
 import io.greatbone.web.WebUtility;
 import io.greatbone.web.WebHost;
@@ -22,7 +23,11 @@ public class OperationHost extends WebHost {
 
     @Override
     public void default_(WebContext wc) throws IOException {
-        wc.sendOK((x) -> x.$("OK, it's alomost done."));
+        wc.sendOK(new HTML() {
+            protected void body() throws IOException {
+                $("another html output");
+            }
+        });
     }
 
 }

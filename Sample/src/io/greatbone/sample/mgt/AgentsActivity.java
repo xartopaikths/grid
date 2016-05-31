@@ -28,7 +28,7 @@ public class AgentsActivity extends WebActivity {
             wc.sendNotFound();
         } else {
             // send back json
-            wc.sendOK(ret);
+//            wc.sendOK(ret);
         }
     }
 

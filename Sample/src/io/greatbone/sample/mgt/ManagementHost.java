@@ -1,5 +1,6 @@
 package io.greatbone.sample.mgt;
 
+import io.greatbone.sample.HTML;
 import io.greatbone.web.WebContext;
 import io.greatbone.web.WebHost;
 import io.greatbone.web.WebUtility;
@@ -21,7 +22,12 @@ public class ManagementHost extends WebHost {
 
     @Override
     public void default_(WebContext wc) throws IOException {
-        wc.sendOK((x) -> x.$("OK, it's alomost done."));
+        wc.sendOK(new HTML() {
+            @Override
+            protected void body() throws IOException {
+                $("this is html");
+            }
+        });
     }
 
 }

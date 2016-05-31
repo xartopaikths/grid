@@ -1,13 +1,12 @@
 package io.greatbone.sample;
 
-import io.greatbone.Out;
-import io.greatbone.web.WebView;
+import io.greatbone.web.WebPrint;
 
 import java.io.IOException;
 
 /**
  */
-public abstract class HTML extends WebView<HTML> {
+public abstract class HTML extends WebPrint<HTML> {
 
     @Override
     protected String ctype() {
@@ -15,13 +14,13 @@ public abstract class HTML extends WebView<HTML> {
     }
 
     @Override
-    public void print(Out out) throws IOException {
+    public void print() throws IOException {
         $("<!DOCTYPE HTML>");
         $("<html>");
         $("<head>");
-        $("<link rel=\"stylesheet\" type=\"text/css\" href=\"/foundation.min.css\" media=\"screen\" />");
-        $("<script type=\"text/javascript\"  src=\"jquery.min.js\"></script>");
-        $("<script type=\"text/javascript\"  src=\"foundation.min.js\"></script>");
+        $("<link rel=\"stylesheet\" type=\"text/css\" href=\"/jqm.structure.min.css\" media=\"screen\" />");
+        $("<link rel=\"stylesheet\" type=\"text/css\" href=\"/jqm.theme.min.css\" media=\"screen\" />");
+        $("<script type=\"text/javascript\"  src=\"jqm.min.js\"></script>");
         $("</head>");
 
         body();

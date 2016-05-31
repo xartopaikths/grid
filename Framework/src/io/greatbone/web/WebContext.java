@@ -1,7 +1,6 @@
 package io.greatbone.web;
 
 import io.greatbone.Out;
-import io.greatbone.Print;
 import io.greatbone.grid.GridData;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.PooledByteBufAllocator;
@@ -51,7 +50,7 @@ public class WebContext implements Out<WebContext>, AutoCloseable {
 
     final WebHost host;
 
-    final ChannelHandlerContext context;
+    final ChannelHandlerContext chctx;
 
     final FullHttpRequest request;
 
@@ -70,9 +69,9 @@ public class WebContext implements Out<WebContext>, AutoCloseable {
     // the output buffer
     ByteBuf outbuf;
 
-    WebContext(WebHost host, ChannelHandlerContext context, FullHttpRequest req) {
+    WebContext(WebHost host, ChannelHandlerContext chctx, FullHttpRequest req) {
         this.host = host;
-        this.context = context;
+        this.chctx = chctx;
         this.request = req;
         this.requesth = req.headers();
     }
@@ -135,7 +134,12 @@ public class WebContext implements Out<WebContext>, AutoCloseable {
     // OUTPUT FUNCTIONS
 
     void write(char c) throws IOException {
-        final ByteBuf buf = outbuf(true);
+
+        ByteBuf buf = outbuf;
+        if (buf == null) {
+            buf = outbuf = PooledByteBufAllocator.DEFAULT.buffer(OUTBUF_INITIAL, OUTBUF_MAX);
+        }
+
         // UTF-8 encoding but without surrogate support
         if (c < 0x80) {
             // have at most seven bits
@@ -304,23 +308,18 @@ public class WebContext implements Out<WebContext>, AutoCloseable {
 
     PooledByteBufAllocator pool;
 
-    public void sendOK(Print print) throws IOException {
+    public void sendOK(WebPrint print) throws IOException {
+
+        // print content to the out
+        print.wctx = this;
+        print.print();
 
         HttpHeaders headers = new DefaultHttpHeaders();
+        headers.set(HttpHeaderNames.CONTENT_TYPE, print.ctype());
+        headers.set(HttpHeaderNames.CONTENT_LENGTH, outbuf == null ? 0 : outbuf.readableBytes());
 
-        if (print instanceof WebView) {
-            WebView view = (WebView) print;
-            view.wctx = this;
-            headers.add(HttpHeaderNames.CONTENT_TYPE, view.ctype());
-        } else {
-            headers.add(HttpHeaderNames.CONTENT_TYPE, "text/plain");
-        }
-        // print out content
-        print.print(this);
-
-        FullHttpResponse resp = new DefaultFullHttpResponse(HttpVersion.HTTP_1_1, HttpResponseStatus.OK, outbuf(false), headers, new DefaultHttpHeaders());
-
-        context.writeAndFlush(resp);
+        FullHttpResponse resp = new DefaultFullHttpResponse(HttpVersion.HTTP_1_1, HttpResponseStatus.OK, outbuf, headers, new DefaultHttpHeaders());
+        chctx.writeAndFlush(resp);
     }
 
     @Override
