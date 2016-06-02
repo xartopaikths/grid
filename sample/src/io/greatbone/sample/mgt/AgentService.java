@@ -10,11 +10,11 @@ import io.greatbone.web.WebService;
 
 /**
  */
-public class AgentsService extends WebService {
+public class AgentService extends WebService {
 
     final ORGS shops;
 
-    public AgentsService(WebHost host, WebParent parent) {
+    public AgentService(WebHost host, WebParent parent) {
         super(host, parent);
 
         this.shops = GridUtility.getCache(ORGS.class);

@@ -84,7 +84,7 @@ public abstract class WebHost extends WebService implements ChannelInboundHandle
     public <T extends WebService> void addSub(String key, Class<T> class_, Authorize authorize) {
         try {
             Constructor<T> ctor = class_.getConstructor(WebHost.class, WebService.class);
-            T sub = ctor.newInstance(vhost, this);
+            T sub = ctor.newInstance(host, this);
             sub.key = key;
             sub.authorize = authorize;
             if (subs == null) {

@@ -1,13 +1,14 @@
 package io.greatbone.web;
 
 /**
+ * A login principal.
  */
-public interface WebPrincipal{
+public interface WebPrincipal {
 
     String getName();
 
     String getCredential();
 
-    boolean check(String scope, int roles);
+    boolean check(String zone, int roles);
 
 }

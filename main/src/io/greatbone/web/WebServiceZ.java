@@ -5,7 +5,7 @@ import io.netty.handler.codec.http.HttpMethod;
 /**
  * A set of actions working on request/response eachanges to carry out management tasks on a collection of resources.
  */
-public abstract class WebServiceX<X extends Scope> {
+public abstract class WebServiceZ<Z extends WebZone> {
 
     // the container virtual host
     protected final WebHost host;
@@ -22,7 +22,7 @@ public abstract class WebServiceX<X extends Scope> {
     // execution of background tasks
     Thread cycler;
 
-    protected WebServiceX(WebHost host, WebParent parent) {
+    protected WebServiceZ(WebHost host, WebParent parent) {
         this.host = host;
         this.parent = parent;
 
@@ -50,7 +50,7 @@ public abstract class WebServiceX<X extends Scope> {
         if (slash == -1) { // without a slash then handle by this controller instance
 //            ctx.activity = this;
             HttpMethod method = ctx.method();
-            X scope = (X) ctx.scope;
+            Z scope = (Z) ctx.scope;
             if (method == HttpMethod.GET) Get(scope, ctx);
             else if (method == HttpMethod.POST) Post(scope, ctx);
             else if (method == HttpMethod.PUT) Put(scope, ctx);
@@ -68,22 +68,22 @@ public abstract class WebServiceX<X extends Scope> {
         }
     }
 
-    public void Get(X scope, WebContext wc) throws Exception {
+    public void Get(Z scope, WebContext wc) throws Exception {
     }
 
-    public void Get(X scope, String rsc, WebContext wc) throws Exception {
+    public void Get(Z scope, String rsc, WebContext wc) throws Exception {
     }
 
-    public void Post(X scope, WebContext wc) throws Exception {
+    public void Post(Z scope, WebContext wc) throws Exception {
     }
 
-    public void Put(X scope, WebContext wc) throws Exception {
+    public void Put(Z scope, WebContext wc) throws Exception {
     }
 
-    public void Patch(X scope, WebContext wc) throws Exception {
+    public void Patch(Z scope, WebContext wc) throws Exception {
     }
 
-    public void Delete(X scope, WebContext wc) throws Exception {
+    public void Delete(Z scope, WebContext wc) throws Exception {
     }
 
 }

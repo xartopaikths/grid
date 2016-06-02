@@ -2,18 +2,18 @@ package io.greatbone.web;
 
 /**
  */
-public abstract class WebServiceHub<X extends Scope> extends WebServiceX<X> {
+public abstract class WebServiceHub<Z extends WebZone> extends WebServiceZ<Z> implements WebParent {
 
     WebServiceHub(WebHost host) {
         super(host, host);
     }
 
-    public WebServiceX locate(String key, WebContext wc) {
+    public WebServiceZ locate(String key, WebContext wc) {
         wc.scope = key;
         return this;
     }
 
 
-    protected abstract X resolve(String scope);
+    protected abstract Z resolve(String scope);
 
 }

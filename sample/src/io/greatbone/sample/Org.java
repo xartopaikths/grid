@@ -2,16 +2,14 @@ package io.greatbone.sample;
 
 import io.greatbone.grid.*;
 import io.greatbone.web.WebPrincipal;
-import io.greatbone.web.Scope;
-import io.netty.channel.ChannelHandlerContext;
-
-import java.util.List;
+import io.greatbone.web.WebSocketDoer;
+import io.greatbone.web.WebZone;
 
 /**
  * A shop that takes orders and issues delivery tasks.
  */
 @Storage
-public class Org extends GridData<Org> implements WebPrincipal, Scope {
+public class Org extends GridData<Org> implements WebPrincipal, WebZone {
 
     // COLUMNS
 
@@ -35,12 +33,12 @@ public class Org extends GridData<Org> implements WebPrincipal, Scope {
     };
 
     @Override
-    public String id() {
+    public String key() {
         return ID.getValue(this);
     }
 
     @Override
-    public List<ChannelHandlerContext> contexts() {
+    public WebSocketDoer doer() {
         return null;
     }
 
@@ -55,7 +53,7 @@ public class Org extends GridData<Org> implements WebPrincipal, Scope {
     }
 
     @Override
-    public boolean check(String scope, int roles) {
+    public boolean check(String zone, int roles) {
         return false;
     }
 

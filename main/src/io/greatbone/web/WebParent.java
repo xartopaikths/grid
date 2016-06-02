@@ -1,7 +1,7 @@
 package io.greatbone.web;
 
 /**
- * An activity that can contain a number of sub activities.
+ * A web service that can contain a number of sub services.
  */
 public interface WebParent {
 

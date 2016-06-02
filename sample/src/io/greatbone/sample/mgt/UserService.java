@@ -1,9 +1,10 @@
 package io.greatbone.sample.mgt;
 
 import io.greatbone.db.DbContext;
-import io.greatbone.web.WebActivity;
-import io.greatbone.web.WebHost;
 import io.greatbone.sample.Staffer;
+import io.greatbone.web.WebHost;
+import io.greatbone.web.WebParent;
+import io.greatbone.web.WebService;
 
 import java.sql.SQLException;
 import java.util.concurrent.ConcurrentHashMap;
@@ -11,11 +12,11 @@ import java.util.concurrent.ConcurrentHashMap;
 /**
  * The management of platform users and agents
  */
-public class UsersActivity extends WebActivity implements Runnable {
+public class UserService extends WebService implements Runnable {
 
     final ConcurrentHashMap<Integer, Staffer> cache = new ConcurrentHashMap<>();
 
-    public UsersActivity(WebHost host, WebActivity parent) {
+    public UserService(WebHost host, WebParent parent) {
         super(host, parent);
     }
 

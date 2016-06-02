@@ -1,22 +1,19 @@
 package io.greatbone.web;
 
-import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.http.HttpMethod;
 
-import java.util.List;
-
 /**
- * A set of actions working on request/response eachanges to carry out management tasks on a collection of resources.
+ * A web service target that works on request/response eachanges to carry out tasks on a collection of resources.
  */
-public abstract class WebService implements Scope {
+public abstract class WebService implements WebZone {
 
     // the root handler
-    protected final WebHost vhost;
+    protected final WebHost host;
 
-    // the parent of this work instance, if any
+    // the parent of this instance, if any
     protected final WebParent parent;
 
-    // the key by which this control is added to a parent
+    // the key by which this service is added to its parent
     String key;
 
     // access checker
@@ -25,8 +22,8 @@ public abstract class WebService implements Scope {
     // execution of background tasks
     Thread cycler;
 
-    protected WebService(WebHost vhost, WebParent parent) {
-        this.vhost = (vhost != null) ? vhost : (WebHost) this;
+    protected WebService(WebHost host, WebParent parent) {
+        this.host = (host != null) ? host : (WebHost) this;
         this.parent = parent;
 
         // initialize the cycler thread if any
@@ -41,12 +38,7 @@ public abstract class WebService implements Scope {
     }
 
     @Override
-    public String id() {
-        return null;
-    }
-
-    @Override
-    public List<ChannelHandlerContext> contexts() {
+    public WebSocketDoer doer() {
         return null;
     }
 

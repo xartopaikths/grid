@@ -49,7 +49,7 @@ public class Staffer extends GridData<Staffer> implements WebPrincipal {
     }
 
     @Override
-    public boolean check(String scope, int roles) {
+    public boolean check(String zone, int roles) {
         return false;
     }
 
