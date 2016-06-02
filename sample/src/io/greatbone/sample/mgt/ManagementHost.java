@@ -15,13 +15,13 @@ public class ManagementHost extends WebHost {
     public ManagementHost(WebUtility web, String key) {
         super(web, key);
 
-        addSub("users", UsersActivity.class, (x, y)-> y.check(x, 0));
-        addSub("agents", AgentsActivity.class, null);
-        addSub("transacts", TransactsActivity.class, null);
+        addSub("users", UsersService.class, (x, y)-> y.check(x, 0));
+        addSub("agents", AgentsService.class, null);
+        addSub("transacts", TransactService.class, null);
     }
 
     @Override
-    public void default_(WebContext wc) throws IOException {
+    public void Get(WebContext wc) throws IOException {
         wc.sendOK(new HTML() {
             @Override
             protected void body() throws IOException {

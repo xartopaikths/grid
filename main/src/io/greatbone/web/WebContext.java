@@ -36,16 +36,18 @@ public class WebContext implements AutoCloseable {
 
     final ChannelHandlerContext chctx;
 
-    final FullHttpRequest request;
+    final FullHttpRequest req;
+
+    DefaultFullHttpResponse resp;
 
     // request headers
     final HttpHeaders requesth;
 
     WebPrincipal principal;
 
-    String scope;
+    Object scope;
 
-    WebActivity activity;
+    WebService activity;
 
     // converted request content: form-data, json-deserilized and input stream
     Object content;
@@ -53,19 +55,15 @@ public class WebContext implements AutoCloseable {
     WebContext(WebHost host, ChannelHandlerContext chctx, FullHttpRequest req) {
         this.host = host;
         this.chctx = chctx;
-        this.request = req;
+        this.req = req;
         this.requesth = req.headers();
     }
 
     public HttpMethod method() {
-        return request.method();
+        return req.method();
     }
 
-    public String space() {
-        return scope;
-    }
-
-    public WebActivity control() {
+    public WebService control() {
         return activity;
     }
 

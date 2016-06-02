@@ -2,6 +2,7 @@ package io.greatbone.web;
 
 import io.greatbone.Configurable;
 import io.greatbone.Greatbone;
+import io.greatbone.util.Roll;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.*;
 import io.netty.channel.socket.SocketChannel;
@@ -10,8 +11,8 @@ import io.netty.handler.codec.http.FullHttpRequest;
 import io.netty.handler.codec.http.HttpMethod;
 import io.netty.handler.codec.http.HttpObjectAggregator;
 import io.netty.handler.codec.http.HttpServerCodec;
+import io.netty.handler.codec.http.websocketx.WebSocketFrame;
 import io.netty.handler.codec.http.websocketx.WebSocketServerProtocolHandler;
-import io.netty.handler.codec.http.websocketx.extensions.compression.WebSocketServerCompressionHandler;
 import io.netty.util.ReferenceCountUtil;
 import org.w3c.dom.Element;
 
@@ -19,13 +20,14 @@ import javax.management.MBeanServer;
 import javax.management.ObjectName;
 import java.io.IOException;
 import java.lang.management.ManagementFactory;
+import java.lang.reflect.Constructor;
 import java.net.InetSocketAddress;
 import java.util.Base64;
 
 /**
  * A root web folder that may have a hub handler which deals with variable sector folders.
  */
-public abstract class WebHost extends WebParentActivity implements ChannelInboundHandler, WebHostMBean, Configurable {
+public abstract class WebHost extends WebService implements ChannelInboundHandler, WebHostMBean, WebParent, Configurable {
 
     static final String EMPTY = "";
 
@@ -45,6 +47,9 @@ public abstract class WebHost extends WebParentActivity implements ChannelInboun
     volatile Channel serverchan;
 
     boolean ssl;
+
+    Roll<String, WebService> subs;
+
 
     protected WebHost(WebUtility web, String name) {
         super(null, null);
@@ -76,6 +81,27 @@ public abstract class WebHost extends WebParentActivity implements ChannelInboun
         return name;
     }
 
+    public <T extends WebService> void addSub(String key, Class<T> class_, Authorize authorize) {
+        try {
+            Constructor<T> ctor = class_.getConstructor(WebHost.class, WebService.class);
+            T sub = ctor.newInstance(vhost, this);
+            sub.key = key;
+            sub.authorize = authorize;
+            if (subs == null) {
+                this.subs = new Roll<>(8);
+            }
+            subs.put(key, sub);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public WebService locateSub(String key, WebContext wc) {
+
+        return null;
+    }
+
     /**
      * Starts the service with the specified executor. A same executor can be shared among multiple services.
      */
@@ -96,9 +122,8 @@ public abstract class WebHost extends WebParentActivity implements ChannelInboun
                             ChannelPipeline pipeline = ch.pipeline();
                             pipeline.addLast(new HttpServerCodec());
                             pipeline.addLast(new HttpObjectAggregator(65536));
-                            pipeline.addLast(host);
-                            pipeline.addLast(new WebSocketServerCompressionHandler());
                             pipeline.addLast(new WebSocketServerProtocolHandler("", null, true));
+                            pipeline.addLast(host);
                         }
                     })
             ;
@@ -144,6 +169,8 @@ public abstract class WebHost extends WebParentActivity implements ChannelInboun
         try {
             if (msg instanceof FullHttpRequest) {
                 handle(ctx, (FullHttpRequest) msg);
+            } else if (msg instanceof WebSocketFrame) {
+                WebSocketFrame f = (WebSocketFrame) msg;
             } else {
                 release = false;
                 ctx.fireChannelRead(msg);

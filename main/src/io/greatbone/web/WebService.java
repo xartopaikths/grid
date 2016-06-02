@@ -1,26 +1,23 @@
 package io.greatbone.web;
 
-import io.greatbone.util.Roll;
+import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.http.HttpMethod;
 
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
+import java.util.List;
 
 /**
  * A set of actions working on request/response eachanges to carry out management tasks on a collection of resources.
  */
-public abstract class WebActivity {
+public abstract class WebService implements Scope {
 
     // the root handler
     protected final WebHost vhost;
 
     // the parent of this work instance, if any
-    protected final WebActivity parent;
+    protected final WebParent parent;
 
     // the key by which this control is added to a parent
     String key;
-
-    final Roll<String, Action> actions = new Roll<>(32);
 
     // access checker
     Authorize authorize;
@@ -28,26 +25,9 @@ public abstract class WebActivity {
     // execution of background tasks
     Thread cycler;
 
-    protected WebActivity(WebHost vhost, WebActivity parent) {
+    protected WebService(WebHost vhost, WebParent parent) {
         this.vhost = (vhost != null) ? vhost : (WebHost) this;
         this.parent = parent;
-
-        // initialize web methods
-        for (Method m : getClass().getMethods()) {
-            int mod = m.getModifiers();
-            // public non-static void
-            if (Modifier.isPublic(mod) && !Modifier.isStatic(mod)) {
-                Class<?>[] pts = m.getParameterTypes();
-                // with the two parameters
-                if (pts.length == 1 && WebContext.class == pts[0]) {
-                    String key = m.getName().toLowerCase();
-                    if ("$".equals(key)) {
-                        key = "";
-                    }
-                    actions.put(key, new Action(this, m));
-                }
-            }
-        }
 
         // initialize the cycler thread if any
         if (this instanceof Runnable) {
@@ -58,6 +38,16 @@ public abstract class WebActivity {
 
     public String key() {
         return key;
+    }
+
+    @Override
+    public String id() {
+        return null;
+    }
+
+    @Override
+    public List<ChannelHandlerContext> contexts() {
+        return null;
     }
 
     /**
@@ -71,7 +61,11 @@ public abstract class WebActivity {
         if (slash == -1) { // without a slash then handle by this controller instance
             exch.activity = this;
             HttpMethod method = exch.method();
-            if (method == HttpMethod.GET) default_(exch);
+            if (method == HttpMethod.GET) Get(exch);
+            else if (method == HttpMethod.POST) Post(exch);
+            else if (method == HttpMethod.PUT) Put(exch);
+            else if (method == HttpMethod.PATCH) Patch(exch);
+            else if (method == HttpMethod.DELETE) Delete(exch);
 //        } else if (subordinates != null) { // resolve the sub structure
 //            WebControl control = subordinates.locateSub(base.substring(0, slash), exch);
 //            if (control != null) {
@@ -84,7 +78,22 @@ public abstract class WebActivity {
         }
     }
 
-    public void default_(WebContext wc) throws Exception {
+    public void Get(WebContext wc) throws Exception {
+    }
+
+    public void Get(String rsc, WebContext wc) throws Exception {
+    }
+
+    public void Post(WebContext wc) throws Exception {
+    }
+
+    public void Put(WebContext wc) throws Exception {
+    }
+
+    public void Patch(WebContext wc) throws Exception {
+    }
+
+    public void Delete(WebContext wc) throws Exception {
     }
 
 }

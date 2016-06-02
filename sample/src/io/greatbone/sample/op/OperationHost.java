@@ -15,14 +15,14 @@ public class OperationHost extends WebHost {
     public OperationHost(WebUtility web, String key) {
         super(web, key);
 
-        addSub("orders", OrdersActivity.class, null);
-        addSub("persons", PersonsActivity.class, null);
-        addSub("stocks", SettingsActivity.class, null);
-        addSub("notice", NoticeActivity.class, null);
+        addSub("orders", OrderService.class, null);
+        addSub("persons", PersonService.class, null);
+        addSub("stocks", SettingService.class, null);
+        addSub("notice", NoticeService.class, null);
     }
 
     @Override
-    public void default_(WebContext wc) throws IOException {
+    public void Get(WebContext wc) throws IOException {
         wc.sendOK(new HTML() {
             protected void body() throws IOException {
                 $("another html output");
