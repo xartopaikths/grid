@@ -47,6 +47,7 @@ public abstract class WebHost extends WebService implements ChannelInboundHandle
 
     Roll<String, WebService> subs;
 
+    WebServiceHub hub;
 
     protected WebHost(WebUtility web, String name) {
         super(null, null);
@@ -78,16 +79,28 @@ public abstract class WebHost extends WebService implements ChannelInboundHandle
         return name;
     }
 
-    public <T extends WebService> void addSub(String key, Class<T> class_, Authorizer authorizer) {
+    public <S extends WebService> void addSub(String key, Class<S> serviceClass, Authorizer authorizer) {
         try {
-            Constructor<T> ctor = class_.getConstructor(WebHost.class, WebService.class);
-            T sub = ctor.newInstance(host, this);
+            Constructor<S> ctor = serviceClass.getConstructor(WebHost.class, WebParent.class);
+            S sub = ctor.newInstance(host, this);
             sub.key = key;
             sub.authorizer = authorizer;
             if (subs == null) {
                 this.subs = new Roll<>(8);
             }
             subs.put(key, sub);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public <S extends WebServiceHub<Z>, Z extends WebZone> void setHub(Class<S> serviceClass, Authorizer<Z> authorizer) {
+        try {
+            Constructor<S> ctor = serviceClass.getConstructor(WebHost.class, WebParent.class);
+            S hub = ctor.newInstance(host, this);
+            hub.key = key;
+            hub.authorizer = authorizer;
+            this.hub = hub;
         } catch (Exception e) {
             e.printStackTrace();
         }

@@ -139,7 +139,7 @@ public class GridUtility implements GridMBean, Configurable {
     }
 
     @SafeVarargs
-    public static void initialize(Class<? extends GridCache>... classes) throws IOException {
+    public static void setup(Class<? extends GridCache>... classes) throws IOException {
         if (GRID == null) {
             GRID = new GridUtility(classes);
         }

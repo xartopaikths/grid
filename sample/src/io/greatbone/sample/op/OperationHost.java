@@ -2,8 +2,8 @@ package io.greatbone.sample.op;
 
 import io.greatbone.sample.HTML;
 import io.greatbone.web.WebContext;
-import io.greatbone.web.WebUtility;
 import io.greatbone.web.WebHost;
+import io.greatbone.web.WebUtility;
 
 import java.io.IOException;
 
@@ -19,6 +19,10 @@ public class OperationHost extends WebHost {
         addSub("person", PersonService.class, null);
         addSub("setting", SettingService.class, null);
         addSub("notice", NoticeService.class, null);
+
+        setHub(OpServiceHub.class,
+                wc -> false
+        );
     }
 
     @Override

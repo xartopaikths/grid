@@ -7,7 +7,7 @@ import io.netty.handler.codec.http.HttpMethod;
  */
 public abstract class WebService<Z extends WebZone> implements WebZone {
 
-    static final Exception NOT_SUPPORTED = new UnsupportedOperationException("HTTP method not allowed");
+    static final Exception NOT_ALLOWED = new UnsupportedOperationException("HTTP method not allowed");
 
     // the root handler
     protected final WebHost host;
@@ -73,27 +73,27 @@ public abstract class WebService<Z extends WebZone> implements WebZone {
     }
 
     public void Get(WebContext<Z> wc) throws Exception {
-        throw NOT_SUPPORTED;
+        throw NOT_ALLOWED;
     }
 
     public void Get(String rsc, WebContext<Z> wc) throws Exception {
-        throw NOT_SUPPORTED;
+        throw NOT_ALLOWED;
     }
 
     public void Post(WebContext<Z> wc) throws Exception {
-        throw NOT_SUPPORTED;
+        throw NOT_ALLOWED;
     }
 
     public void Put(WebContext<Z> wc) throws Exception {
-        throw NOT_SUPPORTED;
+        throw NOT_ALLOWED;
     }
 
     public void Patch(WebContext<Z> wc) throws Exception {
-        throw NOT_SUPPORTED;
+        throw NOT_ALLOWED;
     }
 
     public void Delete(WebContext<Z> wc) throws Exception {
-        throw NOT_SUPPORTED;
+        throw NOT_ALLOWED;
     }
 
 }

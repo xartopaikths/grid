@@ -2,8 +2,8 @@ package io.greatbone.web;
 
 /**
  */
-public interface Authorizer {
+public interface Authorizer<Z extends WebZone> {
 
-    boolean authorize(WebContext wc);
+    boolean authorize(WebContext<Z> wc);
 
 }

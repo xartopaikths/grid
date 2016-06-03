@@ -4,7 +4,7 @@ package io.greatbone.web;
  */
 public abstract class WebServiceHub<Z extends WebZone> extends WebService<Z> implements WebParent {
 
-    WebServiceHub(WebHost host) {
+    protected WebServiceHub(WebHost host) {
         super(host, host);
     }
 
