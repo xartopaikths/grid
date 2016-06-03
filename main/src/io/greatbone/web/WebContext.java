@@ -49,7 +49,7 @@ public class WebContext<Z extends WebZone> implements AutoCloseable {
 
     Z zone;
 
-    WebService service;
+    WebService<Z> service;
 
     // converted request content: form-data, json-deserilized and input stream
     Object content;

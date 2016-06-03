@@ -15,7 +15,7 @@ public class NoticeService extends WebService implements Runnable {
     }
 
     @Override
-    public void _(WebContext wc) {
+    public void main(WebContext wc) {
 
     }
 

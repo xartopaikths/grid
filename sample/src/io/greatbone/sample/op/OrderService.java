@@ -22,7 +22,7 @@ public class OrderService extends WebService<Org> {
     }
 
     @Override
-    public void _(WebContext<Org> wc) {
+    public void main(WebContext<Org> wc) {
 
         int id = 213;
         String name = "asdfadf";

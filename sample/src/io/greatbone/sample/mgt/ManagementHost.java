@@ -21,7 +21,7 @@ public class ManagementHost extends WebHost {
     }
 
     @Override
-    public void _(WebContext wc) throws IOException {
+    public void main(WebContext wc) throws IOException {
         wc.sendOK(new HTML() {
             @Override
             protected void body() throws IOException {

@@ -9,7 +9,7 @@ import java.lang.reflect.Modifier;
 /**
  * A web service target that works on request/response eachanges to carry out tasks on a collection of resources.
  */
-public abstract class WebService<Z extends WebZone> implements WebZone {
+public abstract class WebService<Z extends WebZone> {
 
     // the root handler
     protected final WebHost host;
@@ -61,11 +61,6 @@ public abstract class WebService<Z extends WebZone> implements WebZone {
         return key;
     }
 
-    @Override
-    public WebSocketDoer doer() {
-        return null;
-    }
-
     /**
      * To handle a request/response exchange by this or by an appropriate sub controller.
      *
@@ -77,7 +72,7 @@ public abstract class WebService<Z extends WebZone> implements WebZone {
         if (slash == -1) { // without a slash then handle by this controller instance
             exch.service = this;
             HttpMethod method = exch.method();
-            if (method == HttpMethod.GET) _(exch);
+            if (method == HttpMethod.GET) main(exch);
 //        } else if (subordinates != null) { // resolve the sub structure
 //            WebControl control = subordinates.locateSub(base.substring(0, slash), exch);
 //            if (control != null) {
@@ -90,6 +85,6 @@ public abstract class WebService<Z extends WebZone> implements WebZone {
         }
     }
 
-    public abstract void _(WebContext<Z> wc) throws Exception;
+    public abstract void main(WebContext<Z> wc) throws Exception;
 
 }

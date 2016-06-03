@@ -16,7 +16,7 @@ public class PersonService extends WebService {
     }
 
     @Override
-    public void _(WebContext wc) {
+    public void main(WebContext wc) {
     }
 
 }

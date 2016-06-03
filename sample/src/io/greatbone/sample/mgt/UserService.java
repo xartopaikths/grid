@@ -43,7 +43,7 @@ public class UserService extends WebService implements Runnable {
     }
 
     @Override
-    public void _(WebContext wc) throws Exception {
+    public void main(WebContext wc) throws Exception {
 
     }
 

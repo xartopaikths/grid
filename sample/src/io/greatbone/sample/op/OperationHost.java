@@ -26,7 +26,7 @@ public class OperationHost extends WebHost {
     }
 
     @Override
-    public void _(WebContext wc) throws IOException {
+    public void main(WebContext wc) throws IOException {
         wc.sendOK(new HTML() {
             protected void body() throws IOException {
                 $("another html output");

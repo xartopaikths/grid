@@ -94,10 +94,10 @@ public abstract class WebHost extends WebService implements ChannelInboundHandle
         }
     }
 
-    public <S extends WebServiceHub<Z>, Z extends WebZone> void setHub(Class<S> serviceClass, Authorizer<Z> authorizer) {
+    public <S extends WebServiceHub<Z>, Z extends WebZone> void setHub(Class<S> hubClass, Authorizer<Z> authorizer) {
         try {
-            Constructor<S> ctor = serviceClass.getConstructor(WebHost.class, WebParent.class);
-            S hub = ctor.newInstance(host, this);
+            Constructor<S> ctor = hubClass.getConstructor(WebHost.class);
+            S hub = ctor.newInstance(this);
             hub.key = key;
             hub.authorizer = authorizer;
             this.hub = hub;

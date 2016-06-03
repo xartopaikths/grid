@@ -10,7 +10,7 @@ import io.greatbone.web.WebServiceHub;
  */
 public class OrgServiceHub extends WebServiceHub<Org> {
 
-    OrgServiceHub(WebHost host) {
+    public OrgServiceHub(WebHost host) {
         super(host);
     }
 
@@ -25,7 +25,7 @@ public class OrgServiceHub extends WebServiceHub<Org> {
     }
 
     @Override
-    public void _(WebContext<Org> wc) throws Exception {
+    public void main(WebContext<Org> wc) throws Exception {
     }
 
 }
