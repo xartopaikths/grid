@@ -17,8 +17,10 @@ import java.util.TimeZone;
 
 /**
  * A web request/response exchange.
+ *
+ * @param <Z> the resolved working zone (if any)
  */
-public class WebContext implements AutoCloseable {
+public class WebContext<Z extends WebZone> implements AutoCloseable {
 
     static final Charset UTF_8 = Charset.forName("UTF-8");
 
@@ -45,9 +47,9 @@ public class WebContext implements AutoCloseable {
 
     WebPrincipal principal;
 
-    Object scope;
+    Z zone;
 
-    WebService activity;
+    WebService service;
 
     // converted request content: form-data, json-deserilized and input stream
     Object content;
@@ -63,8 +65,12 @@ public class WebContext implements AutoCloseable {
         return req.method();
     }
 
-    public WebService control() {
-        return activity;
+    public WebService service() {
+        return service;
+    }
+
+    public Z zone() {
+        return zone;
     }
 
     String authorization() {

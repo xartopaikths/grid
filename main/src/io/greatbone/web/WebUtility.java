@@ -25,7 +25,7 @@ public class WebUtility implements WebMBean, Configurable {
     final Roll<String, WebStatic> statics;
 
     // virtual hosts maintained by this JVM process
-    final ArrayList<WebHost> vhosts = new ArrayList<>(4);
+    final ArrayList<WebHost> hosts = new ArrayList<>(4);
 
     WebUtility() {
         this.config = Greatbone.getConfigXmlTopTag("web");
@@ -63,12 +63,12 @@ public class WebUtility implements WebMBean, Configurable {
         return statics.get(path);
     }
 
-    final <T extends WebHost> T putHost(String name, Class<T> clazz, Authorizer authorizer) {
+    final <H extends WebHost> H putHost(String name, Class<H> hostClass, Authorizer authorizer) {
         try {
-            Constructor<T> ctor = clazz.getConstructor(WebUtility.class, String.class);
-            T vhost = ctor.newInstance(this, name);
+            Constructor<H> ctor = hostClass.getConstructor(WebUtility.class, String.class);
+            H vhost = ctor.newInstance(this, name);
             vhost.authorizer = authorizer;
-            vhosts.add(vhost);
+            hosts.add(vhost);
             return vhost;
         } catch (Exception e) {
             e.printStackTrace();
@@ -78,14 +78,14 @@ public class WebUtility implements WebMBean, Configurable {
 
     @Override
     public void start() throws IOException {
-        for (WebHost host : vhosts) {
+        for (WebHost host : hosts) {
             host.start();
         }
     }
 
     @Override
     public void stop() throws IOException {
-        for (WebHost host : vhosts) {
+        for (WebHost host : hosts) {
             host.stop();
         }
     }
@@ -95,7 +95,7 @@ public class WebUtility implements WebMBean, Configurable {
         return config;
     }
 
-    public static <T extends WebHost> T addHost(String key, Class<T> hostClass, Authorizer authorizer) {
+    public static <H extends WebHost> H addHost(String key, Class<H> hostClass, Authorizer authorizer) {
         if (WEB == null) {
             WEB = new WebUtility();
         }

@@ -7,10 +7,7 @@ import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.*;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
-import io.netty.handler.codec.http.FullHttpRequest;
-import io.netty.handler.codec.http.HttpMethod;
-import io.netty.handler.codec.http.HttpObjectAggregator;
-import io.netty.handler.codec.http.HttpServerCodec;
+import io.netty.handler.codec.http.*;
 import io.netty.handler.codec.http.websocketx.WebSocketFrame;
 import io.netty.handler.codec.http.websocketx.WebSocketServerProtocolHandler;
 import io.netty.util.ReferenceCountUtil;
@@ -273,7 +270,7 @@ public abstract class WebHost extends WebService implements ChannelInboundHandle
         } else {
             HttpMethod method = req.method();
             if (method == HttpMethod.GET) {
-                String since = req.headers().get("If-Modified-Since");
+                String since = req.headers().get(HttpHeaderNames.IF_MODIFIED_SINCE);
                 if (since != null) {
 
 //                    exch(NOT_MODIFIED);

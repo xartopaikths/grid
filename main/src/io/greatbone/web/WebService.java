@@ -5,7 +5,9 @@ import io.netty.handler.codec.http.HttpMethod;
 /**
  * A web service target that works on request/response eachanges to carry out tasks on a collection of resources.
  */
-public abstract class WebService implements WebZone {
+public abstract class WebService<Z extends WebZone> implements WebZone {
+
+    static final Exception NOT_SUPPORTED = new UnsupportedOperationException("HTTP method not allowed");
 
     // the root handler
     protected final WebHost host;
@@ -48,10 +50,10 @@ public abstract class WebService implements WebZone {
      * @param base the relative URI that this controller is based
      * @param exch the request.response exchange
      */
-    protected void perform(String base, WebContext exch) throws Exception {
+    protected void perform(String base, WebContext<Z> exch) throws Exception {
         int slash = base.indexOf('/');
         if (slash == -1) { // without a slash then handle by this controller instance
-            exch.activity = this;
+            exch.service = this;
             HttpMethod method = exch.method();
             if (method == HttpMethod.GET) Get(exch);
             else if (method == HttpMethod.POST) Post(exch);
@@ -70,22 +72,28 @@ public abstract class WebService implements WebZone {
         }
     }
 
-    public void Get(WebContext wc) throws Exception {
+    public void Get(WebContext<Z> wc) throws Exception {
+        throw NOT_SUPPORTED;
     }
 
-    public void Get(String rsc, WebContext wc) throws Exception {
+    public void Get(String rsc, WebContext<Z> wc) throws Exception {
+        throw NOT_SUPPORTED;
     }
 
-    public void Post(WebContext wc) throws Exception {
+    public void Post(WebContext<Z> wc) throws Exception {
+        throw NOT_SUPPORTED;
     }
 
-    public void Put(WebContext wc) throws Exception {
+    public void Put(WebContext<Z> wc) throws Exception {
+        throw NOT_SUPPORTED;
     }
 
-    public void Patch(WebContext wc) throws Exception {
+    public void Patch(WebContext<Z> wc) throws Exception {
+        throw NOT_SUPPORTED;
     }
 
-    public void Delete(WebContext wc) throws Exception {
+    public void Delete(WebContext<Z> wc) throws Exception {
+        throw NOT_SUPPORTED;
     }
 
 }
