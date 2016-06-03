@@ -1,13 +1,15 @@
 package io.greatbone.web;
 
+import io.greatbone.util.Roll;
 import io.netty.handler.codec.http.HttpMethod;
+
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 
 /**
  * A web service target that works on request/response eachanges to carry out tasks on a collection of resources.
  */
 public abstract class WebService<Z extends WebZone> implements WebZone {
-
-    static final Exception NOT_ALLOWED = new UnsupportedOperationException("HTTP method not allowed");
 
     // the root handler
     protected final WebHost host;
@@ -18,6 +20,8 @@ public abstract class WebService<Z extends WebZone> implements WebZone {
     // the key by which this service is added to its parent
     String key;
 
+    final Roll<String, WebAction> actions = new Roll<>(32);
+
     // access checker
     Authorizer authorizer;
 
@@ -27,6 +31,24 @@ public abstract class WebService<Z extends WebZone> implements WebZone {
     protected WebService(WebHost host, WebParent parent) {
         this.host = (host != null) ? host : (WebHost) this;
         this.parent = parent;
+
+        // initialize web methods
+        for (Method m : getClass().getMethods()) {
+            int mod = m.getModifiers();
+            // public non-static void
+            if (Modifier.isPublic(mod) && !Modifier.isStatic(mod)) {
+                Class<?>[] pts = m.getParameterTypes();
+                // with the two parameters
+                if (pts.length == 1 && WebContext.class == pts[0]) {
+                    String key = m.getName().toLowerCase();
+                    if ("$".equals(key)) {
+                        key = "";
+                    }
+                    actions.put(key, new WebAction(this, m));
+                }
+            }
+        }
+
 
         // initialize the cycler thread if any
         if (this instanceof Runnable) {
@@ -55,11 +77,7 @@ public abstract class WebService<Z extends WebZone> implements WebZone {
         if (slash == -1) { // without a slash then handle by this controller instance
             exch.service = this;
             HttpMethod method = exch.method();
-            if (method == HttpMethod.GET) Get(exch);
-            else if (method == HttpMethod.POST) Post(exch);
-            else if (method == HttpMethod.PUT) Put(exch);
-            else if (method == HttpMethod.PATCH) Patch(exch);
-            else if (method == HttpMethod.DELETE) Delete(exch);
+            if (method == HttpMethod.GET) _(exch);
 //        } else if (subordinates != null) { // resolve the sub structure
 //            WebControl control = subordinates.locateSub(base.substring(0, slash), exch);
 //            if (control != null) {
@@ -72,28 +90,6 @@ public abstract class WebService<Z extends WebZone> implements WebZone {
         }
     }
 
-    public void Get(WebContext<Z> wc) throws Exception {
-        throw NOT_ALLOWED;
-    }
-
-    public void Get(String rsc, WebContext<Z> wc) throws Exception {
-        throw NOT_ALLOWED;
-    }
-
-    public void Post(WebContext<Z> wc) throws Exception {
-        throw NOT_ALLOWED;
-    }
-
-    public void Put(WebContext<Z> wc) throws Exception {
-        throw NOT_ALLOWED;
-    }
-
-    public void Patch(WebContext<Z> wc) throws Exception {
-        throw NOT_ALLOWED;
-    }
-
-    public void Delete(WebContext<Z> wc) throws Exception {
-        throw NOT_ALLOWED;
-    }
+    public abstract void _(WebContext<Z> wc) throws Exception;
 
 }

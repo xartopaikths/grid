@@ -2,6 +2,7 @@ package io.greatbone.sample.mgt;
 
 import io.greatbone.db.DbContext;
 import io.greatbone.sample.Staffer;
+import io.greatbone.web.WebContext;
 import io.greatbone.web.WebHost;
 import io.greatbone.web.WebParent;
 import io.greatbone.web.WebService;
@@ -39,6 +40,11 @@ public class UserService extends WebService implements Runnable {
     @Override
     public void run() {
         // TODO evict expired cache items
+    }
+
+    @Override
+    public void _(WebContext wc) throws Exception {
+
     }
 
 }

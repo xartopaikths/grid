@@ -20,7 +20,7 @@ public class AgentService extends WebService {
         this.shops = GridUtility.getCache(ORGS.class);
     }
 
-    public void Get(WebContext wc) {
+    public void _(WebContext wc) {
     }
 
     public void Get(String rsc, WebContext wc) throws Exception {

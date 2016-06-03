@@ -2,7 +2,7 @@ package io.greatbone.web;
 
 /**
  */
-public interface Grant {
+public interface Grantable {
 
     String space();
 

@@ -20,13 +20,13 @@ public class OperationHost extends WebHost {
         addSub("setting", SettingService.class, null);
         addSub("notice", NoticeService.class, null);
 
-        setHub(OpServiceHub.class,
+        setHub(OrgServiceHub.class,
                 wc -> false
         );
     }
 
     @Override
-    public void Get(WebContext wc) throws IOException {
+    public void _(WebContext wc) throws IOException {
         wc.sendOK(new HTML() {
             protected void body() throws IOException {
                 $("another html output");

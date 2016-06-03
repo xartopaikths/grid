@@ -8,9 +8,9 @@ import io.greatbone.web.WebServiceHub;
 
 /**
  */
-public class OpServiceHub extends WebServiceHub<Org> {
+public class OrgServiceHub extends WebServiceHub<Org> {
 
-    OpServiceHub(WebHost host) {
+    OrgServiceHub(WebHost host) {
         super(host);
     }
 
@@ -25,8 +25,7 @@ public class OpServiceHub extends WebServiceHub<Org> {
     }
 
     @Override
-    public void Get(WebContext<Org> wc) throws Exception {
-        super.Get(wc);
+    public void _(WebContext<Org> wc) throws Exception {
     }
 
 }
