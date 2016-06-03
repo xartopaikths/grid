@@ -2,10 +2,14 @@ package io.greatbone.web;
 
 import io.netty.handler.codec.http.HttpMethod;
 
+import javax.naming.OperationNotSupportedException;
+
 /**
  * A set of actions working on request/response eachanges to carry out management tasks on a collection of resources.
  */
 public abstract class WebServiceZ<Z extends WebZone> {
+
+    static final Exception NOT_SUPPORTED = new OperationNotSupportedException();
 
     // the container virtual host
     protected final WebHost host;
@@ -17,7 +21,7 @@ public abstract class WebServiceZ<Z extends WebZone> {
     String key;
 
     // access checker
-    Authorize authorize;
+    Authorizer authorizer;
 
     // execution of background tasks
     Thread cycler;
@@ -51,7 +55,7 @@ public abstract class WebServiceZ<Z extends WebZone> {
 //            ctx.activity = this;
             HttpMethod method = ctx.method();
             Z scope = (Z) ctx.scope;
-            if (method == HttpMethod.GET) Get(scope, ctx);
+            if (method == HttpMethod.GET) Get(ctx, scope);
             else if (method == HttpMethod.POST) Post(scope, ctx);
             else if (method == HttpMethod.PUT) Put(scope, ctx);
             else if (method == HttpMethod.PATCH) Patch(scope, ctx);
@@ -68,22 +72,28 @@ public abstract class WebServiceZ<Z extends WebZone> {
         }
     }
 
-    public void Get(Z scope, WebContext wc) throws Exception {
+    public void Get(WebContext wc, Z zone) throws Exception {
+        throw NOT_SUPPORTED;
     }
 
-    public void Get(Z scope, String rsc, WebContext wc) throws Exception {
+    public void Get(Z zone, String rsc, WebContext wc) throws Exception {
+        throw NOT_SUPPORTED;
     }
 
-    public void Post(Z scope, WebContext wc) throws Exception {
+    public void Post(Z zone, WebContext wc) throws Exception {
+        throw NOT_SUPPORTED;
     }
 
-    public void Put(Z scope, WebContext wc) throws Exception {
+    public void Put(Z zone, WebContext wc) throws Exception {
+        throw NOT_SUPPORTED;
     }
 
-    public void Patch(Z scope, WebContext wc) throws Exception {
+    public void Patch(Z zone, WebContext wc) throws Exception {
+        throw NOT_SUPPORTED;
     }
 
-    public void Delete(Z scope, WebContext wc) throws Exception {
+    public void Delete(Z zone, WebContext wc) throws Exception {
+        throw NOT_SUPPORTED;
     }
 
 }

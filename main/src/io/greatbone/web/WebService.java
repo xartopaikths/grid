@@ -17,7 +17,7 @@ public abstract class WebService implements WebZone {
     String key;
 
     // access checker
-    Authorize authorize;
+    Authorizer authorizer;
 
     // execution of background tasks
     Thread cycler;

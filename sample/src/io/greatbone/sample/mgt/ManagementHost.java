@@ -15,7 +15,7 @@ public class ManagementHost extends WebHost {
     public ManagementHost(WebUtility web, String key) {
         super(web, key);
 
-        addSub("users", UserService.class, (x, y)-> y.check(x, 0));
+        addSub("users", UserService.class, null);
         addSub("agents", AgentService.class, null);
         addSub("transacts", TransactService.class, null);
     }

@@ -81,12 +81,12 @@ public abstract class WebHost extends WebService implements ChannelInboundHandle
         return name;
     }
 
-    public <T extends WebService> void addSub(String key, Class<T> class_, Authorize authorize) {
+    public <T extends WebService> void addSub(String key, Class<T> class_, Authorizer authorizer) {
         try {
             Constructor<T> ctor = class_.getConstructor(WebHost.class, WebService.class);
             T sub = ctor.newInstance(host, this);
             sub.key = key;
-            sub.authorize = authorize;
+            sub.authorizer = authorizer;
             if (subs == null) {
                 this.subs = new Roll<>(8);
             }

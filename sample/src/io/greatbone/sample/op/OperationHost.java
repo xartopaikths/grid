@@ -15,9 +15,9 @@ public class OperationHost extends WebHost {
     public OperationHost(WebUtility web, String key) {
         super(web, key);
 
-        addSub("orders", OrderService.class, null);
-        addSub("persons", PersonService.class, null);
-        addSub("stocks", SettingService.class, null);
+        addSub("order", OrderService.class, null);
+        addSub("person", PersonService.class, null);
+        addSub("setting", SettingService.class, null);
         addSub("notice", NoticeService.class, null);
     }
 
