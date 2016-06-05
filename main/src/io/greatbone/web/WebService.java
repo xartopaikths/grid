@@ -65,14 +65,14 @@ public abstract class WebService<Z extends WebZone> {
      * To handle a request/response exchange by this or by an appropriate sub controller.
      *
      * @param base the relative URI that this controller is based
-     * @param exch the request.response exchange
+     * @param wc the request.response exchange
      */
-    protected void perform(String base, WebContext<Z> exch) throws Exception {
+    protected void perform(String base, WebContext<Z> wc) throws Exception {
         int slash = base.indexOf('/');
         if (slash == -1) { // without a slash then handle by this controller instance
-            exch.service = this;
-            HttpMethod method = exch.method();
-            if (method == HttpMethod.GET) default_(exch);
+            wc.service = this;
+            HttpMethod method = wc.method();
+            if (method == HttpMethod.GET) default_(wc);
 //        } else if (subordinates != null) { // resolve the sub structure
 //            WebControl control = subordinates.locateSub(base.substring(0, slash), exch);
 //            if (control != null) {
@@ -81,7 +81,7 @@ public abstract class WebService<Z extends WebZone> {
 //                exch.sendNotFound();
 //            }
         } else {
-            exch.sendNotFound();
+            wc.sendNotFound();
         }
     }
 

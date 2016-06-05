@@ -1,18 +1,17 @@
 package io.greatbone.web;
 
-import io.greatbone.grid.GridData;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.PooledByteBufAllocator;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.http.*;
-import io.netty.handler.codec.json.JsonObjectDecoder;
-import io.netty.util.CharsetUtil;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.Date;
+import java.util.Locale;
+import java.util.TimeZone;
 
 /**
  * A web request/response exchange.
@@ -40,15 +39,16 @@ public class WebContext<Z extends WebZone> implements AutoCloseable {
     // request
     final HttpMethod method;
     final String uri;
-    Map<String, List<String>> query;
-    final HttpHeaders hsreq;
-    final ByteBuf icontent;
-    Map<String, List<String>> form;
+    final String path;
+    final FormData query; // can be null
+    final HttpHeaders rqheaders;
+    final ByteBuf rqcontent;
+    Object rqbody; // parsed request content
 
     // response
     HttpResponseStatus status;
-    HttpHeaders oheaders;
-    ByteBuf ocontent;
+    HttpHeaders rpheaders;
+    ByteBuf rpcontent;
     HttpHeaders trailingHeader;
 
     // the authenticated principal
@@ -68,12 +68,16 @@ public class WebContext<Z extends WebZone> implements AutoCloseable {
 
         this.version = req.protocolVersion();
         this.method = req.method();
-        this.uri = req.uri();
-        this.hsreq = req.headers();
-        this.icontent = req.content();
 
-        QueryStringDecoder decoder = new QueryStringDecoder(uri);
-        query = decoder.parameters();
+        // parse the uri
+        final String uri = this.uri = req.uri();
+        int quest = uri.indexOf('?');
+        this.path = (quest == -1) ? uri : uri.substring(0, quest);
+        this.query = (quest == -1) ? null : new FormData(uri.substring(quest + 1));
+
+
+        this.rqheaders = req.headers();
+        this.rqcontent = req.content();
 
         status = HttpResponseStatus.OK;
 
@@ -95,29 +99,24 @@ public class WebContext<Z extends WebZone> implements AutoCloseable {
         return method;
     }
 
-    public final String Uri() {
+    public final String uri() {
         return uri;
     }
 
-    public final HttpHeaders hsreq() {
-        return hsreq;
+    public final String path() {
+        return path;
     }
 
-    public String hstring(String name) {
-        return hsreq.get(name);
+    public final FormData query() {
+        return query;
     }
 
-    public int hint(String header) {
-        String v = hsreq.get(header);
-        try {
-            return Integer.parseInt(v);
-        } catch (NumberFormatException e) {
-        }
-        return 0;
+    public final HttpHeaders rqheaders() {
+        return rqheaders;
     }
 
     public Date hdate(String name) {
-        String v = hsreq.get(name);
+        String v = rqheaders.get(name);
         if (v != null) {
             try {
                 return DATE_FORMAT.parse(v);
@@ -127,41 +126,26 @@ public class WebContext<Z extends WebZone> implements AutoCloseable {
         return null;
     }
 
-    public String querystr(String name) {
-        if (query == null) {
-            QueryStringDecoder decoder = new QueryStringDecoder(uri);
-            query = decoder.parameters();
+    public FormData getForm() {
+        if (rqbody == null) {
+            rqbody = new FormData(rqcontent);
         }
-        List<String> v = query.get(name);
-        if (v != null) {
-            return v.get(0);
+        if (rqbody instanceof FormData) {
+            return (FormData) rqbody;
         }
         return null;
     }
 
-    public List<String> querystrs(String name) {
-        return query.get(name);
-    }
-
-    public String getParameter(String name) {
-        if (form == null) {
-            QueryStringDecoder decoder = new QueryStringDecoder("?" + icontent.toString(CharsetUtil.UTF_8));
-            form = decoder.parameters();
-        }
+    public Object getJson() {
         return null;
     }
 
-    public void json() {
-        JsonObjectDecoder d = new JsonObjectDecoder();
+    public ByteBuf rqbody() {
+        return rqcontent;
     }
 
     //
-    // REQUEST CONTENT
-
-    public <T extends GridData> T content(T obj) {
-        return null;
-    }
-
+    // RESPONSE
 
     public void status(HttpResponseStatus v) {
         this.status = v;
@@ -175,10 +159,10 @@ public class WebContext<Z extends WebZone> implements AutoCloseable {
         print.print();
 
         ByteBuf buf = print.buf;
-        oheaders.set(HttpHeaderNames.CONTENT_TYPE, print.ctype());
-        oheaders.set(HttpHeaderNames.CONTENT_LENGTH, buf == null ? 0 : buf.readableBytes());
+        rpheaders.set(HttpHeaderNames.CONTENT_TYPE, print.ctype());
+        rpheaders.set(HttpHeaderNames.CONTENT_LENGTH, buf == null ? 0 : buf.readableBytes());
 
-        this.ocontent = print.buf;
+        this.rpcontent = print.buf;
     }
 
     public void sendNotFound() throws IOException {
@@ -203,7 +187,7 @@ public class WebContext<Z extends WebZone> implements AutoCloseable {
     @Override
     public void close() throws IOException {
         // send out the repsonse
-        FullHttpResponse resp = new DefaultFullHttpResponse(HttpVersion.HTTP_1_1, HttpResponseStatus.OK, ocontent, oheaders, new DefaultHttpHeaders());
+        FullHttpResponse resp = new DefaultFullHttpResponse(HttpVersion.HTTP_1_1, HttpResponseStatus.OK, rpcontent, rpheaders, new DefaultHttpHeaders());
         chctx.writeAndFlush(resp);
     }
 

@@ -221,22 +221,34 @@ public abstract class WebHost extends WebService implements ChannelInboundHandle
     public void handlerRemoved(ChannelHandlerContext ctx) throws Exception {
     }
 
-    final void handle(ChannelHandlerContext ctx, FullHttpRequest req) throws Exception {
+    final void handle(ChannelHandlerContext chctx, FullHttpRequest req) throws Exception {
+        try (final WebContext wc = new WebContext(chctx, req)) {
+            String path = wc.path();
+            String base = path.substring(1);
+            int dot = base.lastIndexOf('.');
+            if (dot != -1) {
+                handleStatic(chctx, req);
+                return;
+            }
 
-        // handle static resources in a IO thread
-        String path = req.uri();
-        String base = path.substring(1);
-        int dot = base.lastIndexOf('.');
-        if (dot != -1) {
-            handleStatic(ctx, req);
-            return;
-        }
-
-        try (WebContext wc = new WebContext(ctx, req)) {
             // BASIC authentication from client
             authenticate(wc);
 
-            perform(base, wc);
+            int slash = base.indexOf("/");
+            String rsc = path.substring(1);
+            if (slash == -1) { // without a slash then handle by the server
+                perform(base, wc);
+            } else {
+                String key = rsc.substring(0, slash);
+                WebService child = subs.get(key);
+                if (child != null) {
+                    String method = rsc.substring(slash + 1);
+//                    child.invoke(method, req, resp);
+                } else {
+//                    resp.sendError(SC_NOT_FOUND);
+                }
+            }
+
         } catch (IOException e) {
             e.printStackTrace();
             throw e;
@@ -246,8 +258,8 @@ public abstract class WebHost extends WebService implements ChannelInboundHandle
     }
 
     @SuppressWarnings("deprecation")
-    void authenticate(WebContext wc) {
-        String v = wc.hsreq().get(HttpHeaderNames.AUTHORIZATION);
+    final void authenticate(WebContext wc) {
+        String v = wc.rqheaders().get(HttpHeaderNames.AUTHORIZATION);
         if (v == null) {
             return;
         }

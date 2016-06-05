@@ -36,8 +36,6 @@ public class AgentService extends WebService {
     public void Post(WebContext wc) {
         Org agent = shops.newData();
 
-        wc.content(agent);
-
         shops.put(agent);
     }
 
