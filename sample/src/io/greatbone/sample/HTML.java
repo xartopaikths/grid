@@ -1,12 +1,10 @@
 package io.greatbone.sample;
 
-import io.greatbone.web.WebPrint;
-
-import java.io.IOException;
+import io.greatbone.web.WebView;
 
 /**
  */
-public abstract class HTML extends WebPrint<HTML> {
+public abstract class HTML extends WebView<HTML> {
 
     @Override
     protected String ctype() {
@@ -14,7 +12,7 @@ public abstract class HTML extends WebPrint<HTML> {
     }
 
     @Override
-    public void print() throws IOException {
+    public void print() {
         $("<!DOCTYPE HTML>");
         $("<html>");
         $("<head>");
@@ -30,7 +28,7 @@ public abstract class HTML extends WebPrint<HTML> {
         $("</html>");
     }
 
-    protected void body() throws IOException {
+    protected void body() {
 
         $("<a class=\"button\" href=\"#\">An Active Button</a>\n" +
                 "<button class=\"button button-inactive\">An Active Button</button>");

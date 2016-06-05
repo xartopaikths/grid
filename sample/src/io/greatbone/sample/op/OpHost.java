@@ -10,9 +10,9 @@ import java.io.IOException;
 /**
  * The operation (agents and shops) subdomain & module. [op.company.com]
  */
-public class OperationHost extends WebHost {
+public class OpHost extends WebHost {
 
-    public OperationHost(WebUtility web, String key) {
+    public OpHost(WebUtility web, String key) {
         super(web, key);
 
         addSub("order", OrderService.class, null);
@@ -26,9 +26,9 @@ public class OperationHost extends WebHost {
     }
 
     @Override
-    public void main(WebContext wc) throws IOException {
+    public void default_(WebContext wc) throws IOException {
         wc.sendOK(new HTML() {
-            protected void body() throws IOException {
+            protected void body()  {
                 $("another html output");
             }
         });

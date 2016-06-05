@@ -232,7 +232,7 @@ public abstract class WebHost extends WebService implements ChannelInboundHandle
             return;
         }
 
-        try (WebContext wc = new WebContext(this, ctx, req)) {
+        try (WebContext wc = new WebContext(ctx, req)) {
             // BASIC authentication from client
             authenticate(wc);
 
@@ -247,7 +247,7 @@ public abstract class WebHost extends WebService implements ChannelInboundHandle
 
     @SuppressWarnings("deprecation")
     void authenticate(WebContext wc) {
-        String v = wc.authorization();
+        String v = wc.hsreq().get(HttpHeaderNames.AUTHORIZATION);
         if (v == null) {
             return;
         }

@@ -72,7 +72,7 @@ public abstract class WebService<Z extends WebZone> {
         if (slash == -1) { // without a slash then handle by this controller instance
             exch.service = this;
             HttpMethod method = exch.method();
-            if (method == HttpMethod.GET) main(exch);
+            if (method == HttpMethod.GET) default_(exch);
 //        } else if (subordinates != null) { // resolve the sub structure
 //            WebControl control = subordinates.locateSub(base.substring(0, slash), exch);
 //            if (control != null) {
@@ -85,6 +85,6 @@ public abstract class WebService<Z extends WebZone> {
         }
     }
 
-    public abstract void main(WebContext<Z> wc) throws Exception;
+    public abstract void default_(WebContext<Z> wc) throws Exception;
 
 }

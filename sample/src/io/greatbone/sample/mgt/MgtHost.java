@@ -10,9 +10,9 @@ import java.io.IOException;
 /**
  * The management subdomain & module. [mgt.company.com]
  */
-public class ManagementHost extends WebHost {
+public class MgtHost extends WebHost {
 
-    public ManagementHost(WebUtility web, String key) {
+    public MgtHost(WebUtility web, String key) {
         super(web, key);
 
         addSub("users", UserService.class, null);
@@ -21,10 +21,10 @@ public class ManagementHost extends WebHost {
     }
 
     @Override
-    public void main(WebContext wc) throws IOException {
+    public void default_(WebContext wc) throws IOException {
         wc.sendOK(new HTML() {
             @Override
-            protected void body() throws IOException {
+            protected void body() {
                 $("this is html");
             }
         });

@@ -5,15 +5,14 @@ import io.netty.buffer.ByteBuf;
 import io.netty.buffer.PooledByteBufAllocator;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.http.*;
+import io.netty.handler.codec.json.JsonObjectDecoder;
+import io.netty.util.CharsetUtil;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.List;
-import java.util.Locale;
-import java.util.TimeZone;
+import java.util.*;
 
 /**
  * A web request/response exchange.
@@ -34,55 +33,82 @@ public class WebContext<Z extends WebZone> implements AutoCloseable {
         DATE_FORMAT.setTimeZone(GMT_ZONE);
     }
 
-    final WebHost host;
-
     final ChannelHandlerContext chctx;
 
-    final FullHttpRequest req;
+    HttpVersion version;
 
-    DefaultFullHttpResponse resp;
+    // request
+    final HttpMethod method;
+    final String uri;
+    Map<String, List<String>> query;
+    final HttpHeaders hsreq;
+    final ByteBuf icontent;
+    Map<String, List<String>> form;
 
-    // request headers
-    final HttpHeaders requesth;
+    // response
+    HttpResponseStatus status;
+    HttpHeaders oheaders;
+    ByteBuf ocontent;
+    HttpHeaders trailingHeader;
 
+    // the authenticated principal
     WebPrincipal principal;
 
+    // the resolved web zone, can be null
     Z zone;
 
+    // the currently targetd service
     WebService<Z> service;
 
-    // converted request content: form-data, json-deserilized and input stream
-    Object content;
+    // the currently targeted action
+    WebAction action;
 
-    WebContext(WebHost host, ChannelHandlerContext chctx, FullHttpRequest req) {
-        this.host = host;
+    WebContext(ChannelHandlerContext chctx, FullHttpRequest req) {
         this.chctx = chctx;
-        this.req = req;
-        this.requesth = req.headers();
+
+        this.version = req.protocolVersion();
+        this.method = req.method();
+        this.uri = req.uri();
+        this.hsreq = req.headers();
+        this.icontent = req.content();
+
+        QueryStringDecoder decoder = new QueryStringDecoder(uri);
+        query = decoder.parameters();
+
+        status = HttpResponseStatus.OK;
+
     }
 
-    public HttpMethod method() {
-        return req.method();
-    }
-
-    public WebService service() {
+    public final WebService service() {
         return service;
     }
 
-    public Z zone() {
+    public final Z zone() {
         return zone;
     }
 
-    String authorization() {
-        return requesth.get(HttpHeaderNames.AUTHORIZATION);
+    public final WebPrincipal principal() {
+        return principal;
+    }
+
+    public final HttpMethod method() {
+        return method;
+    }
+
+    public final String Uri() {
+        return uri;
+    }
+
+    public final HttpHeaders hsreq() {
+        return hsreq;
     }
 
     public String hstring(String name) {
-        return requesth.get(name);
+        return hsreq.get(name);
     }
 
     public int hint(String header) {
-        String v = requesth.get(header);
+        String v = hsreq.get(header);
         try {
             return Integer.parseInt(v);
         } catch (NumberFormatException e) {
@@ -91,7 +117,7 @@ public class WebContext<Z extends WebZone> implements AutoCloseable {
     }
 
     public Date hdate(String name) {
-        String v = requesth.get(name);
+        String v = hsreq.get(name);
         if (v != null) {
             try {
                 return DATE_FORMAT.parse(v);
@@ -99,6 +125,34 @@ public class WebContext<Z extends WebZone> implements AutoCloseable {
             }
         }
         return null;
+    }
+
+    public String querystr(String name) {
+        if (query == null) {
+            QueryStringDecoder decoder = new QueryStringDecoder(uri);
+            query = decoder.parameters();
+        }
+        List<String> v = query.get(name);
+        if (v != null) {
+            return v.get(0);
+        }
+        return null;
+    }
+
+    public List<String> querystrs(String name) {
+        return query.get(name);
+    }
+
+    public String getParameter(String name) {
+        if (form == null) {
+            QueryStringDecoder decoder = new QueryStringDecoder("?" + icontent.toString(CharsetUtil.UTF_8));
+            form = decoder.parameters();
+        }
+        return null;
+    }
+
+    public void json() {
+        JsonObjectDecoder d = new JsonObjectDecoder();
     }
 
     //
@@ -109,24 +163,22 @@ public class WebContext<Z extends WebZone> implements AutoCloseable {
     }
 
 
-    public WebContext $obj(GridData dat) {
-
-        return this;
+    public void status(HttpResponseStatus v) {
+        this.status = v;
     }
 
-    public WebContext $obj(GridData dat, int flags) {
+    public void header(CharSequence name, String v) {
 
-        return this;
     }
 
-    public WebContext $obj(List<GridData> data) {
+    public final void print(WebView print) {
+        print.print();
 
-        return this;
-    }
+        ByteBuf buf = print.buf;
+        oheaders.set(HttpHeaderNames.CONTENT_TYPE, print.ctype());
+        oheaders.set(HttpHeaderNames.CONTENT_LENGTH, buf == null ? 0 : buf.readableBytes());
 
-    public WebContext $obj(List<GridData> datalst, int flags) {
-
-        return this;
+        this.ocontent = print.buf;
     }
 
     public void sendNotFound() throws IOException {
@@ -134,14 +186,7 @@ public class WebContext<Z extends WebZone> implements AutoCloseable {
 
     PooledByteBufAllocator pool;
 
-
-    public void sendOK(ByteBuf buf) throws IOException {
-        HttpHeaders headers = new DefaultHttpHeaders();
-        FullHttpResponse resp = new DefaultFullHttpResponse(HttpVersion.HTTP_1_1, HttpResponseStatus.OK, buf, headers, new DefaultHttpHeaders());
-        chctx.writeAndFlush(resp);
-    }
-
-    public void sendOK(WebPrint print) throws IOException {
+    public void sendOK(WebView print) throws IOException {
 
         // print content to the out
         print.print();
@@ -157,6 +202,9 @@ public class WebContext<Z extends WebZone> implements AutoCloseable {
 
     @Override
     public void close() throws IOException {
+        // send out the repsonse
+        FullHttpResponse resp = new DefaultFullHttpResponse(HttpVersion.HTTP_1_1, HttpResponseStatus.OK, ocontent, oheaders, new DefaultHttpHeaders());
+        chctx.writeAndFlush(resp);
     }
 
 }

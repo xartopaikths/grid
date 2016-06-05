@@ -25,7 +25,7 @@ public class OrgServiceHub extends WebServiceHub<Org> {
     }
 
     @Override
-    public void main(WebContext<Org> wc) throws Exception {
+    public void default_(WebContext<Org> wc) throws Exception {
     }
 
 }

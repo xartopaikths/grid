@@ -1,15 +1,17 @@
 package io.greatbone.web;
 
 import io.greatbone.Out;
+import io.greatbone.grid.GridData;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.PooledByteBufAllocator;
 
 import java.io.IOException;
+import java.util.List;
 
 /**
  */
 @SuppressWarnings("unchecked")
-public abstract class WebPrint<O extends Out<O>> implements Out<O> {
+public abstract class WebView<O extends Out<O>> implements Out<O> {
 
     static final int OUTBUF_INITIAL = 4 * 1024;
 
@@ -31,12 +33,12 @@ public abstract class WebPrint<O extends Out<O>> implements Out<O> {
 
     protected abstract String ctype();
 
-    protected abstract void print() throws IOException;
+    protected abstract void print();
 
     //
     // OUTPUT FUNCTIONS
 
-    void write(char c) throws IOException {
+    void write(char c) {
 
         ByteBuf buf = this.buf;
         if (buf == null) {
@@ -59,7 +61,7 @@ public abstract class WebPrint<O extends Out<O>> implements Out<O> {
         }
     }
 
-    public O $(CharSequence v) throws IOException {
+    public O $(CharSequence v) {
         if (v != null) {
             for (int i = 0; i < v.length(); i++) {
                 write(v.charAt(i));
@@ -132,5 +134,26 @@ public abstract class WebPrint<O extends Out<O>> implements Out<O> {
         write(DIGITS[(int) x]); // last reminder
         return (O) this;
     }
+
+    public O $obj(GridData dat) {
+
+        return (O) this;
+    }
+
+    public O $obj(GridData dat, int flags) {
+
+        return (O) this;
+    }
+
+    public O $obj(List<GridData> data) {
+
+        return (O) this;
+    }
+
+    public O $obj(List<GridData> datalst, int flags) {
+
+        return (O) this;
+    }
+
 
 }
