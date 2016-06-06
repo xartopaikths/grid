@@ -30,13 +30,8 @@ public class Greatbone {
 
     static final int CORES = Runtime.getRuntime().availableProcessors();
 
-    public static final int IO_THREADS = CORES * 2;
-
-    public static final int WORKER_THREADS = CORES * 16;
-
-    public final static EventLoopGroup BOSS;
-
-    public final static EventLoopGroup WORK;
+    // accepting and execution event loop groups reused in all bootstraps, minimize the thread-usage
+    public final static EventLoopGroup BOSS, WORK;
 
     static final String CONFIG_FILE = "config.xml";
 

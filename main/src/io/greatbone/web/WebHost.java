@@ -6,7 +6,6 @@ import io.greatbone.util.Roll;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.*;
 import io.netty.channel.epoll.EpollServerSocketChannel;
-import io.netty.channel.epoll.EpollSocketChannel;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.handler.codec.http.*;
@@ -126,9 +125,10 @@ public abstract class WebHost extends WebService implements ChannelInboundHandle
         try {
             ServerBootstrap b = new ServerBootstrap();
             b.group(Greatbone.BOSS, Greatbone.WORK)
-                    .channel(Greatbone.LINUX? EpollServerSocketChannel.class:NioServerSocketChannel.class)
-                    .option(ChannelOption.SO_BACKLOG, 128)
+                    .channel(Greatbone.LINUX ? EpollServerSocketChannel.class : NioServerSocketChannel.class)
+                    .option(ChannelOption.SO_BACKLOG, 1024)
                     .childOption(ChannelOption.SO_KEEPALIVE, true)
+                    .childOption(ChannelOption.WRITE_BUFFER_WATER_MARK, new WriteBufferWaterMark(32 * 1024, 64 * 1024))
                     .childHandler(new ChannelInitializer<SocketChannel>() {
                         protected void initChannel(SocketChannel ch) throws Exception {
                             ChannelPipeline pipeline = ch.pipeline();
@@ -238,16 +238,30 @@ public abstract class WebHost extends WebService implements ChannelInboundHandle
 
             int slash = base.indexOf("/");
             String rsc = path.substring(1);
-            if (slash == -1) { // without a slash then handle by the server
+            if (slash == -1) { // without a slash then handle by this host
                 perform(base, wc);
             } else {
                 String key = rsc.substring(0, slash);
-                WebService child = subs.get(key);
-                if (child != null) {
-                    String method = rsc.substring(slash + 1);
+                if (key.startsWith("-")) {
+                    if (hub == null) {
+
+                    }
+
+                    WebZone z = hub.resolve(key.substring(1));
+                    if (z == null) {
+
+                    }
+
+                    wc.zone = z;
+
+                }   else {
+                    WebService sub = subs.get(key);
+                    if (sub != null) {
+                        String method = rsc.substring(slash + 1);
 //                    child.invoke(method, req, resp);
-                } else {
+                    } else {
 //                    resp.sendError(SC_NOT_FOUND);
+                    }
                 }
             }
 
