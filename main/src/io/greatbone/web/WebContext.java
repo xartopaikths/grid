@@ -24,6 +24,10 @@ public class WebContext<Z extends WebZone> implements AutoCloseable {
 
     static final int MAX_BODY = 64 * 1024;
 
+    static final HttpHeaders EMPTY = new DefaultHttpHeaders();
+
+    static final PooledByteBufAllocator POOL = new PooledByteBufAllocator();
+
     // standard HTTP date format
     static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss zzz", Locale.US);
 
@@ -79,7 +83,10 @@ public class WebContext<Z extends WebZone> implements AutoCloseable {
         this.rqheaders = req.headers();
         this.rqcontent = req.content();
 
-        status = HttpResponseStatus.OK;
+        this.status = HttpResponseStatus.OK;
+        this.rpcontent = POOL.buffer();
+        this.rpheaders = new DefaultHttpHeaders();
+
 
     }
 
@@ -187,7 +194,7 @@ public class WebContext<Z extends WebZone> implements AutoCloseable {
     @Override
     public void close() throws IOException {
         // send out the repsonse
-        FullHttpResponse resp = new DefaultFullHttpResponse(HttpVersion.HTTP_1_1, HttpResponseStatus.OK, rpcontent, rpheaders, new DefaultHttpHeaders());
+        FullHttpResponse resp = new DefaultFullHttpResponse(HttpVersion.HTTP_1_1, HttpResponseStatus.OK, rpcontent, rpheaders, EMPTY);
         chctx.writeAndFlush(resp);
     }
 

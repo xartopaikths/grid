@@ -5,6 +5,8 @@ import io.greatbone.Greatbone;
 import io.greatbone.util.Roll;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.*;
+import io.netty.channel.epoll.EpollServerSocketChannel;
+import io.netty.channel.epoll.EpollSocketChannel;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.handler.codec.http.*;
@@ -124,7 +126,7 @@ public abstract class WebHost extends WebService implements ChannelInboundHandle
         try {
             ServerBootstrap b = new ServerBootstrap();
             b.group(Greatbone.BOSS, Greatbone.WORK)
-                    .channel(NioServerSocketChannel.class)
+                    .channel(Greatbone.LINUX? EpollServerSocketChannel.class:NioServerSocketChannel.class)
                     .option(ChannelOption.SO_BACKLOG, 128)
                     .childOption(ChannelOption.SO_KEEPALIVE, true)
                     .childHandler(new ChannelInitializer<SocketChannel>() {

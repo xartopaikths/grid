@@ -2,6 +2,7 @@ package io.greatbone;
 
 import com.sun.org.apache.xerces.internal.parsers.DOMParser;
 import io.netty.channel.EventLoopGroup;
+import io.netty.channel.epoll.EpollEventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -25,6 +26,8 @@ import java.rmi.registry.LocateRegistry;
  */
 public class Greatbone {
 
+    public static final boolean LINUX;
+
     static final int CORES = Runtime.getRuntime().availableProcessors();
 
     public static final int IO_THREADS = CORES * 2;
@@ -40,7 +43,11 @@ public class Greatbone {
     // the root element of the config xml document
     public static Element config;
 
+
     static {
+
+        String os = System.getProperty("os.name").toLowerCase();
+        LINUX = os.contains("linux");
 
         // load config xml
         try {
@@ -64,9 +71,18 @@ public class Greatbone {
         }
 
 
-        // event loop groups
-        BOSS = new NioEventLoopGroup(CORES > 32 ? 4 : CORES > 4 ? 2 : 1);
-        WORK = new NioEventLoopGroup(CORES * 8);
+        // event loop groups by os
+        if (LINUX) {
+            BOSS = new EpollEventLoopGroup(
+                    CORES >= 32 ? 5 : CORES >= 16 ? 4 : CORES >= 4 ? 3 : 2
+            );
+            WORK = new EpollEventLoopGroup(CORES * 8);
+        } else {
+            BOSS = new NioEventLoopGroup(
+                    CORES >= 32 ? 5 : CORES >= 16 ? 4 : CORES >= 4 ? 3 : 2
+            );
+            WORK = new NioEventLoopGroup(CORES * 8);
+        }
         Runtime.getRuntime().removeShutdownHook(new Thread() {
             @Override
             public void run() {
