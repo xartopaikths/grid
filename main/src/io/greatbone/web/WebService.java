@@ -1,7 +1,6 @@
 package io.greatbone.web;
 
 import io.greatbone.util.Roll;
-import io.netty.handler.codec.http.HttpMethod;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
@@ -28,6 +27,7 @@ public abstract class WebService<Z extends WebZone> {
     // execution of background tasks
     Thread cycler;
 
+    @SuppressWarnings("unchecked")
     protected WebService(WebHost host, WebParent parent) {
         this.host = (host != null) ? host : (WebHost) this;
         this.parent = parent;
@@ -49,7 +49,6 @@ public abstract class WebService<Z extends WebZone> {
             }
         }
 
-
         // initialize the cycler thread if any
         if (this instanceof Runnable) {
             cycler = new Thread((Runnable) this);
@@ -64,25 +63,22 @@ public abstract class WebService<Z extends WebZone> {
     /**
      * To handle a request/response exchange by this or by an appropriate sub controller.
      *
-     * @param base the relative URI that this controller is based
-     * @param wc the request.response exchange
+     * @param rsc the relative URI that this controller is based
+     * @param wc  the request.response exchange
      */
-    protected void perform(String base, WebContext<Z> wc) throws Exception {
-        int slash = base.indexOf('/');
-        if (slash == -1) { // without a slash then handle by this controller instance
-            wc.service = this;
-            HttpMethod method = wc.method();
-            if (method == HttpMethod.GET) default_(wc);
-//        } else if (subordinates != null) { // resolve the sub structure
-//            WebControl control = subordinates.locateSub(base.substring(0, slash), exch);
-//            if (control != null) {
-//                control.perform(base.substring(slash + 1), exch);
-//            } else {
-//                exch.sendNotFound();
-//            }
-        } else {
-            wc.sendNotFound();
+    @SuppressWarnings("unchecked")
+    protected void perform(String rsc, WebContext<Z> wc) throws Exception {
+        if (rsc.isEmpty()) {
+            rsc = "default_";
         }
+        WebAction action = actions.get(rsc);
+        if (action == null) {
+            wc.sendNotFound();
+            return;
+        }
+        wc.service = this;
+        wc.action = action;
+        action.invoke(wc);
     }
 
     public abstract void default_(WebContext<Z> wc) throws Exception;

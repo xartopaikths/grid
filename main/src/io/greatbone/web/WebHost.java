@@ -223,45 +223,46 @@ public abstract class WebHost extends WebService implements ChannelInboundHandle
     public void handlerRemoved(ChannelHandlerContext ctx) throws Exception {
     }
 
+    @SuppressWarnings("unchecked")
     final void handle(ChannelHandlerContext chctx, FullHttpRequest req) throws Exception {
         try (final WebContext wc = new WebContext(chctx, req)) {
+
             String path = wc.path();
-            String base = path.substring(1);
-            int dot = base.lastIndexOf('.');
+            int dot = path.lastIndexOf('.');
             if (dot != -1) {
                 handleStatic(chctx, req);
                 return;
             }
 
-            // BASIC authentication from client
+            // authentication of the client
             authenticate(wc);
 
+            String base = path.substring(1);
             int slash = base.indexOf("/");
-            String rsc = path.substring(1);
             if (slash == -1) { // without a slash then handle by this host
                 perform(base, wc);
-            } else {
-                String key = rsc.substring(0, slash);
-                if (key.startsWith("-")) {
-                    if (hub == null) {
-
+            } else { // sub-perform
+                String key = base.substring(0, slash);
+                if (key.startsWith("-")) { // hub
+                    if (hub == null) { // hub unavailable
+                        wc.sendNotFound();
+                        return;
                     }
-
-                    WebZone z = hub.resolve(key.substring(1));
-                    if (z == null) {
-
+                    WebZone zone = hub.resolve(key.substring(1));
+                    if (zone == null) {
+                        wc.sendNotFound(); // zone not found
+                        return;
                     }
+                    wc.zone = zone;
+                    hub.perform(base.substring(slash + 1), wc);
 
-                    wc.zone = z;
-
-                }   else {
+                } else {
                     WebService sub = subs.get(key);
-                    if (sub != null) {
-                        String method = rsc.substring(slash + 1);
-//                    child.invoke(method, req, resp);
-                    } else {
-//                    resp.sendError(SC_NOT_FOUND);
+                    if (sub == null) { // sub unavailable
+                        wc.sendNotFound();
+                        return;
                     }
+                    sub.perform(base.substring(slash + 1), wc);
                 }
             }
 

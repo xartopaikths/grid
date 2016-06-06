@@ -173,6 +173,7 @@ public class WebContext<Z extends WebZone> implements AutoCloseable {
     }
 
     public void sendNotFound() throws IOException {
+        status(HttpResponseStatus.NOT_FOUND);
     }
 
     PooledByteBufAllocator pool;
