@@ -4,6 +4,8 @@ import io.greatbone.Configurable;
 import io.greatbone.Greatbone;
 import io.greatbone.util.Roll;
 import io.netty.bootstrap.ServerBootstrap;
+import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 import io.netty.channel.*;
 import io.netty.channel.epoll.EpollServerSocketChannel;
 import io.netty.channel.socket.SocketChannel;
@@ -26,8 +28,6 @@ import java.util.Base64;
  * A root web folder that may have a hub handler which deals with variable sector folders.
  */
 public abstract class WebHost extends WebService implements ChannelInboundHandler, WebHostMBean, WebParent, Configurable {
-
-    static final String EMPTY = "";
 
     static final Base64.Decoder DEC = Base64.getMimeDecoder();
 
@@ -304,27 +304,38 @@ public abstract class WebHost extends WebService implements ChannelInboundHandle
         return null;
     }
 
+    static final HttpHeaders EMPTY = new DefaultHttpHeaders();
+
     final void handleStatic(ChannelHandlerContext ctx, FullHttpRequest req) {
         String path = req.uri();
         WebStatic sta = web.getStatic(path);
         if (sta == null) {
-//            exch.setStatusCode(NOT_FOUND);
+            ctx.writeAndFlush(new DefaultFullHttpResponse(HttpVersion.HTTP_1_1, HttpResponseStatus.NOT_FOUND));
         } else {
             HttpMethod method = req.method();
             if (method == HttpMethod.GET) {
                 String since = req.headers().get(HttpHeaderNames.IF_MODIFIED_SINCE);
                 if (since != null) {
-
-//                    exch(NOT_MODIFIED);
+                    ctx.writeAndFlush(new DefaultFullHttpResponse(HttpVersion.HTTP_1_1, HttpResponseStatus.NOT_MODIFIED));
                 } else {
                     // async sending
-//                    req.getResponseSender().send(ByteBuffer.wrap(sta.content));
+                    ByteBuf buf = Unpooled.wrappedBuffer(sta.content);
+                    HttpHeaders headers = new DefaultHttpHeaders();
+                    headers.set(HttpHeaderNames.CONTENT_TYPE, sta.ctype());
+                    headers.set(HttpHeaderNames.CONTENT_LENGTH, sta.length());
+                    ctx.writeAndFlush(new DefaultFullHttpResponse(HttpVersion.HTTP_1_1, HttpResponseStatus.OK, buf, headers, EMPTY));
                 }
-//            } else if (method == HEAD) {
+            } else if (method == HttpMethod.HEAD) {
             } else {
-//                req.setStatusCode(METHOD_NOT_ALLOWED);
+                ctx.writeAndFlush(new DefaultFullHttpResponse(HttpVersion.HTTP_1_1, HttpResponseStatus.METHOD_NOT_ALLOWED));
             }
         }
+    }
+
+    final void send(ChannelHandlerContext ctx, HttpResponseStatus status) {
+        FullHttpResponse resp = new DefaultFullHttpResponse(HttpVersion.HTTP_1_1, status);
+        ctx.writeAndFlush(resp);
+
     }
 
     @Override

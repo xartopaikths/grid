@@ -2,6 +2,7 @@ package io.greatbone.web;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.PooledByteBufAllocator;
+import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.http.*;
 
@@ -84,9 +85,7 @@ public class WebContext<Z extends WebZone> implements AutoCloseable {
         this.rqcontent = req.content();
 
         this.status = HttpResponseStatus.OK;
-        this.rpcontent = POOL.buffer();
         this.rpheaders = new DefaultHttpHeaders();
-
 
     }
 
@@ -162,13 +161,17 @@ public class WebContext<Z extends WebZone> implements AutoCloseable {
 
     }
 
-    public final void print(WebView print) {
+    public final void out(WebView print) {
+
         print.print();
 
         ByteBuf buf = print.buf;
         rpheaders.set(HttpHeaderNames.CONTENT_TYPE, print.ctype());
         rpheaders.set(HttpHeaderNames.CONTENT_LENGTH, buf == null ? 0 : buf.readableBytes());
 
+        if (rpcontent != null) {
+            rpcontent.release();
+        }
         this.rpcontent = print.buf;
     }
 
@@ -178,23 +181,13 @@ public class WebContext<Z extends WebZone> implements AutoCloseable {
 
     PooledByteBufAllocator pool;
 
-    public void sendOK(WebView print) throws IOException {
-
-        // print content to the out
-        print.print();
-
-        HttpHeaders headers = new DefaultHttpHeaders();
-        headers.set(HttpHeaderNames.CONTENT_TYPE, print.ctype());
-        ByteBuf buf = print.buf;
-        headers.set(HttpHeaderNames.CONTENT_LENGTH, buf == null ? 0 : buf.readableBytes());
-
-        FullHttpResponse resp = new DefaultFullHttpResponse(HttpVersion.HTTP_1_1, HttpResponseStatus.OK, buf, headers, new DefaultHttpHeaders());
-        chctx.writeAndFlush(resp);
-    }
-
     @Override
     public void close() throws IOException {
         // send out the repsonse
+        if (rpcontent == null) {
+            rpcontent = Unpooled.buffer(0);
+        }
+
         FullHttpResponse resp = new DefaultFullHttpResponse(HttpVersion.HTTP_1_1, HttpResponseStatus.OK, rpcontent, rpheaders, EMPTY);
         chctx.writeAndFlush(resp);
     }

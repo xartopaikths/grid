@@ -22,7 +22,7 @@ public class MgtHost extends WebHost {
 
     @Override
     public void default_(WebContext wc) throws IOException {
-        wc.sendOK(new HTML() {
+        wc.out(new HTML() {
             @Override
             protected void body() {
                 $("this is html");

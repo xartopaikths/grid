@@ -4,7 +4,7 @@ package io.greatbone.web;
  */
 public interface Grantable {
 
-    String space();
+    String zone();
 
     short roles();
 
