@@ -80,7 +80,6 @@ public class WebContext<Z extends WebZone> implements AutoCloseable {
         this.path = (quest == -1) ? uri : uri.substring(0, quest);
         this.query = (quest == -1) ? null : new FormData(uri.substring(quest + 1));
 
-
         this.rqheaders = req.headers();
         this.rqcontent = req.content();
 
