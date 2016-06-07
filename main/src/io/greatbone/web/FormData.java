@@ -7,45 +7,39 @@ import io.netty.handler.codec.http.HttpConstants;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 /**
- * www-form-encoded
+ * The decoded name/value pairs as encoded in <em>www-form-urlencoded</em> format.
  */
 public class FormData {
 
-    Roll<String, Object> params;
+    final Roll<String, Object> params = new Roll<>(16);
 
+    // parse body
     public FormData(ByteBuf buf) {
     }
 
-    public FormData(String s) {
-        this.params = new Roll<>(32);
-
+    // parse query
+    public FormData(String str) {
+        final int len = str.length();
         String name = null;
-        int pos = 0; // Beginning of the unprocessed region
-        int i;       // End of the unprocessed region
-        char c;  // Current character
-        for (i = 0; i < s.length(); i++) {
-            c = s.charAt(i);
+        int pos = 0; // beginning of each parse
+        char c;
+        int i;
+        for (i = pos; i < len; i++) {
+            c = str.charAt(i);
             if (c == '=' && name == null) {
                 if (pos != i) {
-                    name = s.substring(pos, i);
+                    name = str.substring(pos, i);
                 }
-                pos = i + 1;
-                // http://www.w3.org/TR/html401/appendix/notes.html#h-B.2.2
+                pos = i + 1; // adjust the beginning pos
             } else if (c == '&' || c == ';') {
                 if (name == null && pos != i) {
-                    // We haven't seen an `=' so far but moved forward.
-                    // Must be a param of the form '&a&' so add it with
-                    // an empty value.
-//                    if (!addParam(params, decodeComponent(s.substring(pos, i), null), "")) {
-//                        return;
-//                    }
+                    addParam(str.substring(pos, i), ""); // empty value
                 } else if (name != null) {
-//                    if (!addParam(params, name, decodeComponent(s.substring(pos, i), charset))) {
-//                        return;
-//                    }
+                    if (!addParam(name, decodeComponent(str.substring(pos, i), null))) {
+                        return;
+                    }
                     name = null;
                 }
                 pos = i + 1;
@@ -63,14 +57,19 @@ public class FormData {
         }
     }
 
-    private boolean addParam(Map<String, List<String>> params, String name, String value) {
-
-        List<String> values = params.get(name);
-        if (values == null) {
-            values = new ArrayList<String>(1);  // Often there's only 1 value.
-            params.put(name, values);
+    @SuppressWarnings("unchecked")
+    boolean addParam(String name, String value) {
+        Object obj = params.get(name);
+        if (obj == null) {
+            params.put(name, value);
+        } else if (obj instanceof String) { // has a previous value
+            ArrayList<String> lst = new ArrayList<>(8);
+            lst.add((String) obj);
+            lst.add(value);
+            params.put(name, lst);
+        } else { // already an arraylist
+            ((ArrayList<String>) obj).add(value);
         }
-        values.add(value);
         return true;
     }
 
@@ -104,8 +103,7 @@ public class FormData {
                     break;
                 case '%':
                     if (i == size - 1) {
-                        throw new IllegalArgumentException("unterminated escape"
-                                + " sequence at end of string: " + s);
+                        throw new IllegalArgumentException("unterminated escape sequence at end of string: " + s);
                     }
                     c = s.charAt(++i);
                     if (c == '%') {
@@ -113,16 +111,13 @@ public class FormData {
                         break;
                     }
                     if (i == size - 1) {
-                        throw new IllegalArgumentException("partial escape"
-                                + " sequence at end of string: " + s);
+                        throw new IllegalArgumentException("partial escape sequence at end of string: " + s);
                     }
                     c = decodeHexNibble(c);
                     final char c2 = decodeHexNibble(s.charAt(++i));
                     if (c == Character.MAX_VALUE || c2 == Character.MAX_VALUE) {
                         throw new IllegalArgumentException(
-                                "invalid escape sequence `%" + s.charAt(i - 1)
-                                        + s.charAt(i) + "' at index " + (i - 2)
-                                        + " of: " + s);
+                                "invalid escape sequence `%" + s.charAt(i - 1) + s.charAt(i) + "' at index " + (i - 2) + " of: " + s);
                     }
                     c = (char) (c * 16 + c2);
                     // Fall through.
@@ -146,5 +141,63 @@ public class FormData {
         }
     }
 
+    public String getString(String name) {
+        return (String) params.get(name);
+    }
+
+    public int getInt(String name) {
+        int n = -1;
+        Object obj = params.get(name);
+        if (obj != null) {
+            try {
+                n = Integer.parseInt((String) obj, 10);
+            } catch (NumberFormatException e) {
+            }
+        }
+        return n;
+    }
+
+    @SuppressWarnings("unchecked")
+    public String[] getStrings(String name) {
+        Object obj = params.get(name);
+        if (obj == null) {
+            return null;
+        } else if (obj instanceof ArrayList) {
+            List<String> lst = (List<String>) obj;
+            return lst.toArray(new String[lst.size()]);
+        } else {
+            return new String[]{(String) obj};
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    public int[] getInts(String name) {
+        Object obj = params.get(name);
+        if (obj == null) {
+            return null;
+        } else if (obj instanceof ArrayList) {
+            List<String> lst = (List<String>) obj;
+            int len = lst.size();
+            int[] ret = new int[len];
+            for (int i = 0; i < len; i++) {
+                String v = lst.get(i);
+                int n = -1;
+                try {
+                    n = Integer.parseInt(v, 10);
+                } catch (NumberFormatException e) {
+                }
+                ret[i] = n;
+            }
+            return ret;
+        } else { // only one value
+            String v = (String) obj;
+            int n = -1;
+            try {
+                n = Integer.parseInt(v, 10);
+            } catch (NumberFormatException e) {
+            }
+            return new int[]{(n)};
+        }
+    }
 
 }
