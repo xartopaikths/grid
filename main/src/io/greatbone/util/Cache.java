@@ -28,4 +28,18 @@ public abstract class Cache<K, V extends Cacheable> {
         return null;
     }
 
+    class Entry extends SpinWait {
+
+        K key;
+
+        V value;
+
+        int code;
+
+        int next;
+
+        boolean deleted;
+
+    }
+
 }
