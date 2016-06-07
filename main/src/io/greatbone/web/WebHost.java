@@ -25,7 +25,9 @@ import java.net.InetSocketAddress;
 import java.util.Base64;
 
 /**
- * A root web folder that may have a hub handler which deals with variable sector folders.
+ * A web virtual host that listens on a certain socket address as normally associated to an internet subdomain.
+ * <p/>
+ * Being with its own handling actions, a host can have a number of sub services and a hub service.
  */
 public abstract class WebHost extends WebService implements ChannelInboundHandler, WebHostMBean, WebParent, Configurable {
 
@@ -227,7 +229,7 @@ public abstract class WebHost extends WebService implements ChannelInboundHandle
     final void handle(ChannelHandlerContext chctx, FullHttpRequest req) throws Exception {
         try (final WebContext wc = new WebContext(chctx, req)) {
 
-            String path = wc.getPath();
+            String path = wc.path();
             int dot = path.lastIndexOf('.');
             if (dot != -1) {
                 handleStatic(chctx, req);
@@ -276,7 +278,7 @@ public abstract class WebHost extends WebService implements ChannelInboundHandle
 
     @SuppressWarnings("deprecation")
     final void authenticate(WebContext wc) {
-        String v = wc.getRequestHeaders().get(HttpHeaderNames.AUTHORIZATION);
+        String v = wc.inheaders().get(HttpHeaderNames.AUTHORIZATION);
         if (v == null) {
             return;
         }

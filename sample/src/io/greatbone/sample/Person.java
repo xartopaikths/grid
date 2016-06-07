@@ -2,7 +2,7 @@ package io.greatbone.sample;
 
 import io.greatbone.grid.*;
 import io.greatbone.web.WebPrincipal;
-import io.greatbone.web.WebSocketDoer;
+import io.greatbone.web.WebSocketCallback;
 import io.greatbone.web.WebZone;
 
 /**
@@ -34,7 +34,7 @@ public class Person extends GridData<Person> implements WebPrincipal, WebZone {
     }
 
     @Override
-    public WebSocketDoer doer() {
+    public WebSocketCallback doer() {
         return null;
     }
 

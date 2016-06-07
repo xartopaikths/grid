@@ -7,6 +7,6 @@ public interface WebZone {
 
     String key();
 
-    WebSocketDoer doer();
+    WebSocketCallback doer();
 
 }

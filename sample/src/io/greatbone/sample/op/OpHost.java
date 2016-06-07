@@ -27,7 +27,7 @@ public class OpHost extends WebHost {
 
     @Override
     public void default_(WebContext wc) throws IOException {
-        wc.setResponseContent(new HTML() {
+        wc.setOut(new HTML() {
             protected void body() {
                 $("another html output");
             }

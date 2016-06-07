@@ -1,7 +1,7 @@
 package io.greatbone.web;
 
 /**
- * A static resource.
+ * A static resource that resides under the RES folder or one of its decendent folder.
  */
 class WebStatic {
 
@@ -10,7 +10,7 @@ class WebStatic {
     // content type
     final String ctype;
 
-    // direct byte buffer for  content
+    // content byte array
     final byte[] content;
 
     public WebStatic(String key, byte[] content) {

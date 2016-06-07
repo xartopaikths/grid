@@ -74,7 +74,7 @@ public abstract class WebService<Z extends WebZone> {
         }
         WebAction action = actions.get(rsc);
         if (action == null) {
-            wc.        setStatus(HttpResponseStatus.NOT_FOUND);
+            wc.setStatus(HttpResponseStatus.NOT_FOUND);
 
             return;
         }
