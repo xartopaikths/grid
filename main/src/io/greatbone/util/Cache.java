@@ -4,8 +4,28 @@ import java.util.concurrent.atomic.AtomicReferenceArray;
 
 /**
  */
-public class Cache<K, V> {
+public abstract class Cache<K, V extends Cacheable> {
 
     AtomicReferenceArray<V> objects;
+
+    public void loadAll() {
+
+    }
+
+    public V get(K key) {
+        return null;
+    }
+
+    public V getThrough(K key) {
+        return null;
+    }
+
+    public V[] search(K[] key) {
+        return null;
+    }
+
+    public V[] search() {
+        return null;
+    }
 
 }
