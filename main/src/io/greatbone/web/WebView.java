@@ -33,7 +33,7 @@ public abstract class WebView<O extends Out<O>> implements Out<O> {
 
     protected abstract String ctype();
 
-    protected abstract void print();
+    protected abstract void render();
 
     //
     // OUTPUT FUNCTIONS

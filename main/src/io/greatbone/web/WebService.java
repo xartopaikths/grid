@@ -1,6 +1,7 @@
 package io.greatbone.web;
 
 import io.greatbone.util.Roll;
+import io.netty.handler.codec.http.HttpResponseStatus;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
@@ -67,13 +68,14 @@ public abstract class WebService<Z extends WebZone> {
      * @param wc  the request.response exchange
      */
     @SuppressWarnings("unchecked")
-    protected void perform(String rsc, WebContext<Z> wc) throws Exception {
+    void perform(String rsc, WebContext<Z> wc) throws Exception {
         if (rsc.isEmpty()) {
             rsc = "default_";
         }
         WebAction action = actions.get(rsc);
         if (action == null) {
-            wc.sendNotFound();
+            wc.        setStatus(HttpResponseStatus.NOT_FOUND);
+
             return;
         }
         wc.service = this;

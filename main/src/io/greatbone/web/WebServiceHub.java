@@ -1,10 +1,14 @@
 package io.greatbone.web;
 
 import io.greatbone.util.Roll;
+import io.netty.handler.codec.http.HttpResponseStatus;
 
 import java.lang.reflect.Constructor;
 
 /**
+ * A service hub conceptually contains a collection of virtual folders called dynamic zones, which is designated by a URL portion and resolved at runtime.
+ * <p/>
+ * A service hub can have sub services, which also work under the context of the resolved dynamic zone.
  */
 public abstract class WebServiceHub<Z extends WebZone> extends WebService<Z> implements WebParent {
 
@@ -31,14 +35,14 @@ public abstract class WebServiceHub<Z extends WebZone> extends WebService<Z> imp
 
     @Override
     @SuppressWarnings("unchecked")
-    protected void perform(String base, WebContext<Z> wc) throws Exception {
+    void perform(String base, WebContext<Z> wc) throws Exception {
         int slash = base.indexOf("/");
         if (slash == -1) { // without a slash then handle by this host
             perform(base, wc);
         } else { // sub-perform
             WebService sub = subs.get(key);
             if (sub == null) { // sub unavailable
-                wc.sendNotFound();
+                wc.setStatus(HttpResponseStatus.NOT_FOUND);
                 return;
             }
             sub.perform(base.substring(slash + 1), wc);
@@ -49,7 +53,6 @@ public abstract class WebServiceHub<Z extends WebZone> extends WebService<Z> imp
 //        wc.zone = key;
         return this;
     }
-
 
     protected abstract Z resolve(String zone);
 

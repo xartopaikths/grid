@@ -20,7 +20,7 @@ public class OrgServiceHub extends WebServiceHub<Org> {
     }
 
     @Override
-    public WebService locateSub(String key, WebContext wc) {
+    public WebService subordinate(String key, WebContext wc) {
         return null;
     }
 

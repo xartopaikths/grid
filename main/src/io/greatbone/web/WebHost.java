@@ -108,7 +108,7 @@ public abstract class WebHost extends WebService implements ChannelInboundHandle
     }
 
     @Override
-    public WebService locateSub(String key, WebContext wc) {
+    public WebService subordinate(String key, WebContext wc) {
 
         return null;
     }
@@ -227,7 +227,7 @@ public abstract class WebHost extends WebService implements ChannelInboundHandle
     final void handle(ChannelHandlerContext chctx, FullHttpRequest req) throws Exception {
         try (final WebContext wc = new WebContext(chctx, req)) {
 
-            String path = wc.path();
+            String path = wc.getPath();
             int dot = path.lastIndexOf('.');
             if (dot != -1) {
                 handleStatic(chctx, req);
@@ -245,12 +245,12 @@ public abstract class WebHost extends WebService implements ChannelInboundHandle
                 String key = base.substring(0, slash);
                 if (key.startsWith("-")) { // hub
                     if (hub == null) { // hub unavailable
-                        wc.sendNotFound();
+                        wc.setStatus(HttpResponseStatus.NOT_FOUND);
                         return;
                     }
                     WebZone zone = hub.resolve(key.substring(1));
                     if (zone == null) {
-                        wc.sendNotFound(); // zone not found
+                        wc.setStatus(HttpResponseStatus.NOT_FOUND);
                         return;
                     }
                     wc.zone = zone;
@@ -259,7 +259,7 @@ public abstract class WebHost extends WebService implements ChannelInboundHandle
                 } else {
                     WebService sub = subs.get(key);
                     if (sub == null) { // sub unavailable
-                        wc.sendNotFound();
+                        wc.setStatus(HttpResponseStatus.NOT_FOUND);
                         return;
                     }
                     sub.perform(base.substring(slash + 1), wc);
@@ -276,7 +276,7 @@ public abstract class WebHost extends WebService implements ChannelInboundHandle
 
     @SuppressWarnings("deprecation")
     final void authenticate(WebContext wc) {
-        String v = wc.rqheaders().get(HttpHeaderNames.AUTHORIZATION);
+        String v = wc.getRequestHeaders().get(HttpHeaderNames.AUTHORIZATION);
         if (v == null) {
             return;
         }

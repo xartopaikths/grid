@@ -5,7 +5,7 @@ import java.lang.reflect.Method;
 
 /**
  */
-class WebAction<Z extends WebZone> {
+public class WebAction<Z extends WebZone> {
 
     // the service instance that this action operates on
     final WebService<Z> service;

@@ -12,7 +12,7 @@ public class JSON extends WebView<JSON> {
     }
 
     @Override
-    public void print() {
+    public void render() {
 
     }
 

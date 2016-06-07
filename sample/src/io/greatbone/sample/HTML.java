@@ -12,7 +12,7 @@ public abstract class HTML extends WebView<HTML> {
     }
 
     @Override
-    public void print() {
+    public void render() {
         $("<!DOCTYPE HTML>");
         $("<html>");
         $("<head>");

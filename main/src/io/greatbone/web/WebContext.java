@@ -46,15 +46,14 @@ public class WebContext<Z extends WebZone> implements AutoCloseable {
     final String uri;
     final String path;
     final FormData query; // can be null
-    final HttpHeaders rqheaders;
-    final ByteBuf rqcontent;
-    Object rqbody; // parsed request content
+    final HttpHeaders reqheaders;
+    final ByteBuf reqcontent;
+    Object reqbody; // parsed request content
 
     // response
     HttpResponseStatus status;
-    HttpHeaders rpheaders;
-    ByteBuf rpcontent;
-    HttpHeaders trailingHeader;
+    HttpHeaders respheaders;
+    ByteBuf respcontent;
 
     // the authenticated principal
     WebPrincipal principal;
@@ -80,16 +79,20 @@ public class WebContext<Z extends WebZone> implements AutoCloseable {
         this.path = (quest == -1) ? uri : uri.substring(0, quest);
         this.query = (quest == -1) ? null : new FormData(uri.substring(quest + 1));
 
-        this.rqheaders = req.headers();
-        this.rqcontent = req.content();
+        this.reqheaders = req.headers();
+        this.reqcontent = req.content();
 
         this.status = HttpResponseStatus.OK;
-        this.rpheaders = new DefaultHttpHeaders();
+        this.respheaders = new DefaultHttpHeaders();
 
     }
 
     public final WebService service() {
         return service;
+    }
+
+    public final WebAction action() {
+        return action;
     }
 
     public final Z zone() {
@@ -104,24 +107,24 @@ public class WebContext<Z extends WebZone> implements AutoCloseable {
         return method;
     }
 
-    public final String uri() {
+    public final String getUri() {
         return uri;
     }
 
-    public final String path() {
+    public final String getPath() {
         return path;
     }
 
-    public final FormData query() {
+    public final FormData getQuery() {
         return query;
     }
 
-    public final HttpHeaders rqheaders() {
-        return rqheaders;
+    public final HttpHeaders getRequestHeaders() {
+        return reqheaders;
     }
 
     public Date hdate(String name) {
-        String v = rqheaders.get(name);
+        String v = reqheaders.get(name);
         if (v != null) {
             try {
                 return DATE_FORMAT.parse(v);
@@ -131,63 +134,51 @@ public class WebContext<Z extends WebZone> implements AutoCloseable {
         return null;
     }
 
-    public FormData getForm() {
-        if (rqbody == null) {
-            rqbody = new FormData(rqcontent);
-        }
-        if (rqbody instanceof FormData) {
-            return (FormData) rqbody;
+    @SuppressWarnings("unchecked")
+    public <C> C getRequestContent(Class<C> contentClass) {
+        if (contentClass == FormData.class) {
+            if (reqbody == null) {
+                reqbody = new FormData(reqcontent);
+            }
+            if (reqbody instanceof FormData) {
+                return (C) reqbody;
+            }
+        } else if (contentClass == ByteBuf.class) {
+            return (C) reqcontent;
         }
         return null;
-    }
-
-    public Object getJson() {
-        return null;
-    }
-
-    public ByteBuf rqbody() {
-        return rqcontent;
     }
 
     //
     // RESPONSE
 
-    public void status(HttpResponseStatus v) {
+    public void setStatus(HttpResponseStatus v) {
         this.status = v;
     }
 
-    public void header(CharSequence name, String v) {
+    public final void setResponseContent(WebView view) {
 
-    }
+        // render output content
+        view.render();
 
-    public final void out(WebView print) {
+        ByteBuf buf = view.buf;
+        respheaders.set(HttpHeaderNames.CONTENT_TYPE, view.ctype());
+        respheaders.set(HttpHeaderNames.CONTENT_LENGTH, buf == null ? 0 : buf.readableBytes());
 
-        print.print();
-
-        ByteBuf buf = print.buf;
-        rpheaders.set(HttpHeaderNames.CONTENT_TYPE, print.ctype());
-        rpheaders.set(HttpHeaderNames.CONTENT_LENGTH, buf == null ? 0 : buf.readableBytes());
-
-        if (rpcontent != null) {
-            rpcontent.release();
+        if (respcontent != null) {
+            respcontent.release();
         }
-        this.rpcontent = print.buf;
+        this.respcontent = view.buf;
     }
-
-    public void sendNotFound() throws IOException {
-        status(HttpResponseStatus.NOT_FOUND);
-    }
-
-    PooledByteBufAllocator pool;
 
     @Override
     public void close() throws IOException {
         // send out the repsonse
-        if (rpcontent == null) {
-            rpcontent = Unpooled.buffer(0);
+        if (respcontent == null) {
+            respcontent = Unpooled.buffer(0);
         }
 
-        FullHttpResponse resp = new DefaultFullHttpResponse(HttpVersion.HTTP_1_1, HttpResponseStatus.OK, rpcontent, rpheaders, EMPTY);
+        FullHttpResponse resp = new DefaultFullHttpResponse(HttpVersion.HTTP_1_1, HttpResponseStatus.OK, respcontent, respheaders, EMPTY);
         chctx.writeAndFlush(resp);
     }
 

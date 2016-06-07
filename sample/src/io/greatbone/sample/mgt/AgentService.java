@@ -7,6 +7,7 @@ import io.greatbone.web.WebContext;
 import io.greatbone.web.WebHost;
 import io.greatbone.web.WebParent;
 import io.greatbone.web.WebService;
+import io.netty.handler.codec.http.HttpResponseStatus;
 
 /**
  */
@@ -26,7 +27,7 @@ public class AgentService extends WebService {
     public void Get(String rsc, WebContext wc) throws Exception {
         Org ret = shops.get(rsc);
         if (ret == null) {
-            wc.sendNotFound();
+            wc.setStatus(HttpResponseStatus.NOT_FOUND);
         } else {
             // send back json
 //            wc.sendOK(ret);

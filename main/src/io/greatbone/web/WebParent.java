@@ -5,6 +5,6 @@ package io.greatbone.web;
  */
 public interface WebParent {
 
-    public WebService locateSub(String key, WebContext wc);
+    public WebService subordinate(String key, WebContext wc);
 
 }
