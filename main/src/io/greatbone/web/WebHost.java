@@ -334,12 +334,6 @@ public abstract class WebHost extends WebService implements ChannelInboundHandle
         }
     }
 
-    final void send(ChannelHandlerContext ctx, HttpResponseStatus status) {
-        FullHttpResponse resp = new DefaultFullHttpResponse(HttpVersion.HTTP_1_1, status);
-        ctx.writeAndFlush(resp);
-
-    }
-
     @Override
     public Element config() {
         return config;

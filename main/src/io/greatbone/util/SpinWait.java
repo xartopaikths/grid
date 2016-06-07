@@ -5,7 +5,7 @@ import sun.misc.Unsafe;
 import java.lang.reflect.Field;
 
 /**
- * A sin-wait implementation of lock-free synchronization of read and write operations. It suits for prominent reads rare wites situations.
+ * A spin-wait implementation of lock-free synchronization for read/write operations. It suits for prominent-reads-rare-writes situations.
  */
 public class SpinWait {
 
