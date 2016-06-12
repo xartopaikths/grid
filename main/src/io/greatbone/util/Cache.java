@@ -12,6 +12,10 @@ public abstract class Cache<K, V extends Cacheable> {
 
     }
 
+    public V load(K key) {
+        return null;
+    }
+
     public V get(K key) {
         return null;
     }

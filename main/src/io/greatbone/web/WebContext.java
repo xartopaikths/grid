@@ -76,9 +76,9 @@ public class WebContext<Z extends WebZone> implements AutoCloseable {
 
         // parse the uri
         final String uri = this.uri = req.uri();
-        int quest = uri.indexOf('?');
-        this.path = (quest == -1) ? uri : uri.substring(0, quest);
-        this.query = (quest == -1) ? null : new FormData(uri.substring(quest + 1));
+        int qm = uri.indexOf('?');
+        this.path = (qm == -1) ? uri : uri.substring(0, qm);
+        this.query = (qm == -1) ? null : new FormData(uri.substring(qm + 1));
 
         this.inheaders = req.headers();
         this.inbuf = req.content();
@@ -152,7 +152,6 @@ public class WebContext<Z extends WebZone> implements AutoCloseable {
     public Object getInJson() {
         return inbuf;
     }
-
 
     //
     // RESPONSE

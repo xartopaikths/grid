@@ -17,6 +17,8 @@ public abstract class WebView<O extends Out<O>> implements Out<O> {
 
     static final int OUTBUF_MAX = 64 * 1024;
 
+    static final PooledByteBufAllocator ALLOC = new PooledByteBufAllocator();
+
     // possible chars for representing a number
     static final char[] DIGITS = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9'};
 
@@ -42,7 +44,7 @@ public abstract class WebView<O extends Out<O>> implements Out<O> {
 
         ByteBuf buf = this.buf;
         if (buf == null) {
-            buf = this.buf = PooledByteBufAllocator.DEFAULT.buffer(OUTBUF_INITIAL, OUTBUF_MAX);
+            buf = this.buf = ALLOC.buffer(OUTBUF_INITIAL, OUTBUF_MAX);
         }
 
         // UTF-8 encoding but without surrogate support
